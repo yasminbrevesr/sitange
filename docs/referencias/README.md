@@ -11,6 +11,10 @@
   da Letra (letras CA). Fotos verticais em `public/produtos/*-vertical.webp`.
   Sem estrelas nem logos de imprensa: o briefing proíbe avaliação ou selo inventado.
 
+### Pendente
+- Alterar a barra de navegação (menu verde fixo no topo, `components/Nav.tsx`: logo, links
+  Como funciona / Para dois / Para um / As peças, Aro e Sacola). Aguardando referência.
+
 ## Mockup da embalagem
 
 Arquivo: `embalagem-mockup.webp`. O bloco de custo estimado do mockup original foi retirado de propósito, porque este repositório é público.

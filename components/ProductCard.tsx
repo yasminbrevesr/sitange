@@ -13,7 +13,7 @@ export function ProductCard({ product, imagePanel = "creme-claro" }: Props) {
         <span className="rotulo absolute left-4 top-4 z-10 bg-creme-claro px-2 py-1 text-[10px] text-laranja-tinta">
           {FAMILIES[product.family].label}
         </span>
-        <ProductImage slug={product.slug} image={product.images[0]} />
+        <ProductImage slug={product.slug} image={product.images[0]} surface={imagePanel} />
       </div>
       <div className="flex flex-1 flex-col p-5">
         <h3 className="rotulo text-[12px] text-tinta group-hover:underline">{product.name}</h3>

@@ -26,7 +26,7 @@ export function Gallery({ product }: { product: Product }) {
         >
           {VIEW_LABEL[image.view]}
         </span>
-        <ProductImage slug={product.slug} image={image} />
+        <ProductImage slug={product.slug} image={image} surface={onGreen ? "verde-claro" : "branco"} />
       </div>
       <ul className="mt-2 grid grid-cols-4 gap-2" aria-label="Outras fotos">
         {product.images.map((img, i) => (
@@ -40,7 +40,11 @@ export function Gallery({ product }: { product: Product }) {
                 i === active ? "outline outline-2 -outline-offset-2 outline-tinta" : "hover:outline hover:outline-1 hover:-outline-offset-1 hover:outline-tinta/40"
               }`}
             >
-              <ProductImage slug={product.slug} image={{ ...img, alt: "" }} />
+              <ProductImage
+                slug={product.slug}
+                image={{ ...img, alt: "" }}
+                surface={img.view === "verde" ? "verde-claro" : "branco"}
+              />
             </button>
           </li>
         ))}

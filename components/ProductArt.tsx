@@ -4,6 +4,7 @@ import type { ImageView, ProductImage as ProductImageData } from "@/lib/products
 // Traço chapado, sem degradê. Em fundo verde o traço fica creme.
 
 type Tone = "claro" | "escuro";
+export type Surface = "creme-base" | "creme-claro" | "branco" | "verde-claro";
 
 type RingProps = {
   cx: number;
@@ -140,15 +141,21 @@ type Props = {
   className?: string;
   /** Cor do traço da ilustração: "escuro" para usar sobre verde. */
   tone?: Tone;
+  /** Fundo da área onde a foto aparece: escolhe a versão da foto com esse mesmo fundo. */
+  surface?: Surface;
 };
 
 // Mostra a foto real quando existir; senão, a ilustração.
-export function ProductImage({ slug, image, className = "", tone }: Props) {
+export function ProductImage({ slug, image, className = "", tone, surface }: Props) {
   const resolvedTone: Tone = tone ?? (image.view === "verde" ? "escuro" : "claro");
   if (image.src) {
+    // Com "surface", usa a versão da foto com o fundo igual ao da área (ex.: curva-encaixadas-creme-base.webp)
+    // e mostra a peça inteira, sem corte, porque o fundo se funde com a área.
+    const path = surface ? image.src.replace(/-encaixadas\.webp$/, `-encaixadas-${surface}.webp`) : image.src;
     // Caminhos locais (public/) precisam do prefixo do GitHub Pages.
-    const src = image.src.startsWith("/") ? `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}${image.src}` : image.src;
-    return <img src={src} alt={image.alt} className={`h-full w-full object-cover ${className}`} loading="lazy" />;
+    const src = path.startsWith("/") ? `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}${path}` : path;
+    const fit = surface ? "object-contain" : "object-cover";
+    return <img src={src} alt={image.alt} className={`h-full w-full ${fit} ${className}`} loading="lazy" />;
   }
   return (
     <svg viewBox="0 0 400 300" role="img" aria-label={image.alt} className={`h-full w-full ${className}`}>

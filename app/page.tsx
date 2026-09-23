@@ -22,15 +22,12 @@ import {
 const curva = getProduct("curva")!;
 const plano = getProduct("plano")!;
 
-// Foto da Curva com o fundo verde trocado pelo creme dos cards (mesma cor do bg-creme-claro)
-const CURVA_SOBRE_CREME = "/produtos/curva-encaixadas-creme.webp";
-
 const steps = [
   {
     n: "01",
     title: "Chega inteira",
     text: "Na caixa, as duas partes vêm encaixadas. É uma peça só, e é assim que ela aparece na foto.",
-    image: { ...curva.images[0], src: CURVA_SOBRE_CREME },
+    image: curva.images[0],
   },
   {
     n: "02",
@@ -42,7 +39,7 @@ const steps = [
     n: "03",
     title: "Fecha de novo",
     text: "O encaixe não é decoração: as bordas foram desenhadas para voltar ao lugar exato. Sempre.",
-    image: { ...curva.images[0], src: CURVA_SOBRE_CREME, alt: "Anel Curva com as duas partes encaixadas de novo" },
+    image: { ...curva.images[0], alt: "Anel Curva com as duas partes encaixadas de novo" },
   },
 ];
 
@@ -53,7 +50,7 @@ function FamilyCard({ family }: { family: Family }) {
   return (
     <article id={family} className="flex scroll-mt-20 flex-col bg-branco lg:scroll-mt-[130px]">
       <div className="aspect-[16/10] bg-creme-base p-8">
-        <ProductImage slug={hero.slug} image={hero.images[0]} />
+        <ProductImage slug={hero.slug} image={hero.images[0]} surface="creme-base" />
       </div>
       <div className="flex flex-1 flex-col p-6 md:p-8">
         <div className="flex items-baseline justify-between gap-4">
@@ -125,7 +122,7 @@ export default function Home() {
               {formatPrice(curva.priceCents)}
             </p>
             <Link href={`/pecas/${curva.slug}`} className="block aspect-[4/3] pt-10">
-              <ProductImage slug={curva.slug} image={curva.images[0]} />
+              <ProductImage slug={curva.slug} image={curva.images[0]} surface="creme-base" />
             </Link>
           </div>
         </Container>
@@ -157,7 +154,7 @@ export default function Home() {
                   <h3 className="rotulo text-[11px]">{s.title}</h3>
                 </div>
                 <div className="my-6 aspect-[4/3]">
-                  <ProductImage slug={curva.slug} image={s.image} />
+                  <ProductImage slug={curva.slug} image={s.image} surface="creme-claro" />
                 </div>
                 <p className="corpo text-[15px] text-tinta/80 md:text-[15px]">{s.text}</p>
               </li>
@@ -228,7 +225,7 @@ export default function Home() {
               <figure key={panel.label} className="bg-verde-claro p-6">
                 <figcaption className="rotulo text-[10px] text-creme-claro/85">{panel.label}</figcaption>
                 <div className="mt-4 aspect-square">
-                  <ProductImage slug={plano.slug} image={panel.image} tone="escuro" />
+                  <ProductImage slug={plano.slug} image={panel.image} tone="escuro" surface="verde-claro" />
                 </div>
               </figure>
             ))}

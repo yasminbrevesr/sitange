@@ -20,7 +20,9 @@ export function Gallery({ product }: { product: Product }) {
     <div className="w-full lg:max-w-[700px]">
       <div className={`relative aspect-square p-8 md:p-14 ${onGreen ? "bg-verde-claro" : "bg-branco"}`}>
         <span
-          className={`rotulo absolute left-4 top-4 text-[10px] ${onGreen ? "text-creme-claro" : "text-laranja-tinta"}`}
+          className={`rotulo absolute left-4 top-4 z-10 px-2 py-1 text-[10px] ${
+            onGreen ? "bg-verde text-creme-claro" : "bg-creme-claro text-laranja-tinta"
+          }`}
         >
           {VIEW_LABEL[image.view]}
         </span>

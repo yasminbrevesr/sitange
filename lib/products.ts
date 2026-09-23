@@ -70,11 +70,11 @@ const shared = {
   sizes: RING_SIZES,
 };
 
-function images(name: string, family: Family): ProductImage[] {
+function images(name: string, family: Family, photo: { src: string | null; alt?: string }): ProductImage[] {
   const destino =
     family === "para-dois" ? "uma para cada mão" : "iguais, lado a lado";
   return [
-    { view: "encaixadas", src: null, alt: `Anel ${name} em prata com as duas partes encaixadas` },
+    { view: "encaixadas", src: photo.src, alt: photo.alt ?? `Anel ${name} em prata com as duas partes encaixadas` },
     { view: "separadas", src: null, alt: `Anel ${name} com as duas partes separadas, ${destino}` },
     { view: "parte", src: null, alt: `Uma das duas partes do anel ${name}, sozinha` },
     { view: "verde", src: null, alt: `Anel ${name} encaixado sobre fundo verde` },
@@ -95,7 +95,10 @@ export const products: Product[] = [
       { label: "Parte menor", weightGrams: 0.78, diameterMm: 16.7 },
     ],
     shortDescription: "Dois aros de tamanhos diferentes, um dentro do outro.",
-    images: images("Curva", "para-dois"),
+    images: images("Curva", "para-dois", {
+      src: "/produtos/curva-encaixadas.webp",
+      alt: "Anel Curva em prata polida: um aro maior com um aro menor encaixado por dentro",
+    }),
   },
   {
     ...shared,
@@ -110,7 +113,10 @@ export const products: Product[] = [
       { label: "Parte menor", weightGrams: null, diameterMm: null },
     ],
     shortDescription: "A letra existe partida. Fecha quando as duas mãos se encontram.",
-    images: images("Letra", "para-dois"),
+    images: images("Letra", "para-dois", {
+      src: "/produtos/letra-encaixadas.webp",
+      alt: "Anel Letra em prata polida: duas bandas encaixadas formando as letras C e A, divididas entre as duas partes",
+    }),
   },
   {
     ...shared,
@@ -125,7 +131,10 @@ export const products: Product[] = [
       { label: "Parte 2", weightGrams: null, diameterMm: null },
     ],
     shortDescription: "Duas bandas finas e iguais. Um dedo ou dois. A porta de entrada.",
-    images: images("Linha", "para-um"),
+    images: images("Linha", "para-um", {
+      src: "/produtos/linha-encaixadas.webp",
+      alt: "Anel Linha em prata polida: duas bandas finas e iguais encaixadas lado a lado",
+    }),
   },
   {
     ...shared,
@@ -140,7 +149,10 @@ export const products: Product[] = [
       { label: "Parte 2", weightGrams: null, diameterMm: null },
     ],
     shortDescription: "A face reta no topo. É a peça que aparece de longe no vídeo.",
-    images: images("Plano", "para-um"),
+    images: images("Plano", "para-um", {
+      src: "/produtos/plano-encaixadas.webp",
+      alt: "Anel Plano em prata polida: duas partes encaixadas formando uma face reta no topo",
+    }),
   },
 ];
 

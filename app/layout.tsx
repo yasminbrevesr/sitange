@@ -4,6 +4,7 @@ import "./globals.css";
 import { CartProvider } from "@/components/CartProvider";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
+import { CouponPopup } from "@/components/CouponPopup";
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -34,6 +35,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Nav />
           <main id="conteudo">{children}</main>
           <Footer />
+          <CouponPopup />
         </CartProvider>
       </body>
     </html>

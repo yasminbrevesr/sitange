@@ -14,7 +14,7 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: { default: "TANGÈ", template: "%s — TANGÈ" },
+  title: { default: "TANGÈ", template: "%s · TANGÈ" },
   description:
     "Anéis em prata 925 maciça, feitos sob encomenda no Brasil. Toda peça é feita de duas partes que se encaixam.",
 };

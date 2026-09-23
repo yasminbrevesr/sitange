@@ -53,7 +53,7 @@ export const FAMILIES: Record<Family, { label: string; tag: string; description:
     label: "Para um",
     tag: "Você decide",
     description:
-      "As duas partes são iguais e ficam com você. Juntas num dedo, ou separadas em dois. Um aro só — o anelar, o médio e o indicador têm praticamente a mesma largura.",
+      "As duas partes são iguais e ficam com você. Juntas num dedo, ou separadas em dois. Um aro só: o anelar, o médio e o indicador têm praticamente a mesma largura.",
   },
 };
 

@@ -26,7 +26,7 @@ const steps = [
   {
     n: "01",
     title: "Chega inteira",
-    text: "Na caixa, as duas partes vêm encaixadas. É uma peça só — e é assim que ela aparece na foto.",
+    text: "Na caixa, as duas partes vêm encaixadas. É uma peça só, e é assim que ela aparece na foto.",
     image: curva.images[0],
   },
   {
@@ -94,7 +94,7 @@ export default function Home() {
               </span>
             </h1>
             <p className="corpo mt-8 max-w-md text-tinta/80">
-              Nenhuma peça nossa é uma só. Todas são feitas de duas partes que se encostam — e o que muda é
+              Nenhuma peça nossa é uma só. Todas são feitas de duas partes que se encostam, e o que muda é
               quem fica com cada uma.
             </p>
             <div className="mt-10 flex flex-wrap items-center gap-6">
@@ -208,7 +208,7 @@ export default function Home() {
             </h2>
             <p className="corpo mt-6 max-w-md text-creme-claro/85">
               Juntas num dedo. Separadas em dois. Ou dividida com alguém. A peça chega sem dizer o que você tem
-              que fazer com ela — e é por isso que cada pessoa usa de um jeito.
+              que fazer com ela, e é por isso que cada pessoa usa de um jeito.
             </p>
             <Link
               href="#as-pecas"

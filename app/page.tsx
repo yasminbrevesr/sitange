@@ -22,12 +22,15 @@ import {
 const curva = getProduct("curva")!;
 const plano = getProduct("plano")!;
 
+// Foto da Curva com o fundo verde trocado pelo creme dos cards (mesma cor do bg-creme-claro)
+const CURVA_SOBRE_CREME = "/produtos/curva-encaixadas-creme.webp";
+
 const steps = [
   {
     n: "01",
     title: "Chega inteira",
     text: "Na caixa, as duas partes vêm encaixadas. É uma peça só, e é assim que ela aparece na foto.",
-    image: curva.images[0],
+    image: { ...curva.images[0], src: CURVA_SOBRE_CREME },
   },
   {
     n: "02",
@@ -39,7 +42,7 @@ const steps = [
     n: "03",
     title: "Fecha de novo",
     text: "O encaixe não é decoração: as bordas foram desenhadas para voltar ao lugar exato. Sempre.",
-    image: { ...curva.images[0], alt: "Anel Curva com as duas partes encaixadas de novo" },
+    image: { ...curva.images[0], src: CURVA_SOBRE_CREME, alt: "Anel Curva com as duas partes encaixadas de novo" },
   },
 ];
 

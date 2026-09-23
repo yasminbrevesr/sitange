@@ -107,10 +107,6 @@ export function Unboxing() {
             place="md:col-start-3 md:row-start-3"
           />
         </ul>
-
-        <p className="mx-auto mt-8 max-w-md text-center text-[13px] text-tinta/75">
-          É isso que faz o unboxing existir como vídeo.
-        </p>
       </div>
     </section>
   );

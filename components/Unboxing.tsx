@@ -2,7 +2,8 @@ import { Symbol } from "./Symbol";
 
 // "O que chega até você": mosaico no estilo da referência enviada (docs/referencias).
 // Desktop, 3 colunas: foto alta na esquerda (linhas 2-3) e na direita (linhas 1-2), a seda com
-// adesivo e a caixa kraft com cinta na linha de cima, e os blocos de texto 02, 03 e 04. Os tons de fundo evitam
+// adesivo e a caixa kraft com cinta na linha de cima, o manual de uso no meio e os blocos
+// de texto 03 e 04. Os tons de fundo evitam
 // dois blocos vizinhos da mesma cor. Blocos de texto e caixa são quadrados.
 // No celular vira uma coluna, na ordem do código.
 
@@ -99,6 +100,29 @@ function SilkTile({ place }: { place: string }) {
   );
 }
 
+// Manual de uso, frente "Como usar" (desenho do mockup da embalagem)
+function ManualTile({ place }: { place: string }) {
+  return (
+    <li className={`flex aspect-[4/3] items-center justify-center bg-creme-base md:aspect-square ${place}`}>
+      <div
+        role="img"
+        aria-label="Manual de uso: encoste uma na outra e gire até assentar. Existe uma posição em que elas param."
+        className="flex aspect-[252/197] w-[76%] rotate-[1.5deg] flex-col justify-between border border-tinta/10 bg-creme-claro p-[7%]"
+      >
+        <span className="rotulo text-[8px] text-laranja-tinta">Como usar</span>
+        <span className="text-[14px] font-light uppercase leading-[1.15] text-tinta">
+          Encoste uma
+          <br />
+          na outra e gire
+          <br />
+          até assentar
+        </span>
+        <span className="text-[8px] text-tinta/70">Existe uma posição em que elas param.</span>
+      </div>
+    </li>
+  );
+}
+
 export function Unboxing() {
   return (
     <section className="bg-branco py-16 md:py-24" aria-labelledby="chega-titulo">
@@ -117,13 +141,7 @@ export function Unboxing() {
         <ul className="mt-12 grid grid-cols-1 gap-[6px] md:grid-cols-3">
           <SilkTile place="md:col-start-1 md:row-start-1" />
           <BoxTile place="md:col-start-2 md:row-start-1" />
-          <TextTile
-            n="02"
-            title="A seda"
-            text="Papel creme lacrado pelo adesivo redondo."
-            tone="claro"
-            place="md:col-start-2 md:row-start-2"
-          />
+          <ManualTile place="md:col-start-2 md:row-start-2" />
           <PhotoTile
             src="/produtos/curva-vertical.webp"
             alt="Anel Curva em prata polida, com o aro menor encostado por dentro do maior, como chega na caixa"

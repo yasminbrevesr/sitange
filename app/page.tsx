@@ -48,7 +48,7 @@ function FamilyCard({ family }: { family: Family }) {
   const items = getProductsByFamily(family);
   const hero = items[0];
   return (
-    <article id={family} className="flex scroll-mt-20 flex-col bg-branco">
+    <article id={family} className="flex scroll-mt-20 flex-col bg-branco lg:scroll-mt-[130px]">
       <div className="aspect-[16/10] bg-creme-base p-8">
         <ProductImage slug={hero.slug} image={hero.images[0]} />
       </div>

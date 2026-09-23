@@ -11,9 +11,12 @@
   da Letra (letras CA). Fotos verticais em `public/produtos/*-vertical.webp`.
   Sem estrelas nem logos de imprensa: o briefing proíbe avaliação ou selo inventado.
 
-### Pendente
-- Alterar a barra de navegação (menu verde fixo no topo, `components/Nav.tsx`: logo, links
-  Como funciona / Para dois / Para um / As peças, Aro e Sacola). Aguardando referência.
+## Menu (barra de navegação)
+
+- Onde está: `components/Nav.tsx` e `components/SearchBox.tsx`.
+- Segue a referência enviada (menu da Macchi), adaptada: fundo branco, busca de produtos à esquerda,
+  logo TANGÈ no centro, "Descubra seu aro" e sacola com contador à direita, e uma linha fina com os
+  links das seções embaixo. "Entrar / Cadastrar-se" ficou de fora: o site ainda não tem contas de cliente.
 
 ## Mockup da embalagem
 

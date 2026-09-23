@@ -40,9 +40,14 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Seções com âncora não ficam escondidas atrás do menu fixo. */
+/* Seções com âncora não ficam escondidas atrás do menu fixo (64px no celular, 121px no desktop). */
 section[id] {
   scroll-margin-top: 72px;
+}
+@media (min-width: 1024px) {
+  section[id] {
+    scroll-margin-top: 130px;
+  }
 }
 
 @layer components {

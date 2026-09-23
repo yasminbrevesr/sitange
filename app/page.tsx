@@ -80,10 +80,10 @@ export default function Home() {
     <>
       {/* 2. HERO */}
       <section className="bg-creme-base" aria-labelledby="hero-titulo">
-        <Container className="grid items-center gap-10 py-12 lg:grid-cols-[1.3fr_1fr] lg:gap-12 lg:py-16">
+        <Container className="grid items-center gap-10 py-12 lg:min-h-[806px] lg:grid-cols-2 lg:py-0">
           <div>
             <p className="rotulo text-[10px] text-tinta/75">Prata 925 · Feita sob encomenda</p>
-            <h1 id="hero-titulo" className="display mt-6 whitespace-nowrap text-[52px] leading-[1.02] lg:text-[clamp(64px,7.2vw,110px)]">
+            <h1 id="hero-titulo" className="display mt-6 text-[52px] lg:text-[112px]">
               <span className="block">
                 Duas peças
                 <Dot />
@@ -121,7 +121,7 @@ export default function Home() {
               <br />
               {formatPrice(curva.priceCents)}
             </p>
-            <Link href={`/pecas/${curva.slug}`} className="block aspect-[4/3] pt-14">
+            <Link href={`/pecas/${curva.slug}`} className="block aspect-[4/3] pt-10">
               <ProductImage slug={curva.slug} image={curva.images[0]} />
             </Link>
           </div>

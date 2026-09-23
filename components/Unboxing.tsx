@@ -96,99 +96,50 @@ function ManualTile({ place }: { place: string }) {
   );
 }
 
-// Caixa de aliança verde aberta, vista de frente e de cima, com as duas partes do anel em pé
-// na fenda da almofada (ilustração a partir de uma foto de referência enviada).
+// Caixa de aliança verde aberta vista de cima (flat lay), no mesmo estilo chapado e levemente
+// girado dos outros desenhos: tampa com o forro e a marca, almofada creme com a fenda.
 const CX_VERDE = "#0C3A21";
 const CX_VERDE_LUZ = "#14502E";
-const CX_VERDE_SOMBRA = "#082A17";
 const CX_FORRO = "#EFE6D6";
 const CX_ALMOFADA = "#F7F1E6";
-const CX_FENDA = "#DCCFB9";
-const PRATA = "#C9CDD1";
-const PRATA_ESCURA = "#8C9197";
-const PRATA_LUZ = "#FFFFFF";
-
-// Anel em pé visto quase de frente: faixa entre duas elipses deslocadas (mostra a espessura),
-// contorno escuro e um reflexo claro. Só a parte acima da fenda aparece (clipPath).
-function StandingRing({ cx, cy, rx, ry, band }: { cx: number; cy: number; rx: number; ry: number; band: number }) {
-  const outer = `M ${cx - rx} ${cy} a ${rx} ${ry} 0 1 0 ${rx * 2} 0 a ${rx} ${ry} 0 1 0 ${-rx * 2} 0 Z`;
-  const irx = rx - band;
-  const iry = ry - band * 0.8;
-  const icx = cx + band * 0.6;
-  const inner = `M ${icx - irx} ${cy} a ${irx} ${iry} 0 1 0 ${irx * 2} 0 a ${irx} ${iry} 0 1 0 ${-irx * 2} 0 Z`;
-  return (
-    <g clipPath="url(#acima-da-fenda)">
-      <path d={`${outer} ${inner}`} fill={PRATA} fillRule="evenodd" stroke={PRATA_ESCURA} strokeWidth="1" />
-      {/* face interna da faixa, um tom mais escuro */}
-      <path
-        d={inner}
-        fill="none"
-        stroke={PRATA_ESCURA}
-        strokeOpacity="0.55"
-        strokeWidth={band * 0.45}
-        transform={`translate(${-band * 0.25} 0)`}
-      />
-      {/* reflexo */}
-      <path
-        d={`M ${cx - rx + band * 0.35} ${cy - ry * 0.15} A ${rx - band * 0.35} ${ry - band * 0.3} 0 0 1 ${cx - rx * 0.1} ${cy - ry + band * 0.35}`}
-        fill="none"
-        stroke={PRATA_LUZ}
-        strokeWidth="1.6"
-        strokeLinecap="round"
-      />
-    </g>
-  );
-}
+const CX_SOMBRA = "#D6C8B0";
 
 function RingBoxTile({ place }: { place: string }) {
-  const slitY = 197;
   return (
     <li className={`flex aspect-square items-center justify-center bg-creme-base ${place}`}>
       <svg
-        viewBox="40 20 330 290"
+        viewBox="0 0 300 300"
         role="img"
-        aria-label="Caixa de aliança verde aberta, com o nome TANGÈ no forro da tampa e as duas partes do anel em pé na almofada creme"
-        className="w-[88%]"
+        aria-label="Caixa de aliança verde aberta vista de cima, com o nome TANGÈ no forro da tampa e a almofada creme"
+        className="w-[92%]"
       >
-        <defs>
-          <clipPath id="acima-da-fenda">
-            <rect x="0" y="0" width="400" height={slitY} />
-          </clipPath>
-        </defs>
-
-        {/* tampa aberta: espessura no topo, lateral e forro creme */}
-        <polygon points="92,34 344,38 352,31 100,27" fill={CX_VERDE_LUZ} />
-        <polygon points="344,38 352,31 356,168 348,172" fill={CX_VERDE_SOMBRA} />
-        <polygon points="84,172 348,172 344,38 92,34" fill={CX_VERDE} />
-        <polygon points="98,166 336,166 333,50 104,47" fill={CX_FORRO} />
-        <g transform="translate(207 72) scale(0.2)" aria-hidden="true">
-          <path d="M68 16 A40 40 0 1 0 68 84" fill="none" stroke={CX_VERDE} strokeWidth="8" strokeLinecap="round" />
-          <circle cx="82" cy="50" r="10" fill="#FF6B35" />
+        <g transform="rotate(-4 150 150)">
+          {/* sombra chapada da caixa */}
+          <rect x="75" y="44" width="160" height="222" rx="7" fill={CX_SOMBRA} />
+          {/* tampa aberta com o forro e a marca */}
+          <rect x="70" y="38" width="160" height="104" rx="6" fill={CX_VERDE} />
+          <rect x="80" y="48" width="140" height="86" rx="3" fill={CX_FORRO} />
+          <g transform="translate(141 62) scale(0.18)" aria-hidden="true">
+            <path d="M68 16 A40 40 0 1 0 68 84" fill="none" stroke={CX_VERDE} strokeWidth="8" strokeLinecap="round" />
+            <circle cx="82" cy="50" r="10" fill="#FF6B35" />
+          </g>
+          <text
+            x="152"
+            y="110"
+            textAnchor="middle"
+            fill={CX_VERDE}
+            style={{ fontFamily: "var(--font-jakarta)", fontSize: 13, fontWeight: 500, letterSpacing: "0.34em" }}
+          >
+            TANGÈ
+          </text>
+          {/* dobradiça */}
+          <rect x="70" y="142" width="160" height="6" fill={CX_VERDE_LUZ} />
+          {/* base com a almofada */}
+          <rect x="70" y="148" width="160" height="112" rx="6" fill={CX_VERDE} />
+          <rect x="80" y="158" width="140" height="92" rx="3" fill={CX_ALMOFADA} />
+          {/* fenda da almofada, onde as peças ficam assentadas */}
+          <rect x="96" y="202" width="108" height="4" rx="2" fill="#E3D7C3" />
         </g>
-        <text
-          x="219"
-          y="124"
-          textAnchor="middle"
-          fill={CX_VERDE}
-          style={{ fontFamily: "var(--font-jakarta)", fontSize: 19, fontWeight: 500, letterSpacing: "0.34em" }}
-        >
-          TANGÈ
-        </text>
-
-        {/* topo da base: borda verde e almofada creme com a fenda */}
-        <polygon points="60,212 322,212 350,172 84,172" fill={CX_VERDE_LUZ} />
-        <polygon points="70,206 314,206 338,177 92,177" fill={CX_ALMOFADA} />
-        <path d={`M 80 ${slitY} L 326 ${slitY - 3}`} stroke={CX_FENDA} strokeWidth="3" strokeLinecap="round" />
-
-        {/* as duas partes, em pé na fenda */}
-        <StandingRing cx={176} cy={slitY - 14} rx={31} ry={39} band={7} />
-        <StandingRing cx={252} cy={slitY - 11} rx={25} ry={31} band={6} />
-        <path d={`M 80 ${slitY + 1} L 326 ${slitY - 2}`} stroke="#FFFFFF" strokeOpacity="0.7" strokeWidth="1.2" />
-
-        {/* frente e lateral da base */}
-        <polygon points="322,212 350,172 350,244 322,284" fill={CX_VERDE_SOMBRA} />
-        <rect x="60" y="212" width="262" height="72" fill={CX_VERDE} />
-        <line x1="60" y1="212.5" x2="322" y2="212.5" stroke={CX_VERDE_LUZ} strokeWidth="1.5" />
       </svg>
     </li>
   );

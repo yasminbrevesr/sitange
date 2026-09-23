@@ -23,7 +23,7 @@ export function Stripe({ items }: { items: string[] }) {
           <div key={copy} className="flex min-h-[54px] shrink-0 items-center">
             {half.map((item, i) => (
               <span key={i} className="flex items-center">
-                <span className="rotulo whitespace-nowrap px-5 text-[10px] md:px-8 md:text-[11px]">{item}</span>
+                <span className="rotulo whitespace-nowrap px-8 text-[10px] md:px-14 md:text-[11px]">{item}</span>
                 <span className="text-[#12121266]">/</span>
               </span>
             ))}

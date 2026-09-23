@@ -1,12 +1,17 @@
 import { Symbol } from "./Symbol";
 
 // "O que chega até você": mosaico no estilo da referência enviada (docs/referencias).
-// Desktop, 3 colunas: foto alta na esquerda (linhas 2-3) e na direita (linhas 1-2), foto
-// quadrada no centro em cima, e os quatro blocos de texto com fundos alternados.
-// Os blocos de texto e a foto do centro são quadrados; as fotos altas ocupam duas linhas.
+// Desktop, 3 colunas: foto alta na esquerda (linhas 2-3) e na direita (linhas 1-2), a caixa
+// kraft com cinta no centro em cima, e os quatro blocos de texto. Os tons de fundo evitam
+// dois blocos vizinhos da mesma cor. Blocos de texto e caixa são quadrados.
 // No celular vira uma coluna, na ordem do código.
 
 const base = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+
+const KRAFT = "#C8B08E";
+const KRAFT_TAMPA = "#D6C3A5";
+const KRAFT_LINHA = "#B39B78";
+const VERDE_TAMPA = "#14502E";
 
 type Tone = "claro" | "base";
 
@@ -44,6 +49,32 @@ function PhotoTile({ src, alt, place, shape }: { src: string; alt: string; place
   );
 }
 
+// Caixa kraft 12×9×5 cm com a cinta de papel verde (desenho do mockup da embalagem)
+function BoxTile({ place }: { place: string }) {
+  return (
+    <li className={`flex aspect-[4/3] items-center justify-center bg-creme-base md:aspect-square ${place}`}>
+      <div
+        role="img"
+        aria-label="Caixa de papelão kraft com a cinta de papel verde com o nome TANGÈ"
+        className="relative aspect-[275/162] w-[76%]"
+        style={{ background: KRAFT }}
+      >
+        <div className="absolute inset-x-0 top-0 h-[16%]" style={{ background: KRAFT_TAMPA }} />
+        <div className="absolute inset-x-0 top-[16%] h-[3px]" style={{ background: KRAFT_LINHA }} />
+        <div className="absolute inset-y-0 left-[32%] w-[26%] bg-verde">
+          <div className="absolute inset-x-0 top-0 h-[16%]" style={{ background: VERDE_TAMPA }} />
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 pt-[10%] text-creme-claro">
+            <Symbol className="h-4 w-4" decorative />
+            <span className="rotate-180 text-[9px] font-medium uppercase tracking-[0.34em] [writing-mode:vertical-rl]">
+              Tangè
+            </span>
+          </div>
+        </div>
+      </div>
+    </li>
+  );
+}
+
 export function Unboxing() {
   return (
     <section className="bg-branco py-16 md:py-24" aria-labelledby="chega-titulo">
@@ -67,17 +98,12 @@ export function Unboxing() {
             tone="claro"
             place="md:col-start-1 md:row-start-1"
           />
-          <PhotoTile
-            src="/produtos/plano-encaixadas.webp"
-            alt="Anel Plano em prata polida, com as duas partes encaixadas formando a face reta no topo"
-            shape="aspect-square"
-            place="md:col-start-2 md:row-start-1"
-          />
+          <BoxTile place="md:col-start-2 md:row-start-1" />
           <TextTile
             n="02"
             title="A seda"
             text="Papel creme lacrado pelo adesivo redondo."
-            tone="base"
+            tone="claro"
             place="md:col-start-2 md:row-start-2"
           />
           <PhotoTile
@@ -90,7 +116,7 @@ export function Unboxing() {
             n="03"
             title="A caixa verde"
             text="As duas peças chegam encostadas, já assentadas."
-            tone="claro"
+            tone="base"
             place="md:col-start-2 md:row-start-3"
           />
           <PhotoTile
@@ -103,7 +129,7 @@ export function Unboxing() {
             n="04"
             title="Os cartões"
             text="Garantia e manual, embaixo da caixa verde."
-            tone="base"
+            tone="claro"
             place="md:col-start-3 md:row-start-3"
           />
         </ul>

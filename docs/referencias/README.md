@@ -4,10 +4,10 @@
 
 - Onde está: `components/Unboxing.tsx` (usada em `app/page.tsx`).
 - Versão anterior: `o-que-chega-atual.webp`.
-- Versão atual: mosaico 3×3 no estilo da referência enviada (seção de imprensa da Lucia):
-  duas fotos altas nas laterais (Curva à esquerda embaixo, Linha à direita em cima), foto quadrada
-  do Plano no centro em cima e os quatro blocos de "A abertura" com fundos alternados
-  (creme claro / creme base). Fotos verticais: `public/produtos/*-vertical.webp`.
+- Versão atual: mosaico 3 colunas × 4 linhas no estilo da referência enviada (seção de imprensa da Lucia):
+  duas fotos altas nas laterais (Linha à direita em cima, Curva à esquerda embaixo), desenhos da
+  caixa com cinta e da seda com adesivo (do mockup) ao lado dos textos 01 e 02, fotos do Plano e
+  da Letra ao lado dos textos 03 e 04 (escondidas no celular). Fotos verticais em `public/produtos/*-vertical.webp`.
   Sem estrelas nem logos de imprensa: o briefing proíbe avaliação ou selo inventado.
 
 ## Mockup da embalagem

@@ -35,7 +35,6 @@ export type Product = {
   productionDays: number;
   engravingMaxChars: number;
   warrantyMonths: number;
-  freeShipping: boolean;
   sizeExchangeDays: number;
   sizes: number[];
   images: ProductImage[];
@@ -65,7 +64,6 @@ const shared = {
   productionDays: 10,
   engravingMaxChars: 12,
   warrantyMonths: 12,
-  freeShipping: true,
   sizeExchangeDays: 30,
   sizes: RING_SIZES,
 };

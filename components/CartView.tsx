@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { MISSING, formatPrice, getProduct } from "@/lib/products";
+import { STORE } from "@/lib/store";
 import { Container } from "./Container";
 import { useCart } from "./CartProvider";
 
@@ -60,8 +61,13 @@ export function CartView() {
               ))}
             </ul>
             <p className="mt-6 flex items-baseline justify-between">
-              <span className="rotulo text-[11px]">Total · Frete grátis</span>
+              <span className="rotulo text-[11px]">Total</span>
               <span className="text-[28px] font-extralight">{formatPrice(total)}</span>
+            </p>
+            <p className="mt-2 text-right text-[14px] text-tinta/80">
+              {total >= STORE.freeShippingMinCents
+                ? "Frete grátis"
+                : `Faltam ${formatPrice(STORE.freeShippingMinCents - total)} para o frete grátis`}
             </p>
             <p className="mt-8 border border-tinta/30 bg-branco p-5 text-[14px] text-tinta/80">
               Finalizar compra: {MISSING} (integração de pagamento e checkout)

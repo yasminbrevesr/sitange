@@ -104,7 +104,7 @@ dialog:focus-visible {
   }
 }
 .esteira {
-  animation: esteira 60s linear infinite;
+  animation: esteira 70s linear infinite;
 }
 .esteira[data-paused="true"] {
   animation-play-state: paused;

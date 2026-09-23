@@ -72,7 +72,7 @@ export default async function ProductPage({ params }: Props) {
         </Container>
       </section>
 
-      <Stripe items={["Gravação incluída", "Frete grátis", "Troca de aro em 30 dias", "Garantia de 1 ano"]} />
+      <Stripe />
 
       <section className="bg-verde py-16 text-creme-claro md:py-24" aria-labelledby="ficha-titulo">
         <Container>

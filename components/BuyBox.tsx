@@ -45,7 +45,7 @@ export function BuyBox({ product }: { product: Product }) {
       <p className="mt-8 flex flex-wrap items-baseline gap-x-4 gap-y-1">
         <span className="text-[40px] font-extralight leading-none">{formatPrice(product.priceCents)}</span>
         <span className="rotulo text-[10px] text-tinta/75">
-          O par · Em até {product.maxInstallments}x de {installment}
+          O par · Em até {product.maxInstallments}x de {installment} sem juros
         </span>
       </p>
 

@@ -129,7 +129,7 @@ export default function Home() {
       </section>
 
       {/* 3. FAIXA */}
-      <Stripe items={["Toda peça é duas", "Prata 925 maciça", "Feita à mão em até 10 dias", "Gravação incluída"]} />
+      <Stripe />
 
       {/* 4. COMO FUNCIONA */}
       <section id="como-funciona" className="bg-branco py-16 md:py-24" aria-labelledby="como-titulo">

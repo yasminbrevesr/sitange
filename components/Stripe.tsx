@@ -1,20 +1,123 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
+import { formatPrice } from "@/lib/products";
+import { STORE } from "@/lib/store";
 
-// Faixa laranja de 54px que corre como esteira. A trilha tem duas metades iguais e
-// anda 50% em loop, então a emenda não aparece. Para quem pede menos movimento, fica parada.
-const REPEAT = 3; // cada metade repete os itens para cobrir telas largas
+// Faixa laranja de 54px que corre como esteira, com os benefícios da loja (valores em lib/store.ts).
+// A trilha tem duas metades iguais e anda 50% em loop, então a emenda não aparece.
+// Para quem pede menos movimento, fica parada.
+const REPEAT = 2; // cada metade repete os itens para cobrir telas largas
 
-export function Stripe({ items }: { items: string[] }) {
+type IconName = "caixa" | "cartao" | "garantia" | "pix" | "caminhao" | "gravacao";
+
+function Icon({ name }: { name: IconName }) {
+  const common = {
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: 1.5,
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+  };
+  return (
+    <svg viewBox="0 0 24 24" className="h-[18px] w-[18px] shrink-0" aria-hidden="true">
+      {name === "caixa" && (
+        <g {...common}>
+          <path d="M3.5 7.5 12 3l8.5 4.5v9L12 21l-8.5-4.5z" />
+          <path d="M3.5 7.5 12 12l8.5-4.5M12 12v9M7.8 5.3l8.5 4.5" />
+        </g>
+      )}
+      {name === "cartao" && (
+        <g {...common}>
+          <rect x="3" y="5.5" width="18" height="13" rx="2" />
+          <path d="M3 9.5h18M6.5 14.5h4" />
+        </g>
+      )}
+      {name === "garantia" && (
+        <g {...common}>
+          <circle cx="12" cy="12" r="8.5" />
+          <path d="m8.3 12.2 2.5 2.5 5-5" />
+        </g>
+      )}
+      {name === "pix" && (
+        <g {...common}>
+          <path d="M12 3.5 20.5 12 12 20.5 3.5 12z" />
+          <path d="M8.5 12h7M12 8.5v7" />
+        </g>
+      )}
+      {name === "caminhao" && (
+        <g {...common}>
+          <path d="M2.5 6.5h11v9h-11zM13.5 9.5h4l3 3.2v2.8h-7" />
+          <circle cx="6.5" cy="17" r="1.7" />
+          <circle cx="16.8" cy="17" r="1.7" />
+        </g>
+      )}
+      {name === "gravacao" && (
+        <g {...common}>
+          <path d="m14.5 5 4.5 4.5L9 19.5H4.5V15z" />
+          <path d="m12.5 7 4.5 4.5" />
+        </g>
+      )}
+    </svg>
+  );
+}
+
+const b = (text: string) => <strong className="font-semibold">{text}</strong>;
+
+const BENEFITS: { icon: IconName; label: string; content: ReactNode }[] = [
+  {
+    icon: "caixa",
+    label: `Frete grátis acima de ${formatPrice(STORE.freeShippingMinCents)}`,
+    content: (
+      <>
+        {b("Frete grátis")} acima de {formatPrice(STORE.freeShippingMinCents)}
+      </>
+    ),
+  },
+  {
+    icon: "cartao",
+    label: `Em até ${STORE.maxInstallmentsInterestFree}x sem juros`,
+    content: <>Em até {b(`${STORE.maxInstallmentsInterestFree}x sem juros`)}</>,
+  },
+  {
+    icon: "garantia",
+    label: `Garantia de ${STORE.warrantyMonths / 12} ano em todas as peças`,
+    content: (
+      <>
+        {b("Garantia")} de {STORE.warrantyMonths / 12} ano em todas as peças
+      </>
+    ),
+  },
+  {
+    icon: "pix",
+    label: `${STORE.pixDiscountPercent}% de desconto pagando no Pix`,
+    content: (
+      <>
+        {b(`${STORE.pixDiscountPercent}%`)} de desconto pagando no {b("Pix")}
+      </>
+    ),
+  },
+  {
+    icon: "caminhao",
+    label: "Envio expresso disponível",
+    content: <>Envio {b("expresso")} disponível</>,
+  },
+  {
+    icon: "gravacao",
+    label: "Gravação incluída",
+    content: <>{b("Gravação")} incluída</>,
+  },
+];
+
+export function Stripe() {
   const [paused, setPaused] = useState(false);
-  const half = Array.from({ length: REPEAT }, () => items).flat();
+  const half = Array.from({ length: REPEAT }, () => BENEFITS).flat();
 
   return (
     <div className="relative overflow-hidden bg-laranja text-tinta">
       <ul className="sr-only">
-        {items.map((item) => (
-          <li key={item}>{item}</li>
+        {BENEFITS.map((item) => (
+          <li key={item.label}>{item.label}</li>
         ))}
       </ul>
 
@@ -22,9 +125,12 @@ export function Stripe({ items }: { items: string[] }) {
         {[0, 1].map((copy) => (
           <div key={copy} className="flex min-h-[54px] shrink-0 items-center">
             {half.map((item, i) => (
-              <span key={i} className="flex items-center">
-                <span className="rotulo whitespace-nowrap px-8 text-[10px] md:px-14 md:text-[11px]">{item}</span>
-                <span className="text-[#12121266]">/</span>
+              <span
+                key={i}
+                className="flex items-center gap-2 whitespace-nowrap px-8 text-[13px] font-light md:px-14 md:text-[14px]"
+              >
+                <Icon name={item.icon} />
+                <span>{item.content}</span>
               </span>
             ))}
           </div>

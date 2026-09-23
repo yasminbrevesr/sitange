@@ -24,4 +24,4 @@ export async function saveLead(lead: Lead): Promise<void> {
   if (!res.ok) throw new Error(`Falha ao enviar cadastro (${res.status})`);
 }
 
-export const COUPON_CODE: string | null = null; // [COLOCAR AQUI] código do cupom de 10%
+export const COUPON_CODE: string | null = "BREVESCOMPRA10"; // cupom de 10% na primeira compra

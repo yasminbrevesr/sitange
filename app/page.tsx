@@ -242,11 +242,11 @@ export default function Home() {
           <p className="display text-center text-[46px] leading-[1.04]">
             <span className="block">
               A gente não vende par
-              <Dot className="text-branco" />
+              <Dot className="text-verde" />
             </span>
             <span className="block">
               Vende encaixe
-              <Dot className="text-branco" />
+              <Dot className="text-verde" />
             </span>
           </p>
         </Container>

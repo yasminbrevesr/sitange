@@ -2,9 +2,9 @@ import { Symbol } from "./Symbol";
 
 // "O que chega até você": mosaico no estilo da referência enviada (docs/referencias).
 // Desktop, 3 colunas: foto alta na esquerda (linhas 2-3) e na direita (linhas 1-2), a seda com
-// adesivo e a caixa kraft com cinta na linha de cima, o manual de uso no meio e os blocos
-// de texto 03 e 04. Os tons de fundo evitam
-// dois blocos vizinhos da mesma cor. Blocos de texto e caixa são quadrados.
+// adesivo e a caixa kraft com cinta na linha de cima, o manual de uso no meio e, embaixo,
+// a caixa de aliança verde aberta e o detalhe ampliado da Letra (letras CA).
+// Os blocos pequenos são quadrados; as fotos altas ocupam duas linhas.
 // No celular vira uma coluna, na ordem do código.
 
 const base = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
@@ -14,33 +14,6 @@ const KRAFT_TAMPA = "#D6C3A5";
 const KRAFT_LINHA = "#B39B78";
 const VERDE_TAMPA = "#14502E";
 const SEDA = "#FBF8EF";
-
-type Tone = "claro" | "base";
-
-function TextTile({
-  n,
-  title,
-  text,
-  tone,
-  place,
-}: {
-  n: string;
-  title: string;
-  text: string;
-  tone: Tone;
-  place: string;
-}) {
-  const bg = tone === "claro" ? "bg-creme-claro" : "bg-creme-base";
-  return (
-    <li
-      className={`flex min-h-[220px] flex-col items-center justify-center gap-6 px-6 py-10 text-center md:aspect-square md:min-h-0 md:py-6 ${bg} ${place}`}
-    >
-      <span className="rotulo text-[11px] font-semibold text-verde">{n}</span>
-      <p className="max-w-[230px] text-[14px] leading-[1.6] text-tinta/80">{text}</p>
-      <h3 className="text-[15px] font-semibold uppercase tracking-[0.14em] text-verde">{title}</h3>
-    </li>
-  );
-}
 
 function PhotoTile({ src, alt, place, shape }: { src: string; alt: string; place: string; shape: string }) {
   return (
@@ -123,6 +96,53 @@ function ManualTile({ place }: { place: string }) {
   );
 }
 
+// Caixa de aliança verde aberta, com as duas partes assentadas na almofada (ilustração)
+function RingBoxTile({ place }: { place: string }) {
+  const verde = "#0C3A21";
+  const aro = "#9EA3A8";
+  const brilho = "#ECEEF0";
+  return (
+    <li className={`flex aspect-square items-center justify-center bg-creme-base ${place}`}>
+      <svg
+        viewBox="44 36 312 324"
+        role="img"
+        aria-label="Caixa de aliança verde aberta, com o nome TANGÈ na tampa e as duas partes do anel assentadas na almofada creme"
+        className="w-[84%]"
+      >
+        {/* tampa aberta */}
+        <rect x="96" y="62" width="208" height="170" rx="4" fill={verde} />
+        <rect x="108" y="74" width="184" height="150" fill="#EFE6D6" />
+        <g transform="translate(189 104) scale(0.22)" aria-hidden="true">
+          <path d="M68 16 A40 40 0 1 0 68 84" fill="none" stroke={verde} strokeWidth="8" strokeLinecap="round" />
+          <circle cx="82" cy="50" r="10" fill="#FF6B35" />
+        </g>
+        <text
+          x="200"
+          y="158"
+          textAnchor="middle"
+          fill={verde}
+          style={{ fontFamily: "var(--font-jakarta)", fontSize: 17, fontWeight: 500, letterSpacing: "0.34em" }}
+        >
+          TANGÈ
+        </text>
+        {/* almofada (fundo) */}
+        <rect x="96" y="222" width="208" height="26" fill="#F3ECDF" />
+        {/* as duas partes, encostadas */}
+        <ellipse cx="178" cy="226" rx="42" ry="32" fill="none" stroke={aro} strokeWidth="9" />
+        <ellipse cx="178" cy="226" rx="42" ry="32" fill="none" stroke={brilho} strokeWidth="2.5" />
+        <ellipse cx="236" cy="232" rx="31" ry="24" fill="none" stroke={aro} strokeWidth="7" />
+        <ellipse cx="236" cy="232" rx="31" ry="24" fill="none" stroke={brilho} strokeWidth="2" />
+        {/* almofada (frente) com a fenda */}
+        <rect x="96" y="244" width="208" height="20" fill="#FBF8EF" />
+        <line x1="104" y1="244" x2="296" y2="244" stroke="#E5D8C4" strokeWidth="2" />
+        {/* base da caixa */}
+        <rect x="84" y="262" width="232" height="12" fill="#14502E" />
+        <rect x="84" y="274" width="232" height="72" rx="3" fill={verde} />
+      </svg>
+    </li>
+  );
+}
+
 export function Unboxing() {
   return (
     <section className="bg-branco py-16 md:py-24" aria-labelledby="chega-titulo">
@@ -148,24 +168,17 @@ export function Unboxing() {
             shape="aspect-[4/5] md:aspect-auto"
             place="md:col-start-1 md:row-span-2 md:row-start-2"
           />
-          <TextTile
-            n="03"
-            title="A caixa verde"
-            text="As duas peças chegam encostadas, já assentadas."
-            tone="base"
-            place="md:col-start-2 md:row-start-3"
-          />
+          <RingBoxTile place="md:col-start-2 md:row-start-3" />
           <PhotoTile
             src="/produtos/linha-vertical.webp"
             alt="Anel Linha em prata polida: duas bandas finas e iguais, encostadas lado a lado"
             shape="aspect-[4/5] md:aspect-auto"
             place="md:col-start-3 md:row-span-2 md:row-start-1"
           />
-          <TextTile
-            n="04"
-            title="Os cartões"
-            text="Garantia e manual, embaixo da caixa verde."
-            tone="claro"
+          <PhotoTile
+            src="/produtos/letra-detalhe.webp"
+            alt="Detalhe do anel Letra: as letras C e A gravadas atravessam a divisão entre as duas partes"
+            shape="aspect-square"
             place="md:col-start-3 md:row-start-3"
           />
         </ul>

@@ -51,7 +51,7 @@ export function SearchBox({ onNavigate }: { onNavigate?: () => void }) {
       }}
       className="relative flex w-full items-center gap-3"
     >
-      <button type="submit" aria-label="Buscar" className="flex h-11 w-11 shrink-0 items-center justify-center text-verde">
+      <button type="submit" aria-label="Buscar" className="flex h-11 w-11 shrink-0 items-center justify-center text-creme-claro">
         <svg viewBox="0 0 24 24" className="h-[22px] w-[22px]" aria-hidden="true">
           <circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" strokeWidth="1.6" />
           <path d="m15.5 15.5 5 5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
@@ -78,8 +78,20 @@ export function SearchBox({ onNavigate }: { onNavigate?: () => void }) {
           }
         }}
         aria-describedby={`${id}-status`}
-        className="h-11 w-full min-w-0 border border-verde bg-branco px-4 text-center text-[14px] font-normal text-verde placeholder:text-verde/80 focus:text-left"
+        className="h-11 w-full min-w-0 border border-creme-claro/70 bg-transparent px-4 text-center text-[14px] font-normal text-creme-claro placeholder:text-creme-claro/80 focus:text-left [&::-webkit-search-cancel-button]:appearance-none"
       />
+      {query && (
+        <button
+          type="button"
+          aria-label="Limpar busca"
+          onClick={() => setQuery("")}
+          className="absolute right-0 top-0 flex h-11 w-11 items-center justify-center text-creme-claro"
+        >
+          <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true">
+            <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+          </svg>
+        </button>
+      )}
       <p id={`${id}-status`} className="sr-only" aria-live="polite">
         {term ? `${results.length} ${results.length === 1 ? "peça encontrada" : "peças encontradas"}` : ""}
       </p>

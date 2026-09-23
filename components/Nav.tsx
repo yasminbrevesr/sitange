@@ -43,7 +43,7 @@ export function Nav() {
   const count = items.length;
 
   return (
-    <header className="sticky top-0 z-50 border-b border-verde/15 bg-branco text-verde">
+    <header className="sticky top-0 z-50 bg-verde text-creme-claro">
       <nav aria-label="Principal" className="mx-auto max-w-[1440px] px-4 md:px-10">
         <div className="grid h-16 grid-cols-[1fr_auto_1fr] items-center gap-4 lg:h-20">
           {/* esquerda: busca (desktop) ou botão de menu (celular) */}
@@ -70,19 +70,19 @@ export function Nav() {
 
           {/* direita: guia de aro e sacola */}
           <div className="flex items-center justify-end gap-2 lg:gap-8">
-            <Link href="/aro" className="hidden min-h-11 items-center gap-2 text-[14px] font-normal hover:underline lg:flex">
+            <Link href="/aro" className="hidden min-h-11 items-center gap-2 text-[14px] font-normal hover:text-laranja lg:flex">
               <RulerIcon />
               Descubra seu aro
             </Link>
             <Link
               href="/sacola"
               aria-label={`Sacola, ${count} ${count === 1 ? "item" : "itens"}`}
-              className="relative flex h-11 w-11 items-center justify-center"
+              className="relative flex h-11 w-11 items-center justify-center hover:text-laranja"
             >
               <BagIcon />
               <span
                 aria-hidden="true"
-                className="absolute right-0.5 top-0.5 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-verde px-1 text-[10px] font-semibold text-creme-claro"
+                className="absolute right-0.5 top-0.5 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-creme-claro px-1 text-[10px] font-semibold text-verde"
               >
                 {count}
               </span>
@@ -90,10 +90,10 @@ export function Nav() {
           </div>
         </div>
 
-        <ul className="hidden h-10 items-center justify-center gap-10 border-t border-verde/10 lg:flex">
+        <ul className="hidden h-10 items-center justify-center gap-10 border-t border-[#F2E9DA26] lg:flex">
           {LINKS.map((l) => (
             <li key={l.href}>
-              <Link href={l.href} className="rotulo flex min-h-10 items-center text-[10px] hover:text-laranja-tinta">
+              <Link href={l.href} className="rotulo flex min-h-10 items-center text-[10px] hover:text-laranja">
                 {l.label}
               </Link>
             </li>
@@ -102,14 +102,14 @@ export function Nav() {
       </nav>
 
       {open && (
-        <div id="menu-movel" className="border-t border-verde/15 px-4 pb-4 pt-3 lg:hidden">
+        <div id="menu-movel" className="border-t border-[#F2E9DA26] px-4 pb-4 pt-3 lg:hidden">
           <SearchBox onNavigate={() => setOpen(false)} />
           <ul className="mt-2">
             {[...LINKS, { href: "/aro", label: "Descubra seu aro" }].map((l) => (
               <li key={l.href}>
                 <Link
                   href={l.href}
-                  className="rotulo flex min-h-12 items-center border-b border-verde/10"
+                  className="rotulo flex min-h-12 items-center border-b border-[#F2E9DA26]"
                   onClick={() => setOpen(false)}
                 >
                   {l.label}

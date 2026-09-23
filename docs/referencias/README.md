@@ -14,7 +14,7 @@
 ## Menu (barra de navegação)
 
 - Onde está: `components/Nav.tsx` e `components/SearchBox.tsx`.
-- Segue a referência enviada (menu da Macchi), adaptada: fundo branco, busca de produtos à esquerda,
+- Segue o layout da referência enviada (menu da Macchi), com o fundo verde da marca: busca de produtos à esquerda,
   logo TANGÈ no centro, "Descubra seu aro" e sacola com contador à direita, e uma linha fina com os
   links das seções embaixo. "Entrar / Cadastrar-se" ficou de fora: o site ainda não tem contas de cliente.
 

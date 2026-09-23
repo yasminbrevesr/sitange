@@ -4,6 +4,7 @@ import { Dot } from "@/components/Dot";
 import { ProductImage } from "@/components/ProductArt";
 import { ProductCard } from "@/components/ProductCard";
 import { Stripe } from "@/components/Stripe";
+import { Unboxing } from "@/components/Unboxing";
 import {
   FAMILIES,
   formatGrams,
@@ -39,29 +40,6 @@ const steps = [
     title: "Fecha de novo",
     text: "O encaixe não é decoração: as bordas foram desenhadas para voltar ao lugar exato. Sempre.",
     image: { ...curva.images[0], alt: "Anel Curva com as duas partes encaixadas de novo" },
-  },
-];
-
-const unboxing = [
-  {
-    n: "01",
-    title: "A caixa",
-    text: "Papelão kraft com uma cinta de papel impressa. Sem plástico, sem verniz.",
-  },
-  {
-    n: "02",
-    title: "A seda",
-    text: "Fechada com um adesivo redondo de 4 cm com o símbolo.",
-  },
-  {
-    n: "03",
-    title: "O estojo",
-    text: "Verde garrafa, liso. As duas partes chegam encaixadas.",
-  },
-  {
-    n: "04",
-    title: "Os dois cartões",
-    text: "Garantia de um ano e como cuidar da prata. Impressos, curtos, sem discurso.",
   },
 ];
 
@@ -256,22 +234,7 @@ export default function Home() {
       </section>
 
       {/* 8. O QUE CHEGA ATÉ VOCÊ */}
-      <section className="bg-branco py-16 md:py-24" aria-labelledby="chega-titulo">
-        <Container>
-          <h2 id="chega-titulo" className="display text-[34px] md:text-[46px]">
-            O que chega até você
-          </h2>
-          <ol className="mt-10 grid gap-[3px] sm:grid-cols-2 lg:grid-cols-4">
-            {unboxing.map((b) => (
-              <li key={b.n} className="bg-creme-claro p-6">
-                <span className="text-[28px] font-extralight leading-none text-laranja-tinta">{b.n}</span>
-                <h3 className="rotulo mt-4 text-[11px]">{b.title}</h3>
-                <p className="mt-3 text-[15px] leading-[1.7] text-tinta/80">{b.text}</p>
-              </li>
-            ))}
-          </ol>
-        </Container>
-      </section>
+      <Unboxing />
 
       {/* 9. FRASE */}
       <section className="flex min-h-[300px] items-center bg-laranja py-12 text-tinta">

@@ -1,10 +1,12 @@
 # Referências de design
 
-## Seção "O que chega até você" (home), a alterar
+## Seção "O que chega até você" (home)
 
-- Onde está: `app/page.tsx`, lista `unboxing` e o bloco `{/* 8. O QUE CHEGA ATÉ VOCÊ */}`.
-- Como está hoje: `o-que-chega-atual.webp`.
-- Status: marcada para mudança; a nova versão deve seguir o mockup da embalagem abaixo.
+- Onde está: `components/Unboxing.tsx` (usada em `app/page.tsx`).
+- Versão anterior: `o-que-chega-atual.webp`.
+- Versão atual: mosaico 3×3 no estilo da referência enviada (blocos de texto alternados com imagens),
+  com as quatro camadas de "A abertura" e as imagens da embalagem do mockup abaixo, redesenhadas em código.
+  Sem estrelas nem logos de imprensa: o briefing proíbe avaliação ou selo inventado.
 
 ## Mockup da embalagem
 

@@ -1,8 +1,8 @@
 import { Symbol } from "./Symbol";
 
 // "O que chega até você": mosaico no estilo da referência enviada (docs/referencias).
-// Desktop, 3 colunas: foto alta na esquerda (linhas 2-3) e na direita (linhas 1-2), a caixa
-// kraft com cinta no centro em cima, e os quatro blocos de texto. Os tons de fundo evitam
+// Desktop, 3 colunas: foto alta na esquerda (linhas 2-3) e na direita (linhas 1-2), a seda com
+// adesivo e a caixa kraft com cinta na linha de cima, e os blocos de texto 02, 03 e 04. Os tons de fundo evitam
 // dois blocos vizinhos da mesma cor. Blocos de texto e caixa são quadrados.
 // No celular vira uma coluna, na ordem do código.
 
@@ -12,6 +12,7 @@ const KRAFT = "#C8B08E";
 const KRAFT_TAMPA = "#D6C3A5";
 const KRAFT_LINHA = "#B39B78";
 const VERDE_TAMPA = "#14502E";
+const SEDA = "#FBF8EF";
 
 type Tone = "claro" | "base";
 
@@ -75,6 +76,29 @@ function BoxTile({ place }: { place: string }) {
   );
 }
 
+// Papel seda creme lacrado pelo adesivo redondo de 4 cm, só com o símbolo (desenho do mockup)
+function SilkTile({ place }: { place: string }) {
+  return (
+    <li className={`flex aspect-[4/3] items-center justify-center bg-creme-base md:aspect-square ${place}`}>
+      <div
+        role="img"
+        aria-label="Papel seda creme lacrado por um adesivo redondo com o símbolo da marca"
+        className="relative aspect-[194/130] w-[66%]"
+      >
+        <div className="absolute inset-0 translate-x-[3%] translate-y-[5%] rotate-[-2deg]" style={{ background: SEDA }} />
+        <div
+          className="absolute inset-0 flex rotate-[2deg] items-center justify-center border border-tinta/5"
+          style={{ background: SEDA }}
+        >
+          <span className="flex aspect-square w-[32%] items-center justify-center rounded-full bg-creme-base">
+            <Symbol className="h-1/2 w-1/2 text-tinta" decorative />
+          </span>
+        </div>
+      </div>
+    </li>
+  );
+}
+
 export function Unboxing() {
   return (
     <section className="bg-branco py-16 md:py-24" aria-labelledby="chega-titulo">
@@ -91,13 +115,7 @@ export function Unboxing() {
         </header>
 
         <ul className="mt-12 grid grid-cols-1 gap-[6px] md:grid-cols-3">
-          <TextTile
-            n="01"
-            title="A cinta"
-            text="Faixa verde em volta da caixa. Rasga ou desliza."
-            tone="claro"
-            place="md:col-start-1 md:row-start-1"
-          />
+          <SilkTile place="md:col-start-1 md:row-start-1" />
           <BoxTile place="md:col-start-2 md:row-start-1" />
           <TextTile
             n="02"

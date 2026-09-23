@@ -11,6 +11,10 @@
   (ilustração chapada como os outros desenhos, com a marca TANGÈ no forro) e a foto da Letra (letras CA). Fotos verticais em `public/produtos/*-vertical.webp`.
   Sem estrelas nem logos de imprensa: o briefing proíbe avaliação ou selo inventado.
 
+### Pendente
+- Substituir a caixinha de aliança (quadrado de baixo do centro, `RingBoxTile` em
+  `components/Unboxing.tsx`). Aguardando a imagem ou referência nova.
+
 ## Mockup da embalagem
 
 Arquivo: `embalagem-mockup.webp`. O bloco de custo estimado do mockup original foi retirado de propósito, porque este repositório é público.

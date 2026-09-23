@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sitange | Catálogo</title>
+  <meta name="description" content="Catálogo de produtos Sitange. Escolha e peça pelo WhatsApp.">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="topo">
+    <div class="container topo__conteudo">
+      <a href="#" class="logo">Sitange</a>
+      <nav class="menu">
+        <a href="#catalogo">Catálogo</a>
+        <a href="#contato">Contato</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="destaque">
+    <div class="container">
+      <h1>Nosso catálogo</h1>
+      <p>Escolha seus produtos e faça o pedido direto pelo WhatsApp.</p>
+    </div>
+  </section>
+
+  <main id="catalogo" class="container">
+    <div class="filtros">
+      <input type="search" id="busca" placeholder="Buscar produto..." aria-label="Buscar produto">
+      <div id="categorias" class="categorias"></div>
+    </div>
+
+    <div id="produtos" class="grade"></div>
+    <p id="vazio" class="vazio" hidden>Nenhum produto encontrado.</p>
+  </main>
+
+  <footer id="contato" class="rodape">
+    <div class="container">
+      <p>Dúvidas? Fale com a gente pelo <a id="link-whatsapp" href="#" target="_blank" rel="noopener">WhatsApp</a>.</p>
+      <p class="rodape__copy">&copy; <span id="ano"></span> Sitange</p>
+    </div>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/produtos.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

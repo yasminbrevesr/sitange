@@ -93,3 +93,24 @@ section[id] {
 dialog:focus-visible {
   outline: none;
 }
+
+/* Faixa em esteira (components/Stripe.tsx) */
+@keyframes esteira {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.esteira {
+  animation: esteira 60s linear infinite;
+}
+.esteira[data-paused="true"] {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .esteira {
+    animation: none;
+  }
+}

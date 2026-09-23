@@ -7,9 +7,9 @@
 - Versão atual: mosaico 3×3 no estilo da referência enviada (seção de imprensa da Lucia):
   duas fotos altas nas laterais (Curva à esquerda embaixo, Linha à direita em cima), na linha de
   cima os desenhos da seda com adesivo e da caixa com cinta (do mockup), o manual de uso
-  ("Como usar") no meio e, embaixo, a caixa de aliança verde aberta (ilustração inspirada numa
-  foto de referência enviada, com a marca TANGÈ) e o detalhe ampliado das letras "CA" da Letra
-  (`public/produtos/letra-detalhe.webp`). Fotos verticais em `public/produtos/*-vertical.webp`.
+  ("Como usar") no meio e, embaixo, a caixa de aliança verde aberta (ilustração em perspectiva
+  a partir de uma foto de referência enviada, com a marca TANGÈ e as duas partes em pé na
+  almofada) e a foto da Letra (letras CA). Fotos verticais em `public/produtos/*-vertical.webp`.
   Sem estrelas nem logos de imprensa: o briefing proíbe avaliação ou selo inventado.
 
 ## Mockup da embalagem

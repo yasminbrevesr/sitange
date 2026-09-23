@@ -148,7 +148,7 @@ export function ProductImage({ slug, image, className = "", tone }: Props) {
   if (image.src) {
     // Caminhos locais (public/) precisam do prefixo do GitHub Pages.
     const src = image.src.startsWith("/") ? `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}${image.src}` : image.src;
-    return <img src={src} alt={image.alt} className={`h-full w-full object-contain ${className}`} loading="lazy" />;
+    return <img src={src} alt={image.alt} className={`h-full w-full object-cover ${className}`} loading="lazy" />;
   }
   return (
     <svg viewBox="0 0 400 300" role="img" aria-label={image.alt} className={`h-full w-full ${className}`}>

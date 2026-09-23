@@ -10,7 +10,7 @@ export function ProductCard({ product, imagePanel = "creme-claro" }: Props) {
   return (
     <Link href={`/pecas/${product.slug}`} className="group flex h-full flex-col bg-branco">
       <div className={`relative aspect-square ${panel} p-6`}>
-        <span className="rotulo absolute left-4 top-4 text-[10px] text-laranja-tinta">
+        <span className="rotulo absolute left-4 top-4 z-10 bg-creme-claro px-2 py-1 text-[10px] text-laranja-tinta">
           {FAMILIES[product.family].label}
         </span>
         <ProductImage slug={product.slug} image={product.images[0]} />

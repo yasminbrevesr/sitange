@@ -88,3 +88,8 @@ section[id] {
     scroll-behavior: auto;
   }
 }
+
+/* O popup recebe foco ao abrir só para leitores de tela; sem contorno em volta dele. */
+dialog:focus-visible {
+  outline: none;
+}

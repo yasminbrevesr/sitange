@@ -7,13 +7,9 @@
 - Versão atual: mosaico 3×3 no estilo da referência enviada (seção de imprensa da Lucia):
   duas fotos altas nas laterais (Curva à esquerda embaixo, Linha à direita em cima), na linha de
   cima os desenhos da seda com adesivo e da caixa com cinta (do mockup), o manual de uso
-  ("Como usar") no meio e, embaixo, a caixa de aliança verde aberta vista de cima, sem anel
-  (ilustração chapada como os outros desenhos, com a marca TANGÈ no forro) e a foto da Letra (letras CA). Fotos verticais em `public/produtos/*-vertical.webp`.
+  ("Como usar") no meio e, embaixo, a caixa de aliança verde fechada (desenho do mockup) e a foto
+  da Letra (letras CA). Fotos verticais em `public/produtos/*-vertical.webp`.
   Sem estrelas nem logos de imprensa: o briefing proíbe avaliação ou selo inventado.
-
-### Pendente
-- Substituir a caixinha de aliança (quadrado de baixo do centro, `RingBoxTile` em
-  `components/Unboxing.tsx`). Aguardando a imagem ou referência nova.
 
 ## Mockup da embalagem
 

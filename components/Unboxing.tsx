@@ -3,7 +3,7 @@ import { Symbol } from "./Symbol";
 // "O que chega até você": mosaico no estilo da referência enviada (docs/referencias).
 // Desktop, 3 colunas: foto alta na esquerda (linhas 2-3) e na direita (linhas 1-2), a seda com
 // adesivo e a caixa kraft com cinta na linha de cima, o manual de uso no meio e, embaixo,
-// a caixa de aliança verde aberta e a foto da Letra (letras CA).
+// a caixa de aliança verde (do mockup) e a foto da Letra (letras CA).
 // Os blocos pequenos são quadrados; as fotos altas ocupam duas linhas.
 // No celular vira uma coluna, na ordem do código.
 
@@ -96,51 +96,13 @@ function ManualTile({ place }: { place: string }) {
   );
 }
 
-// Caixa de aliança verde aberta vista de cima (flat lay), no mesmo estilo chapado e levemente
-// girado dos outros desenhos: tampa com o forro e a marca, almofada creme com a fenda.
-const CX_VERDE = "#0C3A21";
-const CX_VERDE_LUZ = "#14502E";
-const CX_FORRO = "#EFE6D6";
-const CX_ALMOFADA = "#F7F1E6";
-const CX_SOMBRA = "#D6C8B0";
-
+// Caixa de aliança verde, comprada pronta, sem nada impresso (desenho do mockup da embalagem)
 function RingBoxTile({ place }: { place: string }) {
   return (
-    <li className={`flex aspect-square items-center justify-center bg-creme-base ${place}`}>
-      <svg
-        viewBox="0 0 300 300"
-        role="img"
-        aria-label="Caixa de aliança verde aberta vista de cima, com o nome TANGÈ no forro da tampa e a almofada creme"
-        className="w-[92%]"
-      >
-        <g transform="rotate(-4 150 150)">
-          {/* sombra chapada da caixa */}
-          <rect x="75" y="44" width="160" height="222" rx="7" fill={CX_SOMBRA} />
-          {/* tampa aberta com o forro e a marca */}
-          <rect x="70" y="38" width="160" height="104" rx="6" fill={CX_VERDE} />
-          <rect x="80" y="48" width="140" height="86" rx="3" fill={CX_FORRO} />
-          <g transform="translate(141 62) scale(0.18)" aria-hidden="true">
-            <path d="M68 16 A40 40 0 1 0 68 84" fill="none" stroke={CX_VERDE} strokeWidth="8" strokeLinecap="round" />
-            <circle cx="82" cy="50" r="10" fill="#FF6B35" />
-          </g>
-          <text
-            x="152"
-            y="110"
-            textAnchor="middle"
-            fill={CX_VERDE}
-            style={{ fontFamily: "var(--font-jakarta)", fontSize: 13, fontWeight: 500, letterSpacing: "0.34em" }}
-          >
-            TANGÈ
-          </text>
-          {/* dobradiça */}
-          <rect x="70" y="142" width="160" height="6" fill={CX_VERDE_LUZ} />
-          {/* base com a almofada */}
-          <rect x="70" y="148" width="160" height="112" rx="6" fill={CX_VERDE} />
-          <rect x="80" y="158" width="140" height="92" rx="3" fill={CX_ALMOFADA} />
-          {/* fenda da almofada, onde as peças ficam assentadas */}
-          <rect x="96" y="202" width="108" height="4" rx="2" fill="#E3D7C3" />
-        </g>
-      </svg>
+    <li className={`flex aspect-[4/3] items-center justify-center bg-creme-base md:aspect-square ${place}`}>
+      <div role="img" aria-label="Caixa de aliança verde, lisa" className="relative aspect-[193/110] w-[70%] bg-verde">
+        <div className="absolute inset-x-0 top-0 h-[22%]" style={{ background: VERDE_TAMPA }} />
+      </div>
     </li>
   );
 }

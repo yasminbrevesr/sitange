@@ -15,6 +15,7 @@ import {
 } from "@/lib/payments";
 import { formatPrice } from "@/lib/products";
 import { STORE } from "@/lib/store";
+import { CheckoutStep, optionGroup, optionRow } from "./CheckoutStep";
 
 export type PayMethod = "pix" | "cartao";
 
@@ -46,16 +47,16 @@ function Option({
 }) {
   const id = useId();
   return (
-    <div className={`border bg-branco ${checked ? "border-2 border-verde" : "border-tinta/15"}`}>
-      <label htmlFor={id} className="flex min-h-16 cursor-pointer items-center gap-4 px-5 py-4">
-        <input id={id} type="radio" name="forma-pagamento" checked={checked} onChange={onSelect} className="h-5 w-5 accent-verde" />
+    <div>
+      <label htmlFor={id} className={optionRow(checked)}>
+        <input id={id} type="radio" name="forma-pagamento" checked={checked} onChange={onSelect} className="h-5 w-5 shrink-0 accent-verde" />
         <span className="flex-1">
-          <span className="rotulo block text-[12px] text-verde">{title}</span>
-          <span className="mt-1 block text-[14px] text-tinta/75">{hint}</span>
+          <span className="block text-[15px] text-verde">{title}</span>
+          <span className="mt-0.5 block text-[13px] text-tinta/75">{hint}</span>
         </span>
         {badge && <span className="rotulo shrink-0 rounded-full bg-laranja px-3 py-1 text-[10px] text-tinta">{badge}</span>}
       </label>
-      {checked && <div className="border-t border-tinta/10 px-5 pb-6 pt-5">{children}</div>}
+      {checked && <div className="px-4 pb-6 pt-5 md:px-5">{children}</div>}
     </div>
   );
 }
@@ -230,14 +231,13 @@ export function Payment({
   canPay: boolean;
 }) {
   return (
-    <section aria-labelledby="pagamento-titulo">
-      <h2 id="pagamento-titulo" className="display text-[30px] text-verde md:text-[34px]">
-        Forma de pagamento
-      </h2>
-      {!PAYMENTS_ENABLED && (
-        <p className="mt-3 text-[14px] text-tinta/75">Pagamento em configuração: nenhum dado é enviado por enquanto.</p>
-      )}
-      <div className="mt-6 flex flex-col gap-3" role="radiogroup" aria-label="Forma de pagamento">
+    <CheckoutStep
+      n={2}
+      id="pagamento-titulo"
+      title="Pagamento"
+      note={PAYMENTS_ENABLED ? undefined : "Pagamento em configuração: nenhum dado é enviado por enquanto."}
+    >
+      <div className={optionGroup} role="radiogroup" aria-label="Forma de pagamento">
         <Option
           checked={method === "pix"}
           onSelect={() => onMethod("pix")}
@@ -256,6 +256,6 @@ export function Payment({
           <CardPanel amountCents={cardTotalCents} canPay={canPay} />
         </Option>
       </div>
-    </section>
+    </CheckoutStep>
   );
 }

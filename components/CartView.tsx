@@ -45,9 +45,9 @@ export function CartView() {
             </Link>
           </div>
         ) : (
-          <div className="mt-10 grid items-start gap-8 lg:grid-cols-[1fr_1fr] lg:gap-12">
+          <div className="mt-10 grid items-start gap-8 lg:grid-cols-[1.15fr_1fr] lg:gap-10">
             {/* entrega e forma de pagamento */}
-            <div className="flex flex-col gap-12">
+            <div className="flex flex-col gap-4">
               <Shipping
                 subtotalCents={subtotal}
                 productionDays={productionDays}
@@ -63,51 +63,56 @@ export function CartView() {
             </div>
 
             {/* pedido: peças, resumo e continuar comprando */}
-            <div className="order-first flex flex-col gap-3 lg:sticky lg:top-32 lg:order-none">
-              <p className="rotulo text-[10px] text-tinta/75">
-                {lines.length} {lines.length === 1 ? "peça" : "peças"}
-              </p>
-              <ul className="flex flex-col gap-3">
-                {lines.map(({ item, product }) => (
-                  <li key={item.key} className="flex gap-4 bg-branco p-4 md:gap-6 md:p-5">
-                    <Link href={`/pecas/${product!.slug}`} className="block h-24 w-24 shrink-0 md:h-28 md:w-28" tabIndex={-1} aria-hidden="true">
-                      <ProductImage slug={product!.slug} image={{ ...product!.images[0], alt: "" }} surface="branco" />
-                    </Link>
-                    <div className="flex min-w-0 flex-1 flex-col">
-                      <div className="flex items-start justify-between gap-4">
-                        <div>
-                          <span className="rotulo block text-[10px] text-laranja-tinta">{FAMILIES[product!.family].label}</span>
-                          <Link href={`/pecas/${product!.slug}`} className="mt-1 block text-[18px] font-normal text-verde hover:underline">
-                            {product!.name}
-                          </Link>
+            <div className="order-first flex flex-col gap-4 lg:sticky lg:top-32 lg:order-none">
+              <section aria-labelledby="pedido-titulo" className="bg-branco p-5 md:p-8">
+                <div className="flex items-baseline justify-between">
+                  <h2 id="pedido-titulo" className="text-[22px] font-light uppercase tracking-[0.04em] text-verde">
+                    Seu pedido
+                  </h2>
+                  <span className="text-[13px] text-tinta/75">
+                    {lines.length} {lines.length === 1 ? "peça" : "peças"}
+                  </span>
+                </div>
+                <ul className="mt-5 divide-y divide-tinta/10 border-y border-tinta/10">
+                  {lines.map(({ item, product }) => (
+                    <li key={item.key} className="flex gap-4 py-4">
+                      <Link href={`/pecas/${product!.slug}`} className="block h-20 w-20 shrink-0 bg-creme-claro" tabIndex={-1} aria-hidden="true">
+                        <ProductImage slug={product!.slug} image={{ ...product!.images[0], alt: "" }} surface="creme-claro" />
+                      </Link>
+                      <div className="flex min-w-0 flex-1 flex-col">
+                        <div className="flex items-start justify-between gap-4">
+                          <div>
+                            <span className="rotulo block text-[9px] text-laranja-tinta">{FAMILIES[product!.family].label}</span>
+                            <Link href={`/pecas/${product!.slug}`} className="block text-[16px] text-verde hover:underline">
+                              {product!.name}
+                            </Link>
+                          </div>
+                          <span className="text-[16px] font-light">{formatPrice(product!.priceCents)}</span>
                         </div>
-                        <span className="text-[18px] font-light">{formatPrice(product!.priceCents)}</span>
+                        <p className="text-[13px] text-tinta/75">
+                          {item.sizes.length === 2 ? `Aros ${item.sizes[0]} e ${item.sizes[1]}` : `Aro ${item.sizes[0]}`}
+                          {item.engraving && ` · Gravação: “${item.engraving}”`}
+                        </p>
+                        <button
+                          type="button"
+                          onClick={() => remove(item.key)}
+                          className="mt-auto min-h-9 self-start text-[12px] text-tinta/75 underline underline-offset-4 hover:text-laranja-tinta"
+                          aria-label={`Remover ${product!.name} da sacola`}
+                        >
+                          Remover
+                        </button>
                       </div>
-                      <p className="mt-2 text-[14px] text-tinta/80">
-                        {item.sizes.length === 2 ? `Aros ${item.sizes[0]} e ${item.sizes[1]}` : `Aro ${item.sizes[0]}`}
-                        {item.engraving && ` · Gravação: “${item.engraving}”`}
-                      </p>
-                      <button
-                        type="button"
-                        onClick={() => remove(item.key)}
-                        className="mt-auto min-h-11 self-start text-[13px] text-tinta/75 underline underline-offset-4 hover:text-laranja-tinta"
-                        aria-label={`Remover ${product!.name} da sacola`}
-                      >
-                        Remover
-                      </button>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-              <div className="bg-branco p-6 md:p-8">
-                <h2 className="rotulo text-[11px] text-verde">Resumo</h2>
-                <dl className="mt-5 flex flex-col gap-3 text-[15px]">
+                    </li>
+                  ))}
+                </ul>
+
+                <dl className="mt-5 flex flex-col gap-2.5 text-[15px]">
                   <div className="flex justify-between">
-                    <dt>Subtotal</dt>
+                    <dt className="text-tinta/80">Subtotal</dt>
                     <dd>{formatPrice(subtotal)}</dd>
                   </div>
                   <div className="flex justify-between gap-4">
-                    <dt>Frete{shipping ? ` · ${shipping.label}` : ""}</dt>
+                    <dt className="text-tinta/80">Frete{shipping ? ` · ${shipping.label}` : ""}</dt>
                     <dd className="text-right">
                       {!shipping ? (
                         <span className="text-tinta/75">Informe o CEP</span>
@@ -120,23 +125,23 @@ export function CartView() {
                   </div>
                   {method === "pix" && (
                     <div className="flex justify-between">
-                      <dt>Desconto PIX ({STORE.pixDiscountPercent}%)</dt>
+                      <dt className="text-tinta/80">Desconto PIX ({STORE.pixDiscountPercent}%)</dt>
                       <dd className="text-laranja-tinta">− {formatPrice(pixDiscount)}</dd>
                     </div>
                   )}
-                  <div className="mt-2 flex items-baseline justify-between border-t border-tinta/15 pt-4">
+                  <div className="mt-3 flex items-baseline justify-between border-t border-tinta/15 pt-4">
                     <dt className="rotulo text-[11px]">Total</dt>
                     <dd className="text-[30px] font-extralight text-verde">{formatPrice(total)}</dd>
                   </div>
                 </dl>
                 {!freeShipping && (
-                  <p className="mt-3 bg-laranja/15 px-3 py-2 text-[13px] text-tinta">
+                  <p className="mt-4 bg-laranja/15 px-3 py-2 text-[13px] text-tinta">
                     Faltam {formatPrice(STORE.freeShippingMinCents - subtotal)} para o frete grátis.
                   </p>
                 )}
-              </div>
+              </section>
 
-              <Link href="/#as-pecas" className="rotulo mt-2 inline-flex min-h-11 items-center self-start text-[10px] text-verde underline underline-offset-4">
+              <Link href="/#as-pecas" className="rotulo inline-flex min-h-11 items-center self-start text-[10px] text-verde underline underline-offset-4">
                 Continuar comprando
               </Link>
             </div>

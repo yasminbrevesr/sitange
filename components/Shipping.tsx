@@ -5,6 +5,7 @@ import { listAddresses, lookupCep, type Address } from "@/lib/account";
 import { useSession } from "@/lib/auth";
 import { UFS, formatCep, onlyDigits } from "@/lib/format";
 import { formatPrice } from "@/lib/products";
+import { CheckoutStep, GroupLabel, optionGroup, optionRow } from "./CheckoutStep";
 import { chargedPrice, quoteShipping, type ShippingQuote } from "@/lib/shipping";
 
 const input = "mt-2 min-h-12 w-full rounded-none border border-tinta/30 bg-branco px-4 text-[15px] font-normal focus:border-verde";
@@ -107,10 +108,7 @@ function Choice({
 }) {
   const id = useId();
   return (
-    <label
-      htmlFor={id}
-      className={`flex min-h-16 cursor-pointer items-center gap-4 bg-branco px-5 py-4 ${checked ? "border-2 border-verde" : "border border-tinta/15"}`}
-    >
+    <label htmlFor={id} className={optionRow(checked)}>
       <input id={id} type="radio" name={name} checked={checked} onChange={onSelect} className="h-5 w-5 shrink-0 accent-verde" />
       <span className="min-w-0 flex-1">{children}</span>
       {aside && <span className="shrink-0 text-right text-[15px]">{aside}</span>}
@@ -188,71 +186,76 @@ export function Shipping({
   const key = selection ? `${selection.label}|${selection.priceCents}` : "";
   useEffect(() => onChange(selection), [key]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  return (
-    <section aria-labelledby="entrega-titulo">
-      <h2 id="entrega-titulo" className="display text-[30px] text-verde md:text-[34px]">
-        Entrega
-      </h2>
+  const days = (n: number) => `${n} ${n === 1 ? "dia útil" : "dias úteis"}`;
 
-      <h3 className="rotulo mt-6 text-[11px]">Endereço</h3>
-      <div className="mt-3 flex flex-col gap-3" role="radiogroup" aria-label="Endereço de entrega">
-        {saved.map((a) => (
-          <Choice key={a.id} name="endereco" checked={choice === a.id} onSelect={() => setChoice(a.id)}>
-            <span className="block text-[15px] text-verde">
-              {a.label || a.recipient}
-              {a.is_default && <span className="rotulo ml-2 rounded-full bg-laranja px-2 py-0.5 text-[9px] text-tinta">Principal</span>}
-            </span>
-            <span className="mt-1 block text-[14px] text-tinta/75">
-              {a.street}, {a.number}
-              {a.complement ? `, ${a.complement}` : ""} · {a.district} · {a.city}/{a.state} · {formatCep(a.cep)}
-            </span>
-          </Choice>
-        ))}
-        {saved.length > 0 && (
-          <Choice name="endereco" checked={choice === "novo"} onSelect={() => setChoice("novo")}>
-            <span className="block text-[15px] text-verde">Outro endereço</span>
-          </Choice>
-        )}
-        {choice === "novo" && (
-          <div className="border border-tinta/15 bg-branco p-5">
-            <AddressFields f={f} setF={setF} />
+  return (
+    <CheckoutStep n={1} id="entrega-titulo" title="Entrega">
+      <div>
+        <GroupLabel>Endereço</GroupLabel>
+        <div className={saved.length ? optionGroup : ""} role="radiogroup" aria-label="Endereço de entrega">
+          {saved.map((a) => (
+            <Choice key={a.id} name="endereco" checked={choice === a.id} onSelect={() => setChoice(a.id)}>
+              <span className="flex items-center gap-2 text-[15px] text-verde">
+                {a.label || a.recipient}
+                {a.is_default && <span className="rotulo rounded-full bg-laranja px-2 py-0.5 text-[9px] text-tinta">Principal</span>}
+              </span>
+              <span className="mt-0.5 block text-[13px] text-tinta/75">
+                {a.street}, {a.number}
+                {a.complement ? `, ${a.complement}` : ""} · {a.district} · {a.city}/{a.state} · {formatCep(a.cep)}
+              </span>
+            </Choice>
+          ))}
+          {saved.length > 0 && (
+            <Choice name="endereco" checked={choice === "novo"} onSelect={() => setChoice("novo")}>
+              <span className="block text-[15px] text-verde">Outro endereço</span>
+            </Choice>
+          )}
+          {choice === "novo" && (
+            <div className={saved.length ? "p-4 md:p-5" : ""}>
+              <AddressFields f={f} setF={setF} />
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div>
+        <GroupLabel>Frete</GroupLabel>
+        <p className="mb-3 text-[13px] text-tinta/75">
+          Cada peça é feita sob encomenda: fica pronta em até {days(productionDays)} e o prazo de entrega começa a contar depois.
+        </p>
+        <div aria-live="polite">
+          {!cep && <p className="border border-dashed border-tinta/25 px-4 py-4 text-[14px] text-tinta/75">Informe o CEP para ver as opções de frete.</p>}
+          {cep && status === "loading" && <p className="border border-tinta/15 px-4 py-4 text-[14px] text-tinta/75">Calculando frete…</p>}
+          {cep && status === "error" && (
+            <p className="border border-laranja-tinta/40 px-4 py-4 text-[14px] text-laranja-tinta">
+              Não deu para calcular o frete para esse CEP agora. Confira o CEP ou tente de novo em instantes.
+            </p>
+          )}
+        </div>
+        {cep && status === "idle" && quotes.length > 0 && (
+          <div className={optionGroup} role="radiogroup" aria-label="Opção de frete">
+            {quotes.map((q) => {
+              const price = chargedPrice(q, quotes, subtotalCents);
+              return (
+                <Choice
+                  key={q.id}
+                  name="frete"
+                  checked={selectedId === q.id}
+                  onSelect={() => setSelectedId(q.id)}
+                  aside={price === 0 ? <span className="font-medium text-verde">Grátis</span> : formatPrice(price)}
+                >
+                  <span className="block text-[15px] text-verde">{q.nome}</span>
+                  <span className="mt-0.5 block text-[13px] text-tinta/75">
+                    {[q.transportadora !== q.nome ? q.transportadora : "", q.prazo ? `entrega em até ${days(q.prazo)}` : ""]
+                      .filter(Boolean)
+                      .join(" · ")}
+                  </span>
+                </Choice>
+              );
+            })}
           </div>
         )}
       </div>
-
-      <h3 className="rotulo mt-8 text-[11px]">Frete</h3>
-      <div className="mt-3 flex flex-col gap-3" role="radiogroup" aria-label="Opção de frete" aria-busy={status === "loading"}>
-        {!cep && <p className="text-[14px] text-tinta/75">Informe o CEP para ver as opções de frete.</p>}
-        {cep && status === "loading" && <p role="status" className="text-[14px] text-tinta/75">Calculando frete…</p>}
-        {cep && status === "error" && (
-          <p role="alert" className="text-[14px] text-laranja-tinta">
-            Não deu para calcular o frete para esse CEP agora. Confira o CEP ou tente de novo em instantes.
-          </p>
-        )}
-        {cep &&
-          status === "idle" &&
-          quotes.map((q) => {
-            const price = chargedPrice(q, quotes, subtotalCents);
-            return (
-              <Choice
-                key={q.id}
-                name="frete"
-                checked={selectedId === q.id}
-                onSelect={() => setSelectedId(q.id)}
-                aside={price === 0 ? <span className="text-verde">Grátis</span> : formatPrice(price)}
-              >
-                <span className="rotulo block text-[12px] text-verde">
-                  {q.nome}
-                  {q.transportadora && q.transportadora !== q.nome ? ` · ${q.transportadora}` : ""}
-                </span>
-                <span className="mt-1 block text-[14px] text-tinta/75">
-                  Produção em até {productionDays} dias úteis
-                  {q.prazo ? ` + entrega em até ${q.prazo} ${q.prazo === 1 ? "dia útil" : "dias úteis"}` : ""}
-                </span>
-              </Choice>
-            );
-          })}
-      </div>
-    </section>
+    </CheckoutStep>
   );
 }

@@ -1,0 +1,42 @@
+<!-- TANGÈ · Supabase → Authentication → Emails → Templates. Colar no campo "Message body" (HTML). -->
+<!doctype html>
+<html lang="pt-BR">
+  <body style="margin:0;padding:0;background:#E5D8C4;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#E5D8C4;padding:40px 16px;">
+      <tr>
+        <td align="center">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;background:#FFFFFF;">
+            <tr>
+              <td style="background:#0C3A21;padding:28px 40px;text-align:center;">
+                <span style="font-family:Arial,Helvetica,sans-serif;font-size:20px;letter-spacing:8px;color:#F2E9DA;font-weight:bold;">TANG&Egrave;</span><span style="font-family:Arial,Helvetica,sans-serif;font-size:20px;color:#FF6B35;font-weight:bold;">.</span>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:40px 40px 8px 40px;font-family:Arial,Helvetica,sans-serif;color:#121212;">
+                <h1 style="margin:0;font-size:24px;font-weight:normal;letter-spacing:1px;text-transform:uppercase;">Crie uma nova senha</h1>
+                <p style="margin:20px 0 0 0;font-size:15px;line-height:24px;color:#3A3A3A;">Recebemos um pedido para trocar a senha da sua conta na TANG&Egrave;. Clique no bot&atilde;o abaixo para criar uma nova.</p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:28px 40px 8px 40px;">
+                <a href="{{ .ConfirmationURL }}" style="display:inline-block;background:#0C3A21;color:#F2E9DA;font-family:Arial,Helvetica,sans-serif;font-size:13px;letter-spacing:3px;text-transform:uppercase;text-decoration:none;padding:16px 32px;border-radius:999px;">Criar nova senha</a>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:24px 40px 40px 40px;font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:20px;color:#5A5A5A;">
+                Se voc&ecirc; n&atilde;o pediu a troca, pode ignorar este e-mail: sua senha continua a mesma.<br><br>
+                Se o bot&atilde;o n&atilde;o funcionar, copie e cole este link no navegador:<br>
+                <a href="{{ .ConfirmationURL }}" style="color:#0C3A21;word-break:break-all;">{{ .ConfirmationURL }}</a>
+              </td>
+            </tr>
+            <tr>
+              <td style="background:#F2E9DA;padding:20px 40px;font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#5A5A5A;text-align:center;">
+                Duas pe&ccedil;as. Um ponto.
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

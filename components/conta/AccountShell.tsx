@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { displayName, signOut, useSession } from "@/lib/auth";
 import { Symbol } from "../Symbol";
 
@@ -34,10 +34,13 @@ export function AccountShell({ children }: { children: ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [leaving, setLeaving] = useState(false);
+  const confirmRef = useRef<HTMLDialogElement>(null);
 
+  // Sem sessão, vai para /entrar (a não ser que a pessoa tenha acabado de escolher sair: aí vai para a home)
   useEffect(() => {
-    if (session === null) router.replace("/entrar/");
-  }, [session, router]);
+    if (session === null && !leaving) router.replace("/entrar/");
+  }, [session, leaving, router]);
 
   useEffect(() => setOpen(false), [pathname]);
 
@@ -115,10 +118,7 @@ export function AccountShell({ children }: { children: ReactNode }) {
                   <li>
                     <button
                       type="button"
-                      onClick={async () => {
-                        await signOut();
-                        router.replace("/");
-                      }}
+                      onClick={() => confirmRef.current?.showModal()}
                       className="flex min-h-14 w-full items-center gap-3 border-b border-tinta/10 px-4 text-left text-[15px] text-verde hover:bg-verde/5"
                     >
                       <Icon name="sair" />
@@ -132,6 +132,53 @@ export function AccountShell({ children }: { children: ReactNode }) {
             <section className="min-w-0">{children}</section>
           </div>
         )}
+
+        {/* confirmação para não sair com um toque sem querer; "Ficar" vem selecionado */}
+        <dialog
+          ref={confirmRef}
+          aria-labelledby="sair-titulo"
+          aria-describedby="sair-texto"
+          onClick={(e) => {
+            if (e.target === confirmRef.current) confirmRef.current?.close();
+          }}
+          className="m-auto w-[calc(100%-32px)] max-w-[420px] bg-branco p-0 text-tinta backdrop:bg-[#121212b3]"
+        >
+          <div className="bg-verde px-8 py-6 text-creme-claro">
+            <Symbol className="h-8 w-8" decorative />
+          </div>
+          <div className="p-8">
+            <h2 id="sair-titulo" className="display text-[30px] text-verde">
+              Tem certeza que quer sair
+              <span className="text-laranja">?</span>
+            </h2>
+            <p id="sair-texto" className="mt-3 text-[15px] text-tinta/80">
+              Peças incríveis te esperam aqui.
+            </p>
+            <div className="mt-8 flex flex-col gap-3">
+              <button
+                type="button"
+                autoFocus
+                onClick={() => confirmRef.current?.close()}
+                className="rotulo min-h-14 w-full rounded-full bg-verde px-8 text-[11px] text-creme-claro hover:bg-verde-claro"
+              >
+                Ficar
+              </button>
+              <button
+                type="button"
+                disabled={leaving}
+                onClick={async () => {
+                  setLeaving(true);
+                  await signOut();
+                  confirmRef.current?.close();
+                  router.replace("/");
+                }}
+                className="rotulo min-h-12 w-full text-[11px] text-tinta/80 underline underline-offset-4 hover:text-tinta disabled:opacity-60"
+              >
+                {leaving ? "Saindo…" : "Sair da conta"}
+              </button>
+            </div>
+          </div>
+        </dialog>
       </main>
     </div>
   );

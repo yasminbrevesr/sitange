@@ -21,6 +21,8 @@ export type PayMethod = "pix" | "cartao";
 const input = "mt-2 min-h-12 w-full rounded-none border border-tinta/30 bg-branco px-4 text-[15px] font-normal focus:border-verde";
 const label = "block text-[14px] font-normal";
 
+const NEED_DELIVERY = "Preencha o endereço de entrega antes de pagar.";
+
 function notReady(err: unknown) {
   return err instanceof PaymentsNotConfiguredError
     ? "O pagamento ainda não está ativo. Nenhum dado foi enviado."
@@ -58,7 +60,7 @@ function Option({
   );
 }
 
-function PixPanel({ amountCents }: { amountCents: number }) {
+function PixPanel({ amountCents, canPay }: { amountCents: number; canPay: boolean }) {
   const [msg, setMsg] = useState("");
   const [busy, setBusy] = useState(false);
   return (
@@ -74,6 +76,7 @@ function PixPanel({ amountCents }: { amountCents: number }) {
         type="button"
         disabled={busy}
         onClick={async () => {
+          if (!canPay) return setMsg(NEED_DELIVERY);
           setBusy(true);
           setMsg("");
           try {
@@ -97,7 +100,7 @@ function PixPanel({ amountCents }: { amountCents: number }) {
   );
 }
 
-function CardPanel({ amountCents }: { amountCents: number }) {
+function CardPanel({ amountCents, canPay }: { amountCents: number; canPay: boolean }) {
   const id = useId();
   const [number, setNumber] = useState("");
   const [name, setName] = useState("");
@@ -113,6 +116,7 @@ function CardPanel({ amountCents }: { amountCents: number }) {
   async function submit(e: FormEvent) {
     e.preventDefault();
     setMsg("");
+    if (!canPay) return setError(NEED_DELIVERY);
     if (!isValidCardNumber(number)) return setError("Confira o número do cartão.");
     if (name.trim().length < 3) return setError("Digite o nome como está no cartão.");
     if (!isValidExpiry(expiry)) return setError("Confira a validade (MM/AA).");
@@ -216,11 +220,14 @@ export function Payment({
   onMethod,
   pixTotalCents,
   cardTotalCents,
+  canPay,
 }: {
   method: PayMethod;
   onMethod: (m: PayMethod) => void;
   pixTotalCents: number;
   cardTotalCents: number;
+  /** false enquanto a entrega não estiver preenchida */
+  canPay: boolean;
 }) {
   return (
     <section aria-labelledby="pagamento-titulo">
@@ -238,7 +245,7 @@ export function Payment({
           hint="Aprovação na hora."
           badge={`${STORE.pixDiscountPercent}% off`}
         >
-          <PixPanel amountCents={pixTotalCents} />
+          <PixPanel amountCents={pixTotalCents} canPay={canPay} />
         </Option>
         <Option
           checked={method === "cartao"}
@@ -246,7 +253,7 @@ export function Payment({
           title="Cartão de crédito"
           hint={`Em até ${STORE.maxInstallmentsInterestFree}x sem juros.`}
         >
-          <CardPanel amountCents={cardTotalCents} />
+          <CardPanel amountCents={cardTotalCents} canPay={canPay} />
         </Option>
       </div>
     </section>

@@ -16,7 +16,8 @@ const columns = [
     links: [
       { label: "Guia de aro", href: "/aro" },
       { label: "Como funciona", href: "/#como-funciona" },
-      { label: `Trocas e garantia ${MISSING}`, href: null },
+      { label: "Termos de Uso", href: "/termos" },
+      { label: "Política de Privacidade", href: "/privacidade" },
       { label: `Contato ${MISSING}`, href: null },
     ],
   },

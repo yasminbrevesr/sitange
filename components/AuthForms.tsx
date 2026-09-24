@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useId, useState, type FormEvent } from "react";
 import {
   AUTH_ENABLED,
@@ -223,6 +224,17 @@ function SignUpForm({ onSwitch }: { onSwitch: () => void }) {
       >
         {sending ? "Criando…" : "Criar conta"}
       </button>
+      <p className="text-center text-[13px] text-tinta/75">
+        Ao criar a conta, você concorda com os{" "}
+        <Link href="/termos" className="underline underline-offset-4">
+          Termos de Uso
+        </Link>{" "}
+        e a{" "}
+        <Link href="/privacidade" className="underline underline-offset-4">
+          Política de Privacidade
+        </Link>
+        .
+      </p>
       <p className="border-t border-tinta/10 pt-5 text-center text-[14px] text-tinta/80">
         Já tem conta?{" "}
         <button type="button" onClick={onSwitch} className="min-h-11 font-medium text-verde underline underline-offset-4">

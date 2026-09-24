@@ -2,13 +2,13 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { FAMILIES, MISSING, formatPrice, getProduct } from "@/lib/products";
-import { SHIPPING_OPTIONS, STORE, shippingPrice, type ShippingOption } from "@/lib/store";
+import { FAMILIES, formatPrice, getProduct } from "@/lib/products";
+import { STORE } from "@/lib/store";
 import { Container } from "./Container";
 import { useCart } from "./CartProvider";
 import { Payment, type PayMethod } from "./Payment";
 import { ProductImage } from "./ProductArt";
-import { Shipping } from "./Shipping";
+import { Shipping, type ShippingSelection } from "./Shipping";
 
 export function CartView() {
   const { items, remove } = useCart();
@@ -19,11 +19,8 @@ export function CartView() {
   const subtotal = lines.reduce((sum, l) => sum + l.product!.priceCents, 0);
   const freeShipping = subtotal >= STORE.freeShippingMinCents;
   const pixDiscount = Math.round((subtotal * STORE.pixDiscountPercent) / 100);
-  const [shipOption, setShipOption] = useState<ShippingOption["id"]>("padrao");
-  const [deliveryReady, setDeliveryReady] = useState(false);
-  const selectedShipping = SHIPPING_OPTIONS.find((o) => o.id === shipOption) ?? SHIPPING_OPTIONS[0];
-  const shipPrice = shippingPrice(selectedShipping, subtotal);
-  const shipCents = shipPrice ?? 0;
+  const [shipping, setShipping] = useState<ShippingSelection | null>(null);
+  const shipCents = shipping?.priceCents ?? 0;
   const productionDays = Math.max(0, ...lines.map((l) => l.product!.productionDays));
   const total = (method === "pix" ? subtotal - pixDiscount : subtotal) + shipCents;
 
@@ -54,16 +51,14 @@ export function CartView() {
               <Shipping
                 subtotalCents={subtotal}
                 productionDays={productionDays}
-                option={shipOption}
-                onOption={setShipOption}
-                onReady={setDeliveryReady}
+                onChange={setShipping}
               />
               <Payment
                 method={method}
                 onMethod={setMethod}
                 pixTotalCents={subtotal - pixDiscount + shipCents}
                 cardTotalCents={subtotal + shipCents}
-                canPay={deliveryReady}
+                canPay={shipping !== null}
               />
             </div>
 
@@ -112,9 +107,15 @@ export function CartView() {
                     <dd>{formatPrice(subtotal)}</dd>
                   </div>
                   <div className="flex justify-between gap-4">
-                    <dt>Frete · {selectedShipping.label}</dt>
+                    <dt>Frete{shipping ? ` · ${shipping.label}` : ""}</dt>
                     <dd className="text-right">
-                      {shipPrice === 0 ? <span className="text-verde">Grátis</span> : shipPrice === null ? MISSING : formatPrice(shipPrice)}
+                      {!shipping ? (
+                        <span className="text-tinta/75">Informe o CEP</span>
+                      ) : shipping.priceCents === 0 ? (
+                        <span className="text-verde">Grátis</span>
+                      ) : (
+                        formatPrice(shipping.priceCents)
+                      )}
                     </dd>
                   </div>
                   {method === "pix" && (

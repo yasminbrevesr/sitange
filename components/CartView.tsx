@@ -41,9 +41,14 @@ export function CartView() {
             </Link>
           </div>
         ) : (
-          <div className="mt-10 grid items-start gap-8 lg:grid-cols-[1.35fr_1fr] lg:gap-12">
-            {/* peças */}
-            <div className="flex flex-col gap-3">
+          <div className="mt-10 grid items-start gap-8 lg:grid-cols-[1fr_1fr] lg:gap-12">
+            {/* forma de pagamento */}
+            <div className="flex flex-col gap-6">
+              <Payment method={method} onMethod={setMethod} pixTotalCents={subtotal - pixDiscount} cardTotalCents={subtotal} />
+            </div>
+
+            {/* pedido: peças, resumo e continuar comprando */}
+            <div className="order-first flex flex-col gap-3 lg:sticky lg:top-32 lg:order-none">
               <p className="rotulo text-[10px] text-tinta/75">
                 {lines.length} {lines.length === 1 ? "peça" : "peças"}
               </p>
@@ -79,13 +84,6 @@ export function CartView() {
                   </li>
                 ))}
               </ul>
-              <Link href="/#as-pecas" className="rotulo mt-2 inline-flex min-h-11 items-center text-[10px] text-verde underline underline-offset-4">
-                Continuar comprando
-              </Link>
-            </div>
-
-            {/* resumo e pagamento */}
-            <div className="flex flex-col gap-6 lg:sticky lg:top-32">
               <div className="bg-branco p-6 md:p-8">
                 <h2 className="rotulo text-[11px] text-verde">Resumo</h2>
                 <dl className="mt-5 flex flex-col gap-3 text-[15px]">
@@ -115,7 +113,9 @@ export function CartView() {
                 )}
               </div>
 
-              <Payment method={method} onMethod={setMethod} pixTotalCents={subtotal - pixDiscount} cardTotalCents={subtotal} />
+              <Link href="/#as-pecas" className="rotulo mt-2 inline-flex min-h-11 items-center self-start text-[10px] text-verde underline underline-offset-4">
+                Continuar comprando
+              </Link>
             </div>
           </div>
         )}

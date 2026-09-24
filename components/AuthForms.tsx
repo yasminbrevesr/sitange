@@ -4,6 +4,9 @@ import { useId, useState, type FormEvent } from "react";
 import { AUTH_ENABLED, AuthNotConfiguredError, signIn, signUp } from "@/lib/auth";
 import { MISSING } from "@/lib/products";
 import { Container } from "./Container";
+import { Symbol } from "./Symbol";
+
+const base = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MIN_PASSWORD = 8;
@@ -33,7 +36,7 @@ function notReadyMessage(err: unknown) {
     : "Não deu para continuar agora. Tente de novo em instantes.";
 }
 
-function SignInForm() {
+function SignInForm({ onSwitch }: { onSwitch: () => void }) {
   const id = useId();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -58,13 +61,7 @@ function SignInForm() {
   }
 
   return (
-    <form onSubmit={onSubmit} noValidate aria-labelledby={`${id}-t`} className="flex flex-col gap-5 bg-branco p-6 md:p-10">
-      <div>
-        <p className="rotulo text-[10px] text-laranja-tinta">Já tenho conta</p>
-        <h2 id={`${id}-t`} className="display mt-3 text-[34px]">
-          Entrar
-        </h2>
-      </div>
+    <form onSubmit={onSubmit} noValidate className="flex flex-col gap-5">
       <div>
         <label htmlFor={`${id}-email`} className={label}>
           E-mail
@@ -93,11 +90,17 @@ function SignInForm() {
         {sending ? "Entrando…" : "Entrar"}
       </button>
       <p className="text-[14px] text-tinta/80">Esqueceu a senha? {MISSING}</p>
+      <p className="border-t border-tinta/10 pt-5 text-center text-[14px] text-tinta/80">
+        Ainda não tem conta?{" "}
+        <button type="button" onClick={onSwitch} className="min-h-11 font-medium text-verde underline underline-offset-4">
+          Criar conta
+        </button>
+      </p>
     </form>
   );
 }
 
-function SignUpForm() {
+function SignUpForm({ onSwitch }: { onSwitch: () => void }) {
   const id = useId();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -127,13 +130,7 @@ function SignUpForm() {
   }
 
   return (
-    <form onSubmit={onSubmit} noValidate aria-labelledby={`${id}-t`} className="flex flex-col gap-5 bg-branco p-6 md:p-10">
-      <div>
-        <p className="rotulo text-[10px] text-laranja-tinta">Primeira vez aqui</p>
-        <h2 id={`${id}-t`} className="display mt-3 text-[34px]">
-          Criar conta
-        </h2>
-      </div>
+    <form onSubmit={onSubmit} noValidate className="flex flex-col gap-5">
       <div>
         <label htmlFor={`${id}-nome`} className={label}>
           Nome
@@ -190,28 +187,106 @@ function SignUpForm() {
       >
         {sending ? "Criando…" : "Criar conta"}
       </button>
+      <p className="border-t border-tinta/10 pt-5 text-center text-[14px] text-tinta/80">
+        Já tem conta?{" "}
+        <button type="button" onClick={onSwitch} className="min-h-11 font-medium text-verde underline underline-offset-4">
+          Entrar
+        </button>
+      </p>
     </form>
   );
 }
 
+type Mode = "entrar" | "criar";
+
+const TABS: { mode: Mode; label: string }[] = [
+  { mode: "entrar", label: "Entrar" },
+  { mode: "criar", label: "Criar conta" },
+];
+
 export function AuthForms() {
+  const id = useId();
+  const [mode, setMode] = useState<Mode>("entrar");
+
   return (
-    <section className="bg-creme-base py-16 md:py-24" aria-labelledby="conta-titulo">
+    <section className="bg-creme-base py-12 md:py-20" aria-labelledby="conta-titulo">
       <Container className="max-w-[1100px]">
-        <h1 id="conta-titulo" className="display text-[46px] md:text-[62px]">
-          Sua conta
-        </h1>
-        <p className="corpo mt-4 max-w-xl text-tinta/80">
-          Acompanhe seus pedidos, guarde seu aro e compre mais rápido.
-        </p>
-        {!AUTH_ENABLED && (
-          <p className="mt-6 border border-tinta/20 bg-creme-claro p-4 text-[14px] text-tinta/80">
-            As contas de cliente ainda não estão ativas.
-          </p>
-        )}
-        <div className="mt-10 grid gap-6 lg:grid-cols-2">
-          <SignInForm />
-          <SignUpForm />
+        <div className="grid overflow-hidden lg:grid-cols-[1fr_1.05fr]">
+          {/* painel da marca */}
+          <div className="relative flex flex-col justify-between gap-8 bg-verde-claro p-8 text-creme-claro md:p-12">
+            <div>
+              <Symbol className="h-10 w-10" />
+              <p className="rotulo mt-8 text-[10px] text-creme-claro/85">Sua conta</p>
+              <h1 id="conta-titulo" className="display mt-3 text-[44px] leading-[1.08] md:text-[56px]">
+                Toda peça
+                <br />é duas
+                <span className="text-laranja" aria-hidden="true">
+                  .
+                </span>
+              </h1>
+              <p className="corpo mt-5 max-w-sm text-creme-claro/85">
+                Entre para acompanhar seus pedidos, guardar o seu aro e comprar mais rápido.
+              </p>
+            </div>
+            <img
+              src={`${base}/produtos/curva-encaixadas-verde-claro.webp`}
+              alt="Anel Curva em prata polida, com o aro menor encaixado dentro do maior"
+              className="mx-auto hidden w-full max-w-[360px] lg:block"
+            />
+            <ul className="rotulo flex flex-wrap gap-x-6 gap-y-2 text-[10px] text-creme-claro/85">
+              <li>Prata 925</li>
+              <li>Gravação incluída</li>
+              <li>Garantia de 1 ano</li>
+            </ul>
+          </div>
+
+          {/* formulário */}
+          <div className="bg-branco p-6 md:p-12">
+            <div role="tablist" aria-label="Acesso à conta" className="flex border-b border-tinta/15">
+              {TABS.map((t) => {
+                const active = mode === t.mode;
+                return (
+                  <button
+                    key={t.mode}
+                    type="button"
+                    role="tab"
+                    id={`${id}-tab-${t.mode}`}
+                    aria-selected={active}
+                    aria-controls={`${id}-panel`}
+                    onClick={() => setMode(t.mode)}
+                    className={`rotulo -mb-px min-h-12 flex-1 border-b-2 text-[11px] ${
+                      active ? "border-verde text-verde" : "border-transparent text-tinta/75 hover:text-tinta"
+                    }`}
+                  >
+                    {t.label}
+                  </button>
+                );
+              })}
+            </div>
+
+            <div id={`${id}-panel`} role="tabpanel" aria-labelledby={`${id}-tab-${mode}`} className="pt-8">
+              <h2 className="display text-[30px] md:text-[34px]">
+                {mode === "entrar" ? "Bom te ver de novo" : "Criar sua conta"}
+              </h2>
+              <p className="mt-2 text-[14px] text-tinta/75">
+                {mode === "entrar"
+                  ? "Use o e-mail do seu pedido."
+                  : "Leva menos de um minuto."}
+              </p>
+              {!AUTH_ENABLED && (
+                <p className="mt-5 bg-creme-claro px-4 py-3 text-[13px] text-tinta/80">
+                  As contas de cliente ainda não estão ativas.
+                </p>
+              )}
+              <div className="mt-6">
+                {mode === "entrar" ? (
+                  <SignInForm key="entrar" onSwitch={() => setMode("criar")} />
+                ) : (
+                  <SignUpForm key="criar" onSwitch={() => setMode("entrar")} />
+                )}
+              </div>
+            </div>
+          </div>
         </div>
       </Container>
     </section>

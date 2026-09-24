@@ -63,6 +63,15 @@ export async function signUp({ name, email, password, marketingConsent }: SignUp
   return !data.session;
 }
 
+/** Leva a pessoa para o login do Google e depois de volta para /entrar/. */
+export async function signInWithGoogle(): Promise<void> {
+  const { error } = await client().auth.signInWithOAuth({
+    provider: "google",
+    options: { redirectTo: siteUrl("/entrar/") },
+  });
+  if (error) throw friendly(error.message);
+}
+
 export async function sendPasswordReset(email: string): Promise<void> {
   const { error } = await client().auth.resetPasswordForEmail(email, { redirectTo: siteUrl("/conta/nova-senha/") });
   if (error) throw friendly(error.message);

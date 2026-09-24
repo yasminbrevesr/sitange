@@ -49,8 +49,8 @@ function FamilyCard({ family }: { family: Family }) {
   const hero = items[0];
   return (
     <article id={family} className="flex scroll-mt-20 flex-col bg-branco lg:scroll-mt-[130px]">
-      <div className="aspect-[16/10] bg-creme-base p-8">
-        <ProductImage slug={hero.slug} image={hero.images[0]} surface="creme-base" />
+      <div className="aspect-[16/10] bg-branco p-8">
+        <ProductImage slug={hero.slug} image={hero.images[0]} surface="branco" />
       </div>
       <div className="flex flex-1 flex-col p-6 md:p-8">
         <div className="flex items-baseline justify-between gap-4">
@@ -136,11 +136,11 @@ export default function Home() {
       <Stripe />
 
       {/* 4. COMO FUNCIONA */}
-      <section id="como-funciona" className="bg-creme-base py-16 md:py-24" aria-labelledby="como-titulo">
+      <section id="como-funciona" className="bg-branco py-16 md:py-24" aria-labelledby="como-titulo">
         <Container>
           <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div>
-              <p className="rotulo text-[10px] text-tinta/75">O sistema</p>
+              <p className="rotulo text-[10px] text-laranja-tinta">O sistema</p>
               <h2 id="como-titulo" className="display mt-3 text-[34px] md:text-[46px]">
                 Toda peça é duas
               </h2>
@@ -152,13 +152,13 @@ export default function Home() {
 
           <ol className="mt-10 grid gap-[3px] md:grid-cols-3">
             {steps.map((s) => (
-              <li key={s.n} className="flex flex-col bg-branco p-6 md:p-8">
+              <li key={s.n} className="flex flex-col bg-creme-base p-6 md:p-8">
                 <div className="flex items-baseline gap-3">
                   <span className="text-[44px] font-extralight leading-none text-laranja-tinta">{s.n}</span>
                   <h3 className="rotulo text-[11px]">{s.title}</h3>
                 </div>
                 <div className="my-6 aspect-[4/3]">
-                  <ProductImage slug={curva.slug} image={s.image} surface="branco" />
+                  <ProductImage slug={curva.slug} image={s.image} surface="creme-base" />
                 </div>
                 <p className="corpo text-[15px] text-tinta/80 md:text-[15px]">{s.text}</p>
               </li>
@@ -168,7 +168,7 @@ export default function Home() {
       </section>
 
       {/* 5. DUAS FAMÍLIAS */}
-      <section className="bg-branco py-16 md:py-24" aria-labelledby="familias-titulo">
+      <section className="bg-creme-base py-16 md:py-24" aria-labelledby="familias-titulo">
         <Container>
           <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <h2 id="familias-titulo" className="display text-[34px] md:text-[46px]">
@@ -184,7 +184,7 @@ export default function Home() {
       </section>
 
       {/* 6. AS QUATRO */}
-      <section id="as-pecas" className="bg-creme-base py-16 md:py-24" aria-labelledby="quatro-titulo">
+      <section id="as-pecas" className="bg-branco py-16 md:py-24" aria-labelledby="quatro-titulo">
         <Container>
           <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <h2 id="quatro-titulo" className="display text-[34px] md:text-[46px]">
@@ -195,7 +195,7 @@ export default function Home() {
           <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {getProducts().map((p) => (
               <li key={p.id}>
-                <ProductCard product={p} imagePanel="branco" />
+                <ProductCard product={p} imagePanel="creme-base" />
               </li>
             ))}
           </ul>

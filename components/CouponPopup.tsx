@@ -98,7 +98,6 @@ export function CouponPopup() {
         phone: `${dial}${digits}`,
         source: "popup-cupom-10",
         consent: true,
-        createdAt: new Date().toISOString(),
       });
       remember("inscrito");
       setDone(true);

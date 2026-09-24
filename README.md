@@ -52,3 +52,11 @@ O endereço aparece em **Settings → Pages** e em **Actions**.
 Por enquanto, a sacola fica salva só no navegador de quem está comprando. Ainda não existe checkout nem pagamento.
 Quando a plataforma de e-commerce for escolhida (Shopify, Nuvemshop, Stripe etc.), a integração entra em
 `components/CartProvider.tsx` e `components/CartView.tsx`, e os produtos passam a vir da API em `lib/products.ts`.
+
+## Supabase (contas e cadastros)
+
+- As chaves ficam em `.env.production`: só a URL e a chave **anon/publishable**, que são públicas. **Nunca** coloque a chave `service_role` no projeto.
+- As tabelas são criadas pelo script `supabase/schema.sql` (Supabase → SQL Editor → colar → Run):
+  - `profiles`: uma linha por conta criada no site (nome, e-mail, consentimento de marketing).
+  - `leads`: cadastros do popup de 10% OFF (e-mail e telefone).
+- Em **Authentication → URL Configuration**, a Site URL e as Redirect URLs precisam ser as do domínio onde o site está (ex.: `https://seudominio.com.br/**`).

@@ -1,27 +1,22 @@
-// Envio do cadastro do popup de cupom.
-// Defina NEXT_PUBLIC_LEADS_ENDPOINT (ex.: webhook do Klaviyo, RD Station, n8n, Make) para receber os dados.
-// Sem endpoint configurado, nada é salvo: o cadastro só mostra o cupom na tela.
+// Envio do cadastro do popup de cupom para a tabela "leads" do Supabase
+// (criada por supabase/schema.sql). Sem Supabase configurado, nada é salvo.
+import { supabase } from "./supabase";
 
 export type Lead = {
   email: string;
   phone: string; // formato E.164, ex.: +5511912345678
   source: "popup-cupom-10";
   consent: true;
-  createdAt: string;
 };
 
 export async function saveLead(lead: Lead): Promise<void> {
-  const endpoint = process.env.NEXT_PUBLIC_LEADS_ENDPOINT;
-  if (!endpoint) {
-    console.warn("[leads] NEXT_PUBLIC_LEADS_ENDPOINT não configurado: cadastro não foi enviado.");
+  if (!supabase) {
+    console.warn("[leads] Supabase não configurado: cadastro não foi salvo.");
     return;
   }
-  const res = await fetch(endpoint, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(lead),
-  });
-  if (!res.ok) throw new Error(`Falha ao enviar cadastro (${res.status})`);
+  const { error } = await supabase.from("leads").insert(lead);
+  // 23505 = e-mail já cadastrado neste formulário: não é erro para o cliente
+  if (error && error.code !== "23505") throw new Error(`Falha ao salvar cadastro: ${error.message}`);
 }
 
 export const COUPON_CODE: string | null = "BREVESCOMPRA10"; // cupom de 10% na primeira compra

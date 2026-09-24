@@ -39,6 +39,12 @@ function friendly(message: string): AuthError {
   if (m.includes("email not confirmed")) return new AuthError("Confirme seu e-mail pelo link que enviamos antes de entrar.");
   if (m.includes("already registered") || m.includes("already been registered"))
     return new AuthError("Já existe uma conta com esse e-mail. Tente entrar.");
+  // Limite de envio de e-mails do Supabase (o servidor de e-mail padrão manda poucos e-mails por hora).
+  if (m.includes("email rate limit"))
+    return new AuthError("Não conseguimos enviar o e-mail de confirmação agora. Tente de novo em alguns minutos.");
+  // Pedido repetido para o mesmo e-mail em menos de 60 segundos.
+  if (m.includes("security purposes"))
+    return new AuthError("Acabamos de enviar um e-mail para esse endereço. Espere 1 minuto antes de pedir de novo.");
   if (m.includes("rate limit") || m.includes("too many")) return new AuthError("Muitas tentativas. Espere alguns minutos e tente de novo.");
   if (m.includes("password")) return new AuthError("Essa senha não foi aceita. Use pelo menos 8 caracteres.");
   return new AuthError("Não deu para continuar agora. Tente de novo em instantes.");

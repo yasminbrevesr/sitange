@@ -1,8 +1,17 @@
 "use client";
 
 import { useId, useState, type FormEvent } from "react";
-import { AUTH_ENABLED, AuthNotConfiguredError, signIn, signUp } from "@/lib/auth";
-import { MISSING } from "@/lib/products";
+import {
+  AUTH_ENABLED,
+  AuthError,
+  AuthNotConfiguredError,
+  displayName,
+  sendPasswordReset,
+  signIn,
+  signOut,
+  signUp,
+  useSession,
+} from "@/lib/auth";
 import { Container } from "./Container";
 import { Symbol } from "./Symbol";
 
@@ -30,10 +39,10 @@ function Feedback({ id, error, info }: { id: string; error: string; info: string
   return null;
 }
 
-function notReadyMessage(err: unknown) {
-  return err instanceof AuthNotConfiguredError
-    ? `O login ainda não está ativo. ${MISSING} (integração de contas com a plataforma de e-commerce)`
-    : "Não deu para continuar agora. Tente de novo em instantes.";
+function errorMessage(err: unknown) {
+  if (err instanceof AuthNotConfiguredError) return "O login ainda não está ativo.";
+  if (err instanceof AuthError) return err.message;
+  return "Não deu para continuar agora. Tente de novo em instantes.";
 }
 
 function SignInForm({ onSwitch }: { onSwitch: () => void }) {
@@ -53,10 +62,23 @@ function SignInForm({ onSwitch }: { onSwitch: () => void }) {
     setSending(true);
     try {
       await signIn({ email: email.trim().toLowerCase(), password });
+      // a sessão nova troca a tela para "Minha conta" sozinha (useSession)
     } catch (err) {
-      setInfo(notReadyMessage(err));
+      setError(errorMessage(err));
     } finally {
       setSending(false);
+    }
+  }
+
+  async function onForgot() {
+    setInfo("");
+    if (!EMAIL_RE.test(email.trim())) return setError("Digite seu e-mail acima para receber o link de nova senha.");
+    setError("");
+    try {
+      await sendPasswordReset(email.trim().toLowerCase());
+      setInfo("Se existir uma conta com esse e-mail, enviamos um link para criar uma nova senha.");
+    } catch (err) {
+      setError(errorMessage(err));
     }
   }
 
@@ -89,7 +111,13 @@ function SignInForm({ onSwitch }: { onSwitch: () => void }) {
       >
         {sending ? "Entrando…" : "Entrar"}
       </button>
-      <p className="text-[14px] text-tinta/80">Esqueceu a senha? {MISSING}</p>
+      <button
+        type="button"
+        onClick={onForgot}
+        className="min-h-11 self-start text-[14px] text-tinta/80 underline underline-offset-4 hover:text-tinta"
+      >
+        Esqueceu a senha?
+      </button>
       <p className="border-t border-tinta/10 pt-5 text-center text-[14px] text-tinta/80">
         Ainda não tem conta?{" "}
         <button type="button" onClick={onSwitch} className="min-h-11 font-medium text-verde underline underline-offset-4">
@@ -121,9 +149,16 @@ function SignUpForm({ onSwitch }: { onSwitch: () => void }) {
     setError("");
     setSending(true);
     try {
-      await signUp({ name: name.trim(), email: email.trim().toLowerCase(), password, marketingConsent: consent });
+      const needsConfirmation = await signUp({
+        name: name.trim(),
+        email: email.trim().toLowerCase(),
+        password,
+        marketingConsent: consent,
+      });
+      if (needsConfirmation)
+        setInfo(`Conta criada. Enviamos um link de confirmação para ${email.trim()}: confirme para poder entrar.`);
     } catch (err) {
-      setInfo(notReadyMessage(err));
+      setError(errorMessage(err));
     } finally {
       setSending(false);
     }
@@ -197,6 +232,34 @@ function SignUpForm({ onSwitch }: { onSwitch: () => void }) {
   );
 }
 
+function AccountPanel({ name, email }: { name: string; email: string }) {
+  const [leaving, setLeaving] = useState(false);
+  return (
+    <div className="flex flex-col gap-6">
+      <div>
+        <h2 className="display text-[30px] md:text-[34px]">Olá, {name}</h2>
+        <p className="mt-2 text-[14px] text-tinta/75">Você entrou com {email}.</p>
+      </div>
+      <div className="bg-creme-claro p-5">
+        <h3 className="rotulo text-[11px]">Seus pedidos</h3>
+        <p className="mt-2 text-[14px] text-tinta/80">Nenhum pedido por aqui ainda.</p>
+      </div>
+      <button
+        type="button"
+        disabled={leaving}
+        onClick={async () => {
+          setLeaving(true);
+          await signOut();
+          setLeaving(false);
+        }}
+        className="rotulo min-h-14 w-full rounded-full border border-verde px-8 text-[11px] text-verde hover:bg-creme-claro disabled:opacity-80"
+      >
+        {leaving ? "Saindo…" : "Sair da conta"}
+      </button>
+    </div>
+  );
+}
+
 type Mode = "entrar" | "criar";
 
 const TABS: { mode: Mode; label: string }[] = [
@@ -207,6 +270,7 @@ const TABS: { mode: Mode; label: string }[] = [
 export function AuthForms() {
   const id = useId();
   const [mode, setMode] = useState<Mode>("entrar");
+  const session = useSession();
 
   return (
     <section className="bg-creme-base py-12 md:py-20" aria-labelledby="conta-titulo">
@@ -240,7 +304,12 @@ export function AuthForms() {
             </ul>
           </div>
 
-          {/* formulário */}
+          {/* formulário ou área de quem já entrou */}
+          {session ? (
+            <div className="bg-branco p-6 md:p-12">
+              <AccountPanel name={displayName(session)} email={session.user.email ?? ""} />
+            </div>
+          ) : (
           <div className="bg-branco p-6 md:p-12">
             <div role="tablist" aria-label="Acesso à conta" className="flex border-b border-tinta/15">
               {TABS.map((t) => {
@@ -287,6 +356,7 @@ export function AuthForms() {
               </div>
             </div>
           </div>
+          )}
         </div>
       </Container>
     </section>

@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Symbol } from "./Symbol";
 import { SearchBox } from "./SearchBox";
 import { useCart } from "./CartProvider";
+import { displayName, useSession } from "@/lib/auth";
 
 const LINKS = [
   { href: "/#como-funciona", label: "Como funciona" },
@@ -52,6 +53,7 @@ export function Nav() {
   const { items } = useCart();
   const [open, setOpen] = useState(false);
   const count = items.length;
+  const session = useSession();
 
   return (
     <header className="sticky top-0 z-50 bg-verde text-creme-claro">
@@ -87,12 +89,12 @@ export function Nav() {
             </Link>
             <Link
               href="/entrar"
-              aria-label="Entre ou cadastre-se"
+              aria-label={session ? `Minha conta, ${displayName(session)}` : "Entre ou cadastre-se"}
               className="flex h-11 min-w-11 items-center justify-center gap-2 text-[14px] font-normal hover:text-laranja"
             >
               <UserIcon />
               <span className="hidden xl:inline" aria-hidden="true">
-                Entre / Cadastre-se
+                {session ? `Olá, ${displayName(session)}` : "Entre / Cadastre-se"}
               </span>
             </Link>
             <Link

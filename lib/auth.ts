@@ -12,6 +12,9 @@ export type SignUpInput = { name: string; email: string; password: string; marke
 
 export const AUTH_ENABLED = supabase !== null;
 
+/** Login com o Google: deixar false até configurar o Google Cloud e o provedor no Supabase. */
+export const GOOGLE_LOGIN_ENABLED = false;
+
 export class AuthNotConfiguredError extends Error {
   constructor() {
     super("Contas de cliente ainda não estão ativas.");

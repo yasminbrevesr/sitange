@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useId, useState, type FormEvent } from "react";
 import {
   AUTH_ENABLED,
+  GOOGLE_LOGIN_ENABLED,
   AuthError,
   AuthNotConfiguredError,
   displayName,
@@ -409,10 +410,12 @@ export function AuthForms() {
                   As contas de cliente ainda não estão ativas.
                 </p>
               )}
-              <div className="mt-6">
-                <GoogleButton />
-              </div>
-              <div className="mt-5">
+              {GOOGLE_LOGIN_ENABLED && (
+                <div className="mt-6">
+                  <GoogleButton />
+                </div>
+              )}
+              <div className={GOOGLE_LOGIN_ENABLED ? "mt-5" : "mt-6"}>
                 {mode === "entrar" ? (
                   <SignInForm key="entrar" onSwitch={() => setMode("criar")} />
                 ) : (

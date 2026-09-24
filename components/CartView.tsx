@@ -1,78 +1,123 @@
 "use client";
 
 import Link from "next/link";
-import { MISSING, formatPrice, getProduct } from "@/lib/products";
+import { useState } from "react";
+import { FAMILIES, MISSING, formatPrice, getProduct } from "@/lib/products";
 import { STORE } from "@/lib/store";
 import { Container } from "./Container";
 import { useCart } from "./CartProvider";
+import { Payment, type PayMethod } from "./Payment";
+import { ProductImage } from "./ProductArt";
 
 export function CartView() {
   const { items, remove } = useCart();
+  const [method, setMethod] = useState<PayMethod>("pix");
   const lines = items
     .map((item) => ({ item, product: getProduct(item.productId) }))
     .filter((l) => l.product);
-  const total = lines.reduce((sum, l) => sum + l.product!.priceCents, 0);
+  const subtotal = lines.reduce((sum, l) => sum + l.product!.priceCents, 0);
+  const freeShipping = subtotal >= STORE.freeShippingMinCents;
+  const pixDiscount = Math.round((subtotal * STORE.pixDiscountPercent) / 100);
+  const total = method === "pix" ? subtotal - pixDiscount : subtotal;
 
   return (
-    <section className="bg-creme-claro py-16 md:py-24" aria-labelledby="sacola-titulo">
-      <Container className="max-w-[960px]">
-        <h1 id="sacola-titulo" className="display text-[46px] md:text-[62px]">
+    <section className="bg-creme-base py-12 md:py-20" aria-labelledby="sacola-titulo">
+      <Container>
+        <h1 id="sacola-titulo" className="display text-[46px] text-verde md:text-[62px]">
           Sacola
+          <span className="text-laranja" aria-hidden="true">
+            .
+          </span>
         </h1>
 
         {lines.length === 0 ? (
-          <div className="mt-10">
-            <p className="corpo text-tinta/80">Sua sacola está vazia.</p>
+          <div className="mt-10 flex flex-col items-start gap-5 bg-verde p-8 text-creme-claro md:p-12">
+            <p className="text-[20px] font-light">Sua sacola está vazia.</p>
             <Link
               href="/#as-pecas"
-              className="rotulo mt-6 inline-flex min-h-12 items-center rounded-full bg-verde px-8 text-[11px] text-creme-claro hover:bg-verde-claro"
+              className="rotulo inline-flex min-h-12 items-center rounded-full bg-laranja px-8 text-[11px] text-tinta hover:bg-creme-claro"
             >
               Ver as quatro peças
             </Link>
           </div>
         ) : (
-          <>
-            <ul className="mt-10 divide-y divide-tinta/15 border-y border-tinta/15">
-              {lines.map(({ item, product }) => (
-                <li key={item.key} className="flex flex-wrap items-center justify-between gap-4 py-5">
-                  <div>
-                    <Link href={`/pecas/${product!.slug}`} className="rotulo text-[12px] hover:underline">
-                      {product!.name}
+          <div className="mt-10 grid items-start gap-8 lg:grid-cols-[1.35fr_1fr] lg:gap-12">
+            {/* peças */}
+            <div className="flex flex-col gap-3">
+              <p className="rotulo text-[10px] text-tinta/75">
+                {lines.length} {lines.length === 1 ? "peça" : "peças"}
+              </p>
+              <ul className="flex flex-col gap-3">
+                {lines.map(({ item, product }) => (
+                  <li key={item.key} className="flex gap-4 bg-branco p-4 md:gap-6 md:p-5">
+                    <Link href={`/pecas/${product!.slug}`} className="block h-24 w-24 shrink-0 md:h-28 md:w-28" tabIndex={-1} aria-hidden="true">
+                      <ProductImage slug={product!.slug} image={{ ...product!.images[0], alt: "" }} surface="branco" />
                     </Link>
-                    <p className="mt-1 text-[14px] text-tinta/80">
-                      {item.sizes.length === 2
-                        ? `Aros ${item.sizes[0]} e ${item.sizes[1]}`
-                        : `Aro ${item.sizes[0]}`}
-                      {item.engraving && ` · Gravação: “${item.engraving}”`}
-                    </p>
+                    <div className="flex min-w-0 flex-1 flex-col">
+                      <div className="flex items-start justify-between gap-4">
+                        <div>
+                          <span className="rotulo block text-[10px] text-laranja-tinta">{FAMILIES[product!.family].label}</span>
+                          <Link href={`/pecas/${product!.slug}`} className="mt-1 block text-[18px] font-normal text-verde hover:underline">
+                            {product!.name}
+                          </Link>
+                        </div>
+                        <span className="text-[18px] font-light">{formatPrice(product!.priceCents)}</span>
+                      </div>
+                      <p className="mt-2 text-[14px] text-tinta/80">
+                        {item.sizes.length === 2 ? `Aros ${item.sizes[0]} e ${item.sizes[1]}` : `Aro ${item.sizes[0]}`}
+                        {item.engraving && ` · Gravação: “${item.engraving}”`}
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => remove(item.key)}
+                        className="mt-auto min-h-11 self-start text-[13px] text-tinta/75 underline underline-offset-4 hover:text-laranja-tinta"
+                        aria-label={`Remover ${product!.name} da sacola`}
+                      >
+                        Remover
+                      </button>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+              <Link href="/#as-pecas" className="rotulo mt-2 inline-flex min-h-11 items-center text-[10px] text-verde underline underline-offset-4">
+                Continuar comprando
+              </Link>
+            </div>
+
+            {/* resumo e pagamento */}
+            <div className="flex flex-col gap-6 lg:sticky lg:top-32">
+              <div className="bg-branco p-6 md:p-8">
+                <h2 className="rotulo text-[11px] text-verde">Resumo</h2>
+                <dl className="mt-5 flex flex-col gap-3 text-[15px]">
+                  <div className="flex justify-between">
+                    <dt>Subtotal</dt>
+                    <dd>{formatPrice(subtotal)}</dd>
                   </div>
-                  <div className="flex items-center gap-4">
-                    <span className="text-[17px] font-normal">{formatPrice(product!.priceCents)}</span>
-                    <button
-                      type="button"
-                      onClick={() => remove(item.key)}
-                      className="rotulo min-h-11 px-2 text-[10px] underline underline-offset-4"
-                      aria-label={`Remover ${product!.name} da sacola`}
-                    >
-                      Remover
-                    </button>
+                  <div className="flex justify-between gap-4">
+                    <dt>Frete</dt>
+                    <dd className="text-right">{freeShipping ? <span className="text-verde">Grátis</span> : `Calculado na entrega ${MISSING}`}</dd>
                   </div>
-                </li>
-              ))}
-            </ul>
-            <p className="mt-6 flex items-baseline justify-between">
-              <span className="rotulo text-[11px]">Total</span>
-              <span className="text-[28px] font-extralight">{formatPrice(total)}</span>
-            </p>
-            <p className="mt-2 text-right text-[14px] text-tinta/80">
-              {total >= STORE.freeShippingMinCents
-                ? "Frete grátis"
-                : `Faltam ${formatPrice(STORE.freeShippingMinCents - total)} para o frete grátis`}
-            </p>
-            <p className="mt-8 border border-tinta/30 bg-branco p-5 text-[14px] text-tinta/80">
-              Finalizar compra: {MISSING} (integração de pagamento e checkout)
-            </p>
-          </>
+                  {method === "pix" && (
+                    <div className="flex justify-between">
+                      <dt>Desconto PIX ({STORE.pixDiscountPercent}%)</dt>
+                      <dd className="text-laranja-tinta">− {formatPrice(pixDiscount)}</dd>
+                    </div>
+                  )}
+                  <div className="mt-2 flex items-baseline justify-between border-t border-tinta/15 pt-4">
+                    <dt className="rotulo text-[11px]">Total</dt>
+                    <dd className="text-[30px] font-extralight text-verde">{formatPrice(total)}</dd>
+                  </div>
+                </dl>
+                {!freeShipping && (
+                  <p className="mt-3 bg-laranja/15 px-3 py-2 text-[13px] text-tinta">
+                    Faltam {formatPrice(STORE.freeShippingMinCents - subtotal)} para o frete grátis.
+                  </p>
+                )}
+              </div>
+
+              <Payment method={method} onMethod={setMethod} pixTotalCents={subtotal - pixDiscount} cardTotalCents={subtotal} />
+            </div>
+          </div>
         )}
       </Container>
     </section>

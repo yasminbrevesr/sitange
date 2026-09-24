@@ -1,17 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { useId, useState, type FormEvent } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useId, useState, type FormEvent } from "react";
 import {
   AUTH_ENABLED,
   GOOGLE_LOGIN_ENABLED,
   AuthError,
   AuthNotConfiguredError,
-  displayName,
   sendPasswordReset,
   signIn,
   signInWithGoogle,
-  signOut,
   signUp,
   useSession,
 } from "@/lib/auth";
@@ -246,34 +245,6 @@ function SignUpForm({ onSwitch }: { onSwitch: () => void }) {
   );
 }
 
-function AccountPanel({ name, email }: { name: string; email: string }) {
-  const [leaving, setLeaving] = useState(false);
-  return (
-    <div className="flex flex-col gap-6">
-      <div>
-        <h2 className="display text-[30px] md:text-[34px]">Olá, {name}</h2>
-        <p className="mt-2 text-[14px] text-tinta/75">Você entrou com {email}.</p>
-      </div>
-      <div className="bg-creme-claro p-5">
-        <h3 className="rotulo text-[11px]">Seus pedidos</h3>
-        <p className="mt-2 text-[14px] text-tinta/80">Nenhum pedido por aqui ainda.</p>
-      </div>
-      <button
-        type="button"
-        disabled={leaving}
-        onClick={async () => {
-          setLeaving(true);
-          await signOut();
-          setLeaving(false);
-        }}
-        className="rotulo min-h-14 w-full rounded-full border border-verde px-8 text-[11px] text-verde hover:bg-creme-claro disabled:opacity-80"
-      >
-        {leaving ? "Saindo…" : "Sair da conta"}
-      </button>
-    </div>
-  );
-}
-
 // Logo oficial do Google, conforme as regras de marca do botão "Continuar com o Google"
 function GoogleLogo() {
   return (
@@ -334,6 +305,11 @@ export function AuthForms() {
   const id = useId();
   const [mode, setMode] = useState<Mode>("entrar");
   const session = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (session) router.replace("/minha-conta/");
+  }, [session, router]);
 
   return (
     <section className="bg-creme-base py-12 md:py-20" aria-labelledby="conta-titulo">
@@ -367,10 +343,12 @@ export function AuthForms() {
             </ul>
           </div>
 
-          {/* formulário ou área de quem já entrou */}
+          {/* formulário (quem já entrou é levado para /minha-conta) */}
           {session ? (
-            <div className="bg-branco p-6 md:p-12">
-              <AccountPanel name={displayName(session)} email={session.user.email ?? ""} />
+            <div className="flex items-center justify-center bg-branco p-6 md:p-12">
+              <p role="status" className="text-[15px] text-tinta/75">
+                Entrando na sua conta…
+              </p>
             </div>
           ) : (
           <div className="bg-branco p-6 md:p-12">

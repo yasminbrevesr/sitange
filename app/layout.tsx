@@ -2,9 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/components/CartProvider";
-import { Nav } from "@/components/Nav";
-import { Footer } from "@/components/Footer";
-import { CouponPopup } from "@/components/CouponPopup";
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -31,12 +28,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         >
           Pular para o conteúdo
         </a>
-        <CartProvider>
-          <Nav />
-          <main id="conteudo">{children}</main>
-          <Footer />
-          <CouponPopup />
-        </CartProvider>
+        <CartProvider>{children}</CartProvider>
       </body>
     </html>
   );

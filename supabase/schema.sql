@@ -88,3 +88,56 @@ alter table public.leads enable row level security;
 drop policy if exists "leads: site pode inserir" on public.leads;
 create policy "leads: site pode inserir" on public.leads
   for insert to anon, authenticated with check (consent = true);
+
+-- =====================================================================
+-- 3) MINHA CONTA: dados extras do perfil e endereços
+-- =====================================================================
+alter table public.profiles add column if not exists cpf        text check (cpf is null or cpf ~ '^[0-9]{11}$');
+alter table public.profiles add column if not exists phone      text check (phone is null or phone ~ '^\+[0-9]{8,15}$');
+alter table public.profiles add column if not exists birth_date date;
+alter table public.profiles add column if not exists ring_size  smallint check (ring_size is null or ring_size between 10 and 26);
+
+-- Permite criar o próprio perfil (para contas feitas antes do gatilho existir)
+drop policy if exists "perfil: criar o proprio" on public.profiles;
+create policy "perfil: criar o proprio" on public.profiles
+  for insert to authenticated with check ((select auth.uid()) = id);
+
+create table if not exists public.addresses (
+  id          uuid primary key default gen_random_uuid(),
+  user_id     uuid not null default auth.uid() references auth.users (id) on delete cascade,
+  label       text check (label is null or char_length(label) <= 40),
+  recipient   text not null check (char_length(recipient) between 2 and 120),
+  cep         text not null check (cep ~ '^[0-9]{8}$'),
+  street      text not null check (char_length(street) <= 200),
+  number      text not null check (char_length(number) <= 20),
+  complement  text check (complement is null or char_length(complement) <= 100),
+  district    text not null check (char_length(district) <= 100),
+  city        text not null check (char_length(city) <= 100),
+  state       text not null check (state ~ '^[A-Z]{2}$'),
+  is_default  boolean not null default false,
+  created_at  timestamptz not null default now(),
+  updated_at  timestamptz not null default now()
+);
+
+create index if not exists addresses_user_id_idx on public.addresses (user_id);
+-- No máximo um endereço principal por cliente
+create unique index if not exists addresses_one_default_idx on public.addresses (user_id) where is_default;
+
+alter table public.addresses enable row level security;
+
+-- Cada cliente vê, cria, edita e apaga só os próprios endereços
+drop policy if exists "enderecos: ver os proprios" on public.addresses;
+create policy "enderecos: ver os proprios" on public.addresses
+  for select to authenticated using ((select auth.uid()) = user_id);
+
+drop policy if exists "enderecos: criar os proprios" on public.addresses;
+create policy "enderecos: criar os proprios" on public.addresses
+  for insert to authenticated with check ((select auth.uid()) = user_id);
+
+drop policy if exists "enderecos: editar os proprios" on public.addresses;
+create policy "enderecos: editar os proprios" on public.addresses
+  for update to authenticated using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id);
+
+drop policy if exists "enderecos: apagar os proprios" on public.addresses;
+create policy "enderecos: apagar os proprios" on public.addresses
+  for delete to authenticated using ((select auth.uid()) = user_id);

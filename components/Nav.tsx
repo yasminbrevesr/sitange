@@ -88,7 +88,7 @@ export function Nav() {
               Descubra seu aro
             </Link>
             <Link
-              href="/entrar"
+              href={session ? "/minha-conta/" : "/entrar"}
               aria-label={session ? `Minha conta, ${displayName(session)}` : "Entre ou cadastre-se"}
               className="flex h-11 min-w-11 items-center justify-center gap-2 text-[14px] font-normal hover:text-laranja"
             >

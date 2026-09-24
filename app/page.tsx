@@ -121,8 +121,12 @@ export default function Home() {
               <br />
               {formatPrice(curva.priceCents)}
             </p>
-            <Link href={`/pecas/${curva.slug}`} className="block aspect-[4/3] pt-10">
-              <ProductImage slug={curva.slug} image={curva.images[0]} surface="creme-base" />
+            <Link href={`/pecas/${curva.slug}`} className="block aspect-square pt-10">
+              {/* recorte fechado na peça, com o mesmo fundo creme da seção */}
+              <ProductImage
+                slug={curva.slug}
+                image={{ ...curva.images[0], src: "/produtos/curva-destaque-creme-base.webp" }}
+              />
             </Link>
           </div>
         </Container>

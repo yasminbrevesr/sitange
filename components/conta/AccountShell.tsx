@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { displayName, signOut, useSession } from "@/lib/auth";
 import { Symbol } from "../Symbol";
+import { QuickCart } from "./QuickCart";
 
 const MENU = [
   { href: "/minha-conta/", label: "Meus pedidos", icon: "pedidos" },
@@ -127,6 +128,10 @@ export function AccountShell({ children }: { children: ReactNode }) {
                   </li>
                 </ul>
               </nav>
+
+              <div className={`${open ? "block" : "hidden"} lg:block`}>
+                <QuickCart />
+              </div>
             </aside>
 
             <section className="min-w-0">{children}</section>

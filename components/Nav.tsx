@@ -24,6 +24,17 @@ function RulerIcon() {
   );
 }
 
+function UserIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-[22px] w-[22px] shrink-0" aria-hidden="true">
+      <g fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+        <circle cx="12" cy="8" r="3.8" />
+        <path d="M4.5 20.5c.8-3.8 3.8-6 7.5-6s6.7 2.2 7.5 6" />
+      </g>
+    </svg>
+  );
+}
+
 function BagIcon() {
   return (
     <svg viewBox="0 0 24 24" className="h-[24px] w-[24px]" aria-hidden="true">
@@ -68,11 +79,21 @@ export function Nav() {
             <span className="text-[20px] font-medium uppercase tracking-[0.34em] lg:text-[28px]">Tangè</span>
           </Link>
 
-          {/* direita: guia de aro e sacola */}
-          <div className="flex items-center justify-end gap-2 lg:gap-8">
+          {/* direita: guia de aro, conta e sacola */}
+          <div className="flex items-center justify-end gap-1 lg:gap-6">
             <Link href="/aro" className="hidden min-h-11 items-center gap-2 text-[14px] font-normal hover:text-laranja lg:flex">
               <RulerIcon />
               Descubra seu aro
+            </Link>
+            <Link
+              href="/entrar"
+              aria-label="Entre ou cadastre-se"
+              className="flex h-11 min-w-11 items-center justify-center gap-2 text-[14px] font-normal hover:text-laranja"
+            >
+              <UserIcon />
+              <span className="hidden xl:inline" aria-hidden="true">
+                Entre / Cadastre-se
+              </span>
             </Link>
             <Link
               href="/sacola"

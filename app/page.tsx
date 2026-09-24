@@ -168,7 +168,7 @@ export default function Home() {
       </section>
 
       {/* 5. DUAS FAMÍLIAS */}
-      <section className="bg-creme-claro py-16 md:py-24" aria-labelledby="familias-titulo">
+      <section className="bg-branco py-16 md:py-24" aria-labelledby="familias-titulo">
         <Container>
           <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <h2 id="familias-titulo" className="display text-[34px] md:text-[46px]">
@@ -195,7 +195,7 @@ export default function Home() {
           <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {getProducts().map((p) => (
               <li key={p.id}>
-                <ProductCard product={p} />
+                <ProductCard product={p} imagePanel="branco" />
               </li>
             ))}
           </ul>

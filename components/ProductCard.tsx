@@ -2,11 +2,11 @@ import Link from "next/link";
 import { FAMILIES, formatGrams, formatPrice, type Product } from "@/lib/products";
 import { ProductImage } from "./ProductArt";
 
-type Props = { product: Product; imagePanel?: "creme-claro" | "creme-base" };
+type Props = { product: Product; imagePanel?: "creme-claro" | "creme-base" | "branco" };
 
 // Card de produto usado em "As quatro" e em "As outras três".
 export function ProductCard({ product, imagePanel = "creme-claro" }: Props) {
-  const panel = imagePanel === "creme-claro" ? "bg-creme-claro" : "bg-creme-base";
+  const panel = { "creme-claro": "bg-creme-claro", "creme-base": "bg-creme-base", branco: "bg-branco" }[imagePanel];
   return (
     <Link href={`/pecas/${product.slug}`} className="group flex h-full flex-col bg-branco">
       <div className={`relative aspect-square ${panel} p-6`}>

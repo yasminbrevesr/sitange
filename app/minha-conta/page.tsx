@@ -4,12 +4,15 @@ import Link from "next/link";
 export default function MeusPedidosPage() {
   return (
     <div>
-      <h1 className="display text-[34px] md:text-[40px]">Meus pedidos</h1>
-      <div className="mt-8 flex flex-col items-start gap-5 bg-creme-claro p-8">
-        <p className="text-[15px] text-tinta/80">Você ainda não fez nenhum pedido.</p>
+      <h1 className="display text-[38px] text-verde md:text-[46px]">
+        Meus pedidos
+        <span className="text-laranja" aria-hidden="true">.</span>
+      </h1>
+      <div className="mt-8 flex flex-col items-start gap-5 bg-verde p-8 text-creme-claro md:p-10">
+        <p className="text-[18px] font-light">Você ainda não fez nenhum pedido.</p>
         <Link
           href="/#as-pecas"
-          className="rotulo inline-flex min-h-12 items-center rounded-full bg-verde px-8 text-[11px] text-creme-claro hover:bg-verde-claro"
+          className="rotulo inline-flex min-h-12 items-center rounded-full bg-laranja px-8 text-[11px] text-tinta hover:bg-creme-claro"
         >
           Ver as quatro peças
         </Link>

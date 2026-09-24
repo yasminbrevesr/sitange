@@ -48,18 +48,18 @@ export function AccountShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="min-h-screen bg-branco">
-      <header className="border-b border-tinta/10 bg-creme-claro">
+      <header className="bg-verde text-creme-claro">
         <div className="mx-auto grid h-16 max-w-[1280px] grid-cols-[1fr_auto_1fr] items-center gap-4 px-4 md:px-10">
-          <Link href="/" className="rotulo flex min-h-11 items-center gap-2 text-[10px] hover:text-verde">
+          <Link href="/" className="rotulo flex min-h-11 items-center gap-2 text-[10px] hover:text-laranja">
             <Icon name="seta" />
             <span className="hidden sm:inline">Continuar comprando</span>
             <span className="sm:hidden">Loja</span>
           </Link>
-          <Link href="/" aria-label="TANGÈ, página inicial" className="flex min-h-11 items-center gap-2.5 text-verde">
+          <Link href="/" aria-label="TANGÈ, página inicial" className="flex min-h-11 items-center gap-2.5">
             <Symbol className="h-6 w-6" decorative />
             <span className="text-[20px] font-medium uppercase tracking-[0.34em]">Tangè</span>
           </Link>
-          <p className="rotulo flex items-center justify-end gap-2 text-[10px] text-tinta/75">
+          <p className="rotulo flex items-center justify-end gap-2 text-[10px] text-creme-claro/85">
             <Icon name="cadeado" />
             <span className="hidden sm:inline">Conexão segura</span>
           </p>
@@ -79,21 +79,21 @@ export function AccountShell({ children }: { children: ReactNode }) {
                 onClick={() => setOpen((v) => !v)}
                 aria-expanded={open}
                 aria-controls="menu-conta"
-                className="flex w-full items-center gap-4 border border-tinta/15 p-4 text-left lg:cursor-default"
+                className="flex w-full items-center gap-4 bg-verde p-5 text-left text-creme-claro lg:cursor-default"
               >
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-tinta/20 text-verde">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-creme-claro/40">
                   <Icon name="usuario" />
                 </span>
                 <span className="min-w-0 flex-1">
                   <span className="block text-[16px] font-normal">Olá, {displayName(session)}</span>
-                  <span className="rotulo block truncate text-[10px] text-tinta/75">{session.user.email}</span>
+                  <span className="rotulo block truncate text-[10px] text-creme-claro/80">{session.user.email}</span>
                 </span>
                 <svg viewBox="0 0 12 12" className={`h-3 w-3 transition-transform lg:hidden ${open ? "rotate-180" : ""}`} aria-hidden="true">
                   <path d="M2 4 L6 8 L10 4" fill="none" stroke="currentColor" strokeWidth="1.5" />
                 </svg>
               </button>
 
-              <nav id="menu-conta" aria-label="Minha conta" className={`${open ? "block" : "hidden"} lg:block`}>
+              <nav id="menu-conta" aria-label="Minha conta" className={`${open ? "block" : "hidden"} mt-2 lg:block`}>
                 <ul>
                   {MENU.map((m) => {
                     const active = current(m.href);
@@ -103,7 +103,7 @@ export function AccountShell({ children }: { children: ReactNode }) {
                           href={m.href}
                           aria-current={active ? "page" : undefined}
                           className={`flex min-h-14 items-center gap-3 border-b border-tinta/10 px-4 text-[15px] ${
-                            active ? "bg-creme-claro font-medium text-verde" : "hover:bg-creme-claro/60"
+                            active ? "bg-verde font-medium text-creme-claro" : "text-verde hover:bg-verde/5"
                           }`}
                         >
                           <Icon name={m.icon} />
@@ -119,7 +119,7 @@ export function AccountShell({ children }: { children: ReactNode }) {
                         await signOut();
                         router.replace("/");
                       }}
-                      className="flex min-h-14 w-full items-center gap-3 border-b border-tinta/10 px-4 text-left text-[15px] hover:bg-creme-claro/60"
+                      className="flex min-h-14 w-full items-center gap-3 border-b border-tinta/10 px-4 text-left text-[15px] text-verde hover:bg-verde/5"
                     >
                       <Icon name="sair" />
                       Sair

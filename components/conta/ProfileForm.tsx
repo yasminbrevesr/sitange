@@ -6,7 +6,7 @@ import { AuthError, updatePassword, useSession } from "@/lib/auth";
 import { formatCpf, formatPhone, isValidCpf, onlyDigits } from "@/lib/format";
 import { RING_SIZES } from "@/lib/products";
 
-const input = "mt-2 min-h-12 w-full rounded-none border border-tinta/30 bg-branco px-4 text-[15px] font-normal disabled:bg-creme-claro disabled:text-tinta/75";
+const input = "mt-2 min-h-12 w-full rounded-none border border-tinta/30 bg-branco px-4 text-[15px] font-normal focus:border-verde disabled:bg-verde/5 disabled:text-tinta/75";
 const label = "block text-[14px] font-normal";
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -38,7 +38,7 @@ function PasswordPanel({ onClose }: { onClose: () => void }) {
     }
   }
   return (
-    <form onSubmit={submit} noValidate className="grid gap-4 border border-tinta/15 p-5 sm:grid-cols-2">
+    <form onSubmit={submit} noValidate className="grid gap-4 border border-verde/25 p-5 sm:grid-cols-2">
       <h2 className="rotulo text-[11px] sm:col-span-2">Alterar senha</h2>
       <div>
         <label htmlFor={`${id}-s`} className={label}>Nova senha</label>
@@ -75,7 +75,7 @@ function EmailPanel({ onClose }: { onClose: () => void }) {
     }
   }
   return (
-    <form onSubmit={submit} noValidate className="grid gap-4 border border-tinta/15 p-5">
+    <form onSubmit={submit} noValidate className="grid gap-4 border border-verde/25 p-5">
       <h2 className="rotulo text-[11px]">Alterar e-mail</h2>
       <div>
         <label htmlFor={`${id}-e`} className={label}>Novo e-mail</label>
@@ -149,7 +149,10 @@ export function ProfileForm() {
 
   return (
     <div>
-      <h1 className="display text-[34px] md:text-[40px]">Meus dados</h1>
+      <h1 className="display text-[38px] text-verde md:text-[46px]">
+        Meus dados
+        <span className="text-laranja" aria-hidden="true">.</span>
+      </h1>
       {loading ? (
         <p className="mt-8 text-[15px] text-tinta/75" role="status">Carregando…</p>
       ) : (
@@ -183,10 +186,10 @@ export function ProfileForm() {
           </div>
           <div className="md:col-span-2"><Message error={error} ok={ok} /></div>
           <div className="flex flex-wrap justify-end gap-3 md:col-span-2">
-            <button type="button" onClick={() => setPanel(panel === "senha" ? null : "senha")} aria-expanded={panel === "senha"} className="rotulo min-h-12 border border-tinta/30 px-5 text-[11px] hover:border-tinta">
+            <button type="button" onClick={() => setPanel(panel === "senha" ? null : "senha")} aria-expanded={panel === "senha"} className="rotulo min-h-12 border border-verde px-5 text-[11px] text-verde hover:bg-verde/5">
               Alterar senha
             </button>
-            <button type="button" onClick={() => setPanel(panel === "email" ? null : "email")} aria-expanded={panel === "email"} className="rotulo min-h-12 border border-tinta/30 px-5 text-[11px] hover:border-tinta">
+            <button type="button" onClick={() => setPanel(panel === "email" ? null : "email")} aria-expanded={panel === "email"} className="rotulo min-h-12 border border-verde px-5 text-[11px] text-verde hover:bg-verde/5">
               Alterar e-mail
             </button>
             <button type="submit" disabled={saving} className="rotulo min-h-12 bg-verde px-8 text-[11px] text-creme-claro hover:bg-verde-claro disabled:opacity-80">

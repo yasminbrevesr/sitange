@@ -12,7 +12,7 @@ import {
 } from "@/lib/account";
 import { formatCep, onlyDigits, UFS } from "@/lib/format";
 
-const input = "mt-2 min-h-12 w-full rounded-none border border-tinta/30 bg-branco px-4 text-[15px] font-normal";
+const input = "mt-2 min-h-12 w-full rounded-none border border-tinta/30 bg-branco px-4 text-[15px] font-normal focus:border-verde";
 const label = "block text-[14px] font-normal";
 
 const EMPTY: AddressInput = {
@@ -79,7 +79,7 @@ function AddressForm({ initial, onDone, onCancel }: { initial?: Address; onDone:
   );
 
   return (
-    <form onSubmit={submit} noValidate className="grid gap-5 border border-tinta/15 p-5 md:grid-cols-2 md:p-8">
+    <form onSubmit={submit} noValidate className="grid gap-5 border border-verde/25 p-5 md:grid-cols-2 md:p-8">
       <h2 className="rotulo text-[11px] md:col-span-2">{initial ? "Editar endereço" : "Novo endereço"}</h2>
       {field("label", "Apelido (opcional, ex.: Casa)", { autoComplete: "off" })}
       {field("recipient", "Quem vai receber", { autoComplete: "name" })}
@@ -139,7 +139,10 @@ export function Addresses() {
   return (
     <div>
       <div className="flex flex-wrap items-end justify-between gap-4">
-        <h1 className="display text-[34px] md:text-[40px]">Meus endereços</h1>
+        <h1 className="display text-[38px] text-verde md:text-[46px]">
+        Meus endereços
+        <span className="text-laranja" aria-hidden="true">.</span>
+      </h1>
         {editing === null && (
           <button type="button" onClick={() => setEditing("novo")} className="rotulo min-h-12 bg-verde px-6 text-[11px] text-creme-claro hover:bg-verde-claro">
             Adicionar endereço
@@ -165,14 +168,14 @@ export function Addresses() {
       {items === null ? (
         <p className="mt-8 text-[15px] text-tinta/75" role="status">Carregando…</p>
       ) : items.length === 0 && editing === null ? (
-        <p className="mt-8 bg-creme-claro p-8 text-[15px] text-tinta/80">Você ainda não cadastrou nenhum endereço.</p>
+        <p className="mt-8 border border-verde/25 p-8 text-[15px] text-tinta/80">Você ainda não cadastrou nenhum endereço.</p>
       ) : (
         <ul className="mt-8 grid gap-4 md:grid-cols-2">
           {items.map((a) => (
-            <li key={a.id} className={`flex flex-col gap-3 border p-5 ${a.is_default ? "border-verde" : "border-tinta/15"}`}>
+            <li key={a.id} className={`flex flex-col gap-3 border p-5 ${a.is_default ? "border-2 border-verde" : "border-tinta/15"}`}>
               <div className="flex items-baseline justify-between gap-3">
-                <h2 className="text-[16px] font-medium">{a.label || a.recipient}</h2>
-                {a.is_default && <span className="rotulo text-[10px] text-verde">Principal</span>}
+                <h2 className="text-[16px] font-medium text-verde">{a.label || a.recipient}</h2>
+                {a.is_default && <span className="rotulo rounded-full bg-laranja px-3 py-1 text-[10px] text-tinta">Principal</span>}
               </div>
               <p className="text-[14px] leading-[1.6] text-tinta/80">
                 {a.recipient}

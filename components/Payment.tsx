@@ -15,7 +15,7 @@ import {
 } from "@/lib/payments";
 import { formatPrice } from "@/lib/products";
 import { STORE } from "@/lib/store";
-import { CheckoutStep, optionGroup, optionRow } from "./CheckoutStep";
+import { CheckoutStep, optionGroup, optionRow, optHint, optRadio, optTitle } from "./CheckoutStep";
 
 export type PayMethod = "pix" | "cartao";
 
@@ -48,11 +48,11 @@ function Option({
   const id = useId();
   return (
     <div>
-      <label htmlFor={id} className={optionRow(checked)}>
-        <input id={id} type="radio" name="forma-pagamento" checked={checked} onChange={onSelect} className="h-5 w-5 shrink-0 accent-verde" />
+      <label htmlFor={id} data-on={checked} className={optionRow(checked)}>
+        <input id={id} type="radio" name="forma-pagamento" checked={checked} onChange={onSelect} className={optRadio} />
         <span className="flex-1">
-          <span className="block text-[15px] text-verde">{title}</span>
-          <span className="mt-0.5 block text-[13px] text-tinta/75">{hint}</span>
+          <span className={`block text-[15px] ${optTitle}`}>{title}</span>
+          <span className={`mt-0.5 block text-[13px] ${optHint}`}>{hint}</span>
         </span>
         {badge && <span className="rotulo shrink-0 rounded-full bg-laranja px-3 py-1 text-[10px] text-tinta">{badge}</span>}
       </label>
@@ -88,7 +88,7 @@ function PixPanel({ amountCents, canPay }: { amountCents: number; canPay: boolea
             setBusy(false);
           }
         }}
-        className="rotulo min-h-14 w-full rounded-full bg-verde px-8 text-[11px] text-creme-claro hover:bg-verde-claro disabled:opacity-80"
+        className="rotulo min-h-14 w-full rounded-full bg-laranja px-8 text-[11px] text-tinta hover:bg-verde hover:text-creme-claro disabled:opacity-80"
       >
         {busy ? "Gerando…" : "Gerar PIX"}
       </button>
@@ -203,7 +203,7 @@ function CardPanel({ amountCents, canPay }: { amountCents: number; canPay: boole
       <button
         type="submit"
         disabled={busy}
-        className="rotulo min-h-14 w-full rounded-full bg-verde px-8 text-[11px] text-creme-claro hover:bg-verde-claro disabled:opacity-80 sm:col-span-2"
+        className="rotulo min-h-14 w-full rounded-full bg-laranja px-8 text-[11px] text-tinta hover:bg-verde hover:text-creme-claro disabled:opacity-80 sm:col-span-2"
       >
         {busy ? "Processando…" : `Pagar ${formatPrice(amountCents)}`}
       </button>

@@ -25,7 +25,7 @@ export function CartView() {
   const total = (method === "pix" ? subtotal - pixDiscount : subtotal) + shipCents;
 
   return (
-    <section className="bg-creme-base py-12 md:py-20" aria-labelledby="sacola-titulo">
+    <section className="bg-branco py-12 md:py-20" aria-labelledby="sacola-titulo">
       <Container>
         <h1 id="sacola-titulo" className="display text-[46px] text-verde md:text-[62px]">
           Sacola
@@ -64,39 +64,39 @@ export function CartView() {
 
             {/* pedido: peças, resumo e continuar comprando */}
             <div className="order-first flex flex-col gap-4 lg:sticky lg:top-32 lg:order-none">
-              <section aria-labelledby="pedido-titulo" className="bg-branco p-5 md:p-8">
+              <section aria-labelledby="pedido-titulo" className="bg-verde p-5 text-creme-claro md:p-8">
                 <div className="flex items-baseline justify-between">
-                  <h2 id="pedido-titulo" className="text-[22px] font-light uppercase tracking-[0.04em] text-verde">
+                  <h2 id="pedido-titulo" className="text-[22px] font-light uppercase tracking-[0.04em]">
                     Seu pedido
                   </h2>
-                  <span className="text-[13px] text-tinta/75">
+                  <span className="text-[13px] text-creme-claro/80">
                     {lines.length} {lines.length === 1 ? "peça" : "peças"}
                   </span>
                 </div>
-                <ul className="mt-5 divide-y divide-tinta/10 border-y border-tinta/10">
+                <ul className="mt-5 divide-y divide-creme-claro/15 border-y border-creme-claro/15">
                   {lines.map(({ item, product }) => (
                     <li key={item.key} className="flex gap-4 py-4">
-                      <Link href={`/pecas/${product!.slug}`} className="block h-20 w-20 shrink-0 bg-creme-claro" tabIndex={-1} aria-hidden="true">
-                        <ProductImage slug={product!.slug} image={{ ...product!.images[0], alt: "" }} surface="creme-claro" />
+                      <Link href={`/pecas/${product!.slug}`} className="block h-20 w-20 shrink-0 bg-verde-claro" tabIndex={-1} aria-hidden="true">
+                        <ProductImage slug={product!.slug} image={{ ...product!.images[0], alt: "" }} surface="verde-claro" />
                       </Link>
                       <div className="flex min-w-0 flex-1 flex-col">
                         <div className="flex items-start justify-between gap-4">
                           <div>
-                            <span className="rotulo block text-[9px] text-laranja-tinta">{FAMILIES[product!.family].label}</span>
-                            <Link href={`/pecas/${product!.slug}`} className="block text-[16px] text-verde hover:underline">
+                            <span className="rotulo block text-[9px] text-creme-claro/80">{FAMILIES[product!.family].label}</span>
+                            <Link href={`/pecas/${product!.slug}`} className="block text-[16px] hover:underline">
                               {product!.name}
                             </Link>
                           </div>
                           <span className="text-[16px] font-light">{formatPrice(product!.priceCents)}</span>
                         </div>
-                        <p className="text-[13px] text-tinta/75">
+                        <p className="text-[13px] text-creme-claro/80">
                           {item.sizes.length === 2 ? `Aros ${item.sizes[0]} e ${item.sizes[1]}` : `Aro ${item.sizes[0]}`}
                           {item.engraving && ` · Gravação: “${item.engraving}”`}
                         </p>
                         <button
                           type="button"
                           onClick={() => remove(item.key)}
-                          className="mt-auto min-h-9 self-start text-[12px] text-tinta/75 underline underline-offset-4 hover:text-laranja-tinta"
+                          className="mt-auto min-h-9 self-start text-[12px] text-creme-claro/80 underline underline-offset-4 hover:text-laranja"
                           aria-label={`Remover ${product!.name} da sacola`}
                         >
                           Remover
@@ -108,16 +108,16 @@ export function CartView() {
 
                 <dl className="mt-5 flex flex-col gap-2.5 text-[15px]">
                   <div className="flex justify-between">
-                    <dt className="text-tinta/80">Subtotal</dt>
+                    <dt className="text-creme-claro/85">Subtotal</dt>
                     <dd>{formatPrice(subtotal)}</dd>
                   </div>
                   <div className="flex justify-between gap-4">
-                    <dt className="text-tinta/80">Frete{shipping ? ` · ${shipping.label}` : ""}</dt>
+                    <dt className="text-creme-claro/85">Frete{shipping ? ` · ${shipping.label}` : ""}</dt>
                     <dd className="text-right">
                       {!shipping ? (
-                        <span className="text-tinta/75">Informe o CEP</span>
+                        <span className="text-creme-claro/80">Informe o CEP</span>
                       ) : shipping.priceCents === 0 ? (
-                        <span className="text-verde">Grátis</span>
+                        <span className="font-medium">Grátis</span>
                       ) : (
                         formatPrice(shipping.priceCents)
                       )}
@@ -125,17 +125,17 @@ export function CartView() {
                   </div>
                   {method === "pix" && (
                     <div className="flex justify-between">
-                      <dt className="text-tinta/80">Desconto PIX ({STORE.pixDiscountPercent}%)</dt>
-                      <dd className="text-laranja-tinta">− {formatPrice(pixDiscount)}</dd>
+                      <dt className="text-creme-claro/85">Desconto PIX ({STORE.pixDiscountPercent}%)</dt>
+                      <dd>− {formatPrice(pixDiscount)}</dd>
                     </div>
                   )}
-                  <div className="mt-3 flex items-baseline justify-between border-t border-tinta/15 pt-4">
+                  <div className="mt-3 flex items-baseline justify-between border-t border-creme-claro/25 pt-4">
                     <dt className="rotulo text-[11px]">Total</dt>
-                    <dd className="text-[30px] font-extralight text-verde">{formatPrice(total)}</dd>
+                    <dd className="text-[30px] font-extralight">{formatPrice(total)}</dd>
                   </div>
                 </dl>
                 {!freeShipping && (
-                  <p className="mt-4 bg-laranja/15 px-3 py-2 text-[13px] text-tinta">
+                  <p className="mt-4 bg-laranja px-3 py-2 text-[13px] text-tinta">
                     Faltam {formatPrice(STORE.freeShippingMinCents - subtotal)} para o frete grátis.
                   </p>
                 )}

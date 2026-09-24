@@ -5,7 +5,7 @@ import { listAddresses, lookupCep, type Address } from "@/lib/account";
 import { useSession } from "@/lib/auth";
 import { UFS, formatCep, onlyDigits } from "@/lib/format";
 import { formatPrice } from "@/lib/products";
-import { CheckoutStep, GroupLabel, optionGroup, optionRow } from "./CheckoutStep";
+import { CheckoutStep, GroupLabel, optionGroup, optionRow, optHint, optRadio, optTitle } from "./CheckoutStep";
 import { chargedPrice, quoteShipping, type ShippingQuote } from "@/lib/shipping";
 
 const input = "mt-2 min-h-12 w-full rounded-none border border-tinta/30 bg-branco px-4 text-[15px] font-normal focus:border-verde";
@@ -108,8 +108,8 @@ function Choice({
 }) {
   const id = useId();
   return (
-    <label htmlFor={id} className={optionRow(checked)}>
-      <input id={id} type="radio" name={name} checked={checked} onChange={onSelect} className="h-5 w-5 shrink-0 accent-verde" />
+    <label htmlFor={id} data-on={checked} className={optionRow(checked)}>
+      <input id={id} type="radio" name={name} checked={checked} onChange={onSelect} className={optRadio} />
       <span className="min-w-0 flex-1">{children}</span>
       {aside && <span className="shrink-0 text-right text-[15px]">{aside}</span>}
     </label>
@@ -195,11 +195,11 @@ export function Shipping({
         <div className={saved.length ? optionGroup : ""} role="radiogroup" aria-label="Endereço de entrega">
           {saved.map((a) => (
             <Choice key={a.id} name="endereco" checked={choice === a.id} onSelect={() => setChoice(a.id)}>
-              <span className="flex items-center gap-2 text-[15px] text-verde">
+              <span className={`flex items-center gap-2 text-[15px] ${optTitle}`}>
                 {a.label || a.recipient}
                 {a.is_default && <span className="rotulo rounded-full bg-laranja px-2 py-0.5 text-[9px] text-tinta">Principal</span>}
               </span>
-              <span className="mt-0.5 block text-[13px] text-tinta/75">
+              <span className={`mt-0.5 block text-[13px] ${optHint}`}>
                 {a.street}, {a.number}
                 {a.complement ? `, ${a.complement}` : ""} · {a.district} · {a.city}/{a.state} · {formatCep(a.cep)}
               </span>
@@ -207,7 +207,7 @@ export function Shipping({
           ))}
           {saved.length > 0 && (
             <Choice name="endereco" checked={choice === "novo"} onSelect={() => setChoice("novo")}>
-              <span className="block text-[15px] text-verde">Outro endereço</span>
+              <span className={`block text-[15px] ${optTitle}`}>Outro endereço</span>
             </Choice>
           )}
           {choice === "novo" && (
@@ -242,10 +242,10 @@ export function Shipping({
                   name="frete"
                   checked={selectedId === q.id}
                   onSelect={() => setSelectedId(q.id)}
-                  aside={price === 0 ? <span className="font-medium text-verde">Grátis</span> : formatPrice(price)}
+                  aside={price === 0 ? <span className={`font-medium ${optTitle}`}>Grátis</span> : formatPrice(price)}
                 >
-                  <span className="block text-[15px] text-verde">{q.nome}</span>
-                  <span className="mt-0.5 block text-[13px] text-tinta/75">
+                  <span className={`block text-[15px] ${optTitle}`}>{q.nome}</span>
+                  <span className={`mt-0.5 block text-[13px] ${optHint}`}>
                     {[q.transportadora !== q.nome ? q.transportadora : "", q.prazo ? `entrega em até ${days(q.prazo)}` : ""]
                       .filter(Boolean)
                       .join(" · ")}

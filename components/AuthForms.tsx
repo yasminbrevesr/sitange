@@ -308,7 +308,10 @@ export function AuthForms() {
   const router = useRouter();
 
   useEffect(() => {
-    if (session) router.replace("/minha-conta/");
+    if (!session) return;
+    // Volta para onde a pessoa estava (ex.: a sacola) quando o link traz ?voltar=/sacola
+    const voltar = new URLSearchParams(window.location.search).get("voltar");
+    router.replace(voltar && /^\/[a-z-/]*$/.test(voltar) ? voltar : "/minha-conta/");
   }, [session, router]);
 
   return (

@@ -3,7 +3,6 @@
 import { useId, useState, type FormEvent } from "react";
 import {
   cardBrand,
-  createPixCharge,
   formatCardNumber,
   formatExpiry,
   isValidCardNumber,
@@ -15,6 +14,8 @@ import {
 } from "@/lib/payments";
 import { formatPrice } from "@/lib/products";
 import { STORE } from "@/lib/store";
+import { PixPanel } from "./PixPanel";
+import type { ShippingSelection } from "./Shipping";
 import { CheckoutStep, optionGroup, optionRow, optHint, optRadio, optTitle } from "./CheckoutStep";
 
 export type PayMethod = "pix" | "cartao";
@@ -57,46 +58,6 @@ function Option({
         {badge && <span className="rotulo shrink-0 rounded-full bg-laranja px-3 py-1 text-[10px] text-tinta">{badge}</span>}
       </label>
       {checked && <div className="px-4 pb-6 pt-5 md:px-5">{children}</div>}
-    </div>
-  );
-}
-
-function PixPanel({ amountCents, canPay }: { amountCents: number; canPay: boolean }) {
-  const [msg, setMsg] = useState("");
-  const [busy, setBusy] = useState(false);
-  return (
-    <div className="flex flex-col gap-4">
-      <p className="text-[15px] text-tinta/80">
-        Pague pelo app do seu banco: o QR Code e o código copia e cola aparecem aqui.
-      </p>
-      <p className="flex items-baseline justify-between border-y border-tinta/10 py-3">
-        <span className="rotulo text-[11px]">Total no PIX</span>
-        <span className="text-[24px] font-light text-verde">{formatPrice(amountCents)}</span>
-      </p>
-      <button
-        type="button"
-        disabled={busy}
-        onClick={async () => {
-          if (!canPay) return setMsg(NEED_DELIVERY);
-          setBusy(true);
-          setMsg("");
-          try {
-            await createPixCharge(amountCents);
-          } catch (err) {
-            setMsg(notReady(err));
-          } finally {
-            setBusy(false);
-          }
-        }}
-        className="rotulo min-h-14 w-full rounded-full bg-laranja px-8 text-[11px] text-tinta hover:bg-verde hover:text-creme-claro disabled:opacity-80"
-      >
-        {busy ? "Gerando…" : "Gerar PIX"}
-      </button>
-      {msg && (
-        <p role="status" className="text-[14px] text-laranja-tinta">
-          {msg}
-        </p>
-      )}
     </div>
   );
 }
@@ -221,21 +182,21 @@ export function Payment({
   onMethod,
   pixTotalCents,
   cardTotalCents,
-  canPay,
+  shipping,
 }: {
   method: PayMethod;
   onMethod: (m: PayMethod) => void;
   pixTotalCents: number;
   cardTotalCents: number;
-  /** false enquanto a entrega não estiver preenchida */
-  canPay: boolean;
+  /** Entrega escolhida; null enquanto falta endereço ou frete */
+  shipping: ShippingSelection | null;
 }) {
   return (
     <CheckoutStep
       n={2}
       id="pagamento-titulo"
       title="Pagamento"
-      note={PAYMENTS_ENABLED ? undefined : "Pagamento em configuração: nenhum dado é enviado por enquanto."}
+      note={PAYMENTS_ENABLED ? undefined : "Cartão de crédito em configuração: por enquanto, pague com PIX."}
     >
       <div className={optionGroup} role="radiogroup" aria-label="Forma de pagamento">
         <Option
@@ -245,7 +206,7 @@ export function Payment({
           hint="Aprovação na hora."
           badge={`${STORE.pixDiscountPercent}% off`}
         >
-          <PixPanel amountCents={pixTotalCents} canPay={canPay} />
+          <PixPanel amountCents={pixTotalCents} shipping={shipping} />
         </Option>
         <Option
           checked={method === "cartao"}
@@ -253,7 +214,7 @@ export function Payment({
           title="Cartão de crédito"
           hint={`Em até ${STORE.maxInstallmentsInterestFree}x sem juros.`}
         >
-          <CardPanel amountCents={cardTotalCents} canPay={canPay} />
+          <CardPanel amountCents={cardTotalCents} canPay={shipping !== null} />
         </Option>
       </div>
     </CheckoutStep>

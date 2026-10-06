@@ -116,7 +116,8 @@ function Choice({
   );
 }
 
-export type ShippingSelection = { label: string; priceCents: number };
+export type DeliveryAddress = Form;
+export type ShippingSelection = { label: string; priceCents: number; serviceId: string; address: DeliveryAddress };
 
 // Entrega na sacola: endereço (salvo na conta ou digitado) e opção de frete.
 // Avisa a sacola quando está tudo preenchido, para liberar o pagamento.
@@ -181,9 +182,25 @@ export function Shipping({
   const selected = quotes.find((q) => q.id === selectedId);
   const selection: ShippingSelection | null =
     addressReady && selected && status !== "loading"
-      ? { label: selected.nome, priceCents: chargedPrice(selected, quotes, subtotalCents) }
+      ? {
+          label: selected.nome,
+          priceCents: chargedPrice(selected, quotes, subtotalCents),
+          serviceId: selected.id,
+          address: savedAddress
+            ? {
+                recipient: savedAddress.recipient,
+                cep: savedAddress.cep,
+                street: savedAddress.street,
+                number: savedAddress.number,
+                complement: savedAddress.complement ?? "",
+                district: savedAddress.district,
+                city: savedAddress.city,
+                state: savedAddress.state,
+              }
+            : f,
+        }
       : null;
-  const key = selection ? `${selection.label}|${selection.priceCents}` : "";
+  const key = selection ? JSON.stringify(selection) : "";
   useEffect(() => onChange(selection), [key]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const days = (n: number) => `${n} ${n === 1 ? "dia útil" : "dias úteis"}`;

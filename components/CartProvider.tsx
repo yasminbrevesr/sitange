@@ -14,6 +14,7 @@ type CartContextValue = {
   items: CartItem[];
   add: (item: Omit<CartItem, "key">) => void;
   remove: (key: string) => void;
+  clear: () => void;
 };
 
 const STORAGE_KEY = "tange:sacola";
@@ -51,7 +52,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setItems((prev) => prev.filter((i) => i.key !== key));
   }, []);
 
-  return <CartContext.Provider value={{ items, add, remove }}>{children}</CartContext.Provider>;
+  const clear = useCallback(() => setItems([]), []);
+
+  return <CartContext.Provider value={{ items, add, remove, clear }}>{children}</CartContext.Provider>;
 }
 
 export function useCart() {

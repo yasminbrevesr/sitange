@@ -47,7 +47,7 @@ export function CartView() {
         ) : (
           <div className="mt-10 grid items-start gap-8 lg:grid-cols-[1.15fr_1fr] lg:gap-10">
             {/* entrega e forma de pagamento */}
-            <div className="flex flex-col gap-4">
+            <div className="flex min-w-0 flex-col gap-4">
               <Shipping
                 subtotalCents={subtotal}
                 productionDays={productionDays}
@@ -58,12 +58,12 @@ export function CartView() {
                 onMethod={setMethod}
                 pixTotalCents={subtotal - pixDiscount + shipCents}
                 cardTotalCents={subtotal + shipCents}
-                canPay={shipping !== null}
+                shipping={shipping}
               />
             </div>
 
             {/* pedido: peças, resumo e continuar comprando */}
-            <div className="order-first flex flex-col gap-4 lg:sticky lg:top-32 lg:order-none">
+            <div className="order-first flex min-w-0 flex-col gap-4 lg:sticky lg:top-32 lg:order-none">
               <section aria-labelledby="pedido-titulo" className="bg-verde p-5 text-creme-claro md:p-8">
                 <div className="flex items-baseline justify-between">
                   <h2 id="pedido-titulo" className="text-[22px] font-light uppercase tracking-[0.04em]">

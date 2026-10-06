@@ -141,3 +141,42 @@ create policy "enderecos: editar os proprios" on public.addresses
 drop policy if exists "enderecos: apagar os proprios" on public.addresses;
 create policy "enderecos: apagar os proprios" on public.addresses
   for delete to authenticated using ((select auth.uid()) = user_id);
+
+-- ---------------------------------------------------------------------------
+-- Pedidos
+-- Criados e atualizados SÓ pelas funções do servidor (criar-pix e webhook-mercadopago),
+-- que usam a chave de serviço do Supabase. O cliente só consegue LER os próprios pedidos.
+-- ---------------------------------------------------------------------------
+create table if not exists public.orders (
+  id                uuid primary key default gen_random_uuid(),
+  number            bigint generated always as identity,
+  user_id           uuid not null references auth.users (id) on delete restrict,
+  status            text not null default 'aguardando_pagamento'
+                    check (status in ('aguardando_pagamento', 'pago', 'cancelado', 'expirado')),
+  items             jsonb not null,           -- [{ productId, name, priceCents, sizes, engraving }]
+  subtotal_cents    integer not null,
+  shipping_cents    integer not null,
+  discount_cents    integer not null default 0,
+  total_cents       integer not null,
+  shipping_service  text not null,
+  shipping_days     integer,
+  shipping_address  jsonb not null,           -- cópia do endereço no momento da compra
+  payment_method    text not null check (payment_method in ('pix', 'cartao')),
+  mp_payment_id     text,
+  pix_qr_code       text,
+  pix_qr_base64     text,
+  pix_expires_at    timestamptz,
+  paid_at           timestamptz,
+  created_at        timestamptz not null default now(),
+  updated_at        timestamptz not null default now()
+);
+
+create index if not exists orders_user_id_idx on public.orders (user_id, created_at desc);
+create unique index if not exists orders_mp_payment_id_idx on public.orders (mp_payment_id) where mp_payment_id is not null;
+
+alter table public.orders enable row level security;
+
+drop policy if exists "pedidos: ver os proprios" on public.orders;
+create policy "pedidos: ver os proprios" on public.orders
+  for select to authenticated using ((select auth.uid()) = user_id);
+-- Sem políticas de insert/update/delete: o site não cria nem altera pedidos direto.

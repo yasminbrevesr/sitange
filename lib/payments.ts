@@ -4,18 +4,13 @@
 // trocados pelos campos seguros do gateway, que devolvem só um "token". A cobrança (PIX e cartão) é
 // criada num servidor (ex.: Supabase Edge Function) com a chave secreta do gateway, fora do site.
 
-export const PAYMENTS_ENABLED = false; // [COLOCAR AQUI] true quando o gateway estiver integrado
+// PIX já funciona (components/PixPanel.tsx + função criar-pix). Isto vale só para o cartão.
+export const PAYMENTS_ENABLED = false; // true quando o cartão estiver integrado
 
 export class PaymentsNotConfiguredError extends Error {
   constructor() {
     super("O pagamento ainda não está ativo.");
   }
-}
-
-export type PixCharge = { qrCodeBase64: string; copyPaste: string; expiresAt: string };
-
-export async function createPixCharge(_amountCents: number): Promise<PixCharge> {
-  throw new PaymentsNotConfiguredError();
 }
 
 export async function payWithCard(_input: { cardToken: string; installments: number; amountCents: number }): Promise<void> {

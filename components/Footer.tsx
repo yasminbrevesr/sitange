@@ -1,3 +1,4 @@
+import { COMPANY } from "@/lib/site";
 import Link from "next/link";
 import { Symbol } from "./Symbol";
 import { MISSING, getProductsByFamily } from "@/lib/products";
@@ -19,7 +20,7 @@ const columns = [
       { label: "Como funciona", href: "/#como-funciona" },
       { label: "Termos de Uso", href: "/termos" },
       { label: "Política de Privacidade", href: "/privacidade" },
-      { label: `Contato ${MISSING}`, href: null },
+      { label: `Contato ${COMPANY.phone}`, href: COMPANY.phoneHref },
     ],
   },
   {
@@ -68,7 +69,7 @@ export function Footer() {
       </div>
 
       <div className="mx-auto flex max-w-[1440px] flex-col gap-2 border-t border-[#F2E9DA26] px-4 py-6 md:flex-row md:justify-between md:px-10">
-        <p className="rotulo text-[10px] text-creme-claro/80">CNPJ {MISSING}</p>
+        <p className="rotulo text-[10px] text-creme-claro/80">CNPJ {COMPANY.cnpj}</p>
         <p className="rotulo text-[10px] text-creme-claro/80">Duas peças. Um ponto.</p>
       </div>
     </footer>

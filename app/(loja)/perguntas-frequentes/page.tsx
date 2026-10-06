@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { COMPANY } from "@/lib/site";
 import { Container } from "@/components/Container";
 import { Dot } from "@/components/Dot";
 import { MISSING, RING_SIZES, formatPrice, products } from "@/lib/products";
@@ -123,8 +124,12 @@ const GROUPS: { title: string; items: QA[] }[] = [
     items: [
       {
         q: "Como falo com a TANGÈ?",
-        text: `Pelo ${MISSING}.`,
-        a: null,
+        text: `Pelo telefone ${COMPANY.phone}.`,
+        a: (
+          <>
+            Pelo telefone <a href={COMPANY.phoneHref} className="underline underline-offset-4">{COMPANY.phone}</a>.
+          </>
+        ),
       },
     ],
   },

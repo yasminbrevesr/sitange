@@ -9,3 +9,10 @@ export const SITE_DESCRIPTION =
 export function absoluteUrl(path = "/") {
   return `${SITE_URL}${path.startsWith("/") ? path : `/${path}`}`;
 }
+
+// Dados da empresa (rodapé, termos, privacidade e perguntas frequentes).
+export const COMPANY = {
+  cnpj: "68.054.344/0001-17",
+  phone: "(21) 98467-9373",
+  phoneHref: "tel:+5521984679373",
+};

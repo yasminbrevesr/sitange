@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { COMPANY } from "@/lib/site";
 import Link from "next/link";
 import { LegalPage } from "@/components/LegalPage";
 import { MISSING } from "@/lib/products";
@@ -21,7 +22,7 @@ export default function PrivacidadePage() {
 
       <h2>Quem somos</h2>
       <p>
-        Razão social: {MISSING} · CNPJ: {MISSING} · Endereço: {MISSING}. Contato para assuntos de privacidade: {MISSING}{" "}
+        Razão social: {MISSING} · CNPJ: {COMPANY.cnpj} · Endereço: {MISSING}. Contato para assuntos de privacidade: {MISSING}{" "}
         (e-mail do encarregado de dados).
       </p>
 

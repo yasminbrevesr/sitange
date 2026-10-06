@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { COMPANY } from "@/lib/site";
 import Link from "next/link";
 import { LegalPage } from "@/components/LegalPage";
 import { MISSING } from "@/lib/products";
@@ -18,7 +19,7 @@ export default function TermosPage() {
     <LegalPage title="Termos de Uso" updated="24 de setembro de 2026">
       <p>
         Estes termos valem para o uso do site da TANGÈ e para as compras feitas nele. Ao criar uma conta ou fazer um pedido,
-        você concorda com eles. Razão social: {MISSING} · CNPJ: {MISSING}.
+        você concorda com eles. Razão social: {MISSING} · CNPJ: {COMPANY.cnpj}.
       </p>
 
       <h2>Conta</h2>
@@ -54,7 +55,9 @@ export default function TermosPage() {
       </p>
 
       <h2>Contato</h2>
-      <p>{MISSING} (e-mail, WhatsApp e horário de atendimento).</p>
+      <p>
+        Telefone: <a href={COMPANY.phoneHref}>{COMPANY.phone}</a>. E-mail e horário de atendimento: {MISSING}.
+      </p>
 
       <p>
         O uso dos seus dados está descrito na <Link href="/privacidade">Política de Privacidade</Link>.

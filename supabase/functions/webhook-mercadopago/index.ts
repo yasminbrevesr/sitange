@@ -72,12 +72,17 @@ Deno.serve(async (req) => {
     } else if (pg.status === "cancelled" && pg.status_detail === "expired") status = "expirado";
     else if (["cancelled", "rejected", "refunded", "charged_back"].includes(pg.status)) status = "cancelado";
 
+    // "pago" só a partir de "aguardando_pagamento" (aviso repetido não desfaz produção/envio).
+    // Estorno/contestação cancela em qualquer etapa.
+    if (status === "pago" && pedido.status !== "aguardando_pagamento") status = null;
+    if ((status === "expirado" || status === "cancelado") && pedido.status !== "aguardando_pagamento" && !["refunded", "charged_back"].includes(pg.status))
+      status = null;
     if (status && status !== pedido.status) {
       await db(`orders?id=eq.${pedidoId}`, {
         method: "PATCH",
         body: JSON.stringify({
           status,
-          paid_at: status === "pago" ? pg.date_approved ?? new Date().toISOString() : null,
+          ...(status === "pago" ? { paid_at: pg.date_approved ?? new Date().toISOString() } : {}),
           updated_at: new Date().toISOString(),
         }),
       });

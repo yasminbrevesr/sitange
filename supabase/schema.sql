@@ -152,7 +152,7 @@ create table if not exists public.orders (
   number            bigint generated always as identity,
   user_id           uuid not null references auth.users (id) on delete restrict,
   status            text not null default 'aguardando_pagamento'
-                    check (status in ('aguardando_pagamento', 'pago', 'cancelado', 'expirado')),
+                    check (status in ('aguardando_pagamento', 'pago', 'em_producao', 'enviado', 'entregue', 'cancelado', 'expirado')),
   items             jsonb not null,           -- [{ productId, name, priceCents, sizes, engraving }]
   subtotal_cents    integer not null,
   shipping_cents    integer not null,
@@ -180,3 +180,109 @@ drop policy if exists "pedidos: ver os proprios" on public.orders;
 create policy "pedidos: ver os proprios" on public.orders
   for select to authenticated using ((select auth.uid()) = user_id);
 -- Sem políticas de insert/update/delete: o site não cria nem altera pedidos direto.
+
+-- ---------------------------------------------------------------------------
+-- Painel da loja (/admin): etapas do pedido e quem pode administrar
+-- ---------------------------------------------------------------------------
+alter table public.orders add column if not exists tracking_code  text;
+alter table public.orders add column if not exists production_at  timestamptz;
+alter table public.orders add column if not exists shipped_at     timestamptz;
+alter table public.orders add column if not exists delivered_at   timestamptz;
+
+-- Etapas: aguardando_pagamento → pago → em_producao → enviado → entregue (ou cancelado/expirado)
+alter table public.orders drop constraint if exists orders_status_check;
+alter table public.orders add constraint orders_status_check
+  check (status in ('aguardando_pagamento', 'pago', 'em_producao', 'enviado', 'entregue', 'cancelado', 'expirado'));
+
+-- Administradores da loja. Para incluir alguém (a pessoa precisa ter conta no site):
+--   insert into public.admins (user_id) select id from auth.users where email = 'email@exemplo.com' on conflict do nothing;
+create table if not exists public.admins (
+  user_id    uuid primary key references auth.users (id) on delete cascade,
+  created_at timestamptz not null default now()
+);
+alter table public.admins enable row level security;
+-- Sem políticas: ninguém lê nem altera esta tabela pelo site; só as funções abaixo consultam.
+
+create or replace function public.is_admin()
+returns boolean
+language sql
+stable
+security definer
+set search_path = ''
+as $$
+  select exists (select 1 from public.admins where user_id = auth.uid());
+$$;
+
+-- Lista de pedidos para o painel, com os dados do cliente
+create or replace function public.admin_pedidos()
+returns table (
+  id uuid, number bigint, status text, items jsonb,
+  subtotal_cents integer, shipping_cents integer, discount_cents integer, total_cents integer,
+  shipping_service text, shipping_days integer, shipping_address jsonb, payment_method text,
+  tracking_code text, created_at timestamptz, paid_at timestamptz, production_at timestamptz,
+  shipped_at timestamptz, delivered_at timestamptz,
+  customer_name text, customer_email text, customer_cpf text, customer_phone text
+)
+language plpgsql
+stable
+security definer
+set search_path = ''
+as $$
+begin
+  if not public.is_admin() then
+    raise exception 'acesso restrito' using errcode = '42501';
+  end if;
+  return query
+    select o.id, o.number, o.status, o.items,
+           o.subtotal_cents, o.shipping_cents, o.discount_cents, o.total_cents,
+           o.shipping_service, o.shipping_days, o.shipping_address, o.payment_method,
+           o.tracking_code, o.created_at, o.paid_at, o.production_at, o.shipped_at, o.delivered_at,
+           p.name, p.email, p.cpf, p.phone
+    from public.orders o
+    left join public.profiles p on p.id = o.user_id
+    order by o.created_at desc
+    limit 500;
+end;
+$$;
+
+-- Avança a etapa de um pedido (só administradores, só na ordem certa)
+create or replace function public.admin_avancar_pedido(p_id uuid, p_status text, p_rastreio text default null)
+returns void
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  atual text;
+begin
+  if not public.is_admin() then
+    raise exception 'acesso restrito' using errcode = '42501';
+  end if;
+  select status into atual from public.orders where id = p_id for update;
+  if atual is null then
+    raise exception 'pedido não encontrado';
+  end if;
+  if not ((atual = 'pago' and p_status = 'em_producao')
+       or (atual = 'em_producao' and p_status = 'enviado')
+       or (atual = 'enviado' and p_status = 'entregue')) then
+    raise exception 'etapa inválida: % para %', atual, p_status;
+  end if;
+  if p_status = 'enviado' and coalesce(trim(p_rastreio), '') = '' then
+    raise exception 'informe o código de rastreio';
+  end if;
+  update public.orders set
+    status        = p_status,
+    tracking_code = case when p_status = 'enviado' then upper(trim(p_rastreio)) else tracking_code end,
+    production_at = case when p_status = 'em_producao' then now() else production_at end,
+    shipped_at    = case when p_status = 'enviado' then now() else shipped_at end,
+    delivered_at  = case when p_status = 'entregue' then now() else delivered_at end,
+    updated_at    = now()
+  where id = p_id;
+end;
+$$;
+
+revoke all on function public.admin_pedidos() from public, anon;
+revoke all on function public.admin_avancar_pedido(uuid, text, text) from public, anon;
+grant execute on function public.is_admin() to authenticated;
+grant execute on function public.admin_pedidos() to authenticated;
+grant execute on function public.admin_avancar_pedido(uuid, text, text) to authenticated;

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import { isAdmin } from "@/lib/admin";
 import { displayName, signOut, useSession } from "@/lib/auth";
 import { Symbol } from "../Symbol";
 import { QuickCart } from "./QuickCart";
@@ -44,6 +45,13 @@ export function AccountShell({ children }: { children: ReactNode }) {
   }, [session, leaving, router]);
 
   useEffect(() => setOpen(false), [pathname]);
+
+  // Administradores veem o atalho para o painel de pedidos da loja.
+  const [admin, setAdmin] = useState(false);
+  const userId = session?.user.id;
+  useEffect(() => {
+    if (userId) isAdmin().then(setAdmin);
+  }, [userId]);
 
   const current = (href: string) => {
     const clean = (s: string) => s.replace(/\/$/, "");
@@ -116,6 +124,17 @@ export function AccountShell({ children }: { children: ReactNode }) {
                       </li>
                     );
                   })}
+                  {admin && (
+                    <li>
+                      <Link
+                        href="/admin/"
+                        className="flex min-h-14 items-center gap-3 border-b border-tinta/10 px-4 text-[15px] text-verde hover:bg-verde/5"
+                      >
+                        <Icon name="pedidos" />
+                        Painel da loja
+                      </Link>
+                    </li>
+                  )}
                   <li>
                     <button
                       type="button"

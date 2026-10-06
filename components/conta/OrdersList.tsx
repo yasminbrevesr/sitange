@@ -3,12 +3,15 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useSession } from "@/lib/auth";
-import { STATUS_LABEL, listOrders, type Order } from "@/lib/orders";
+import { STATUS_LABEL, TRACKING_URL, listOrders, type Order } from "@/lib/orders";
 import { formatPrice } from "@/lib/products";
 
 const STATUS_STYLE: Record<Order["status"], string> = {
   aguardando_pagamento: "bg-creme-claro text-tinta",
   pago: "bg-verde text-creme-claro",
+  em_producao: "bg-verde text-creme-claro",
+  enviado: "bg-laranja text-tinta",
+  entregue: "bg-verde text-creme-claro",
   cancelado: "border border-tinta/30 text-tinta/80",
   expirado: "border border-tinta/30 text-tinta/80",
 };
@@ -74,6 +77,14 @@ export function OrdersList() {
                   </li>
                 ))}
               </ul>
+              {o.tracking_code && (
+                <p className="mt-3 text-[14px] text-tinta/80">
+                  Rastreio: <strong className="font-medium text-tinta">{o.tracking_code}</strong> ·{" "}
+                  <a href={TRACKING_URL} target="_blank" rel="noopener noreferrer" className="text-verde underline underline-offset-4">
+                    acompanhar nos Correios
+                  </a>
+                </p>
+              )}
               <p className="mt-3 text-right text-[18px] font-light text-verde">{formatPrice(o.total_cents)}</p>
             </li>
           ))}

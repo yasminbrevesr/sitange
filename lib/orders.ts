@@ -6,7 +6,7 @@ import type { CartItem } from "@/components/CartProvider";
 import type { DeliveryAddress } from "@/components/Shipping";
 import { supabase } from "./supabase";
 
-export type OrderStatus = "aguardando_pagamento" | "pago" | "cancelado" | "expirado";
+export type OrderStatus = "aguardando_pagamento" | "pago" | "em_producao" | "enviado" | "entregue" | "cancelado" | "expirado";
 
 export type PixOrder = {
   pedidoId: string;
@@ -25,6 +25,7 @@ export type Order = {
   total_cents: number;
   shipping_service: string;
   payment_method: "pix" | "cartao";
+  tracking_code: string | null;
   created_at: string;
 };
 
@@ -84,7 +85,7 @@ export async function getOrderStatus(id: string): Promise<OrderStatus | null> {
 export async function listOrders(): Promise<Order[]> {
   const { data, error } = await client()
     .from("orders")
-    .select("id,number,status,items,total_cents,shipping_service,payment_method,created_at")
+    .select("id,number,status,items,total_cents,shipping_service,payment_method,tracking_code,created_at")
     .order("created_at", { ascending: false });
   if (error) throw error;
   return (data ?? []) as Order[];
@@ -93,6 +94,12 @@ export async function listOrders(): Promise<Order[]> {
 export const STATUS_LABEL: Record<OrderStatus, string> = {
   aguardando_pagamento: "Aguardando pagamento",
   pago: "Pago",
+  em_producao: "Em produção",
+  enviado: "Enviado",
+  entregue: "Entregue",
   cancelado: "Cancelado",
   expirado: "PIX expirado",
 };
+
+/** Site dos Correios para acompanhar a entrega. */
+export const TRACKING_URL = "https://rastreamento.correios.com.br/app/index.php";

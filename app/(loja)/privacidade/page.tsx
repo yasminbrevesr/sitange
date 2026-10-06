@@ -22,7 +22,7 @@ export default function PrivacidadePage() {
 
       <h2>Quem somos</h2>
       <p>
-        Razão social: {MISSING} · CNPJ: {COMPANY.cnpj} · Endereço: {MISSING}. Contato para assuntos de privacidade:{" "}
+        Razão social: {COMPANY.legalName} · CNPJ: {COMPANY.cnpj} · Endereço: {COMPANY.city}. Contato para assuntos de privacidade:{" "}
         <a href={COMPANY.whatsappHref} target="_blank" rel="noopener noreferrer">
           WhatsApp {COMPANY.phone}
         </a>

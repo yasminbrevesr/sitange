@@ -19,7 +19,7 @@ export default function TermosPage() {
     <LegalPage title="Termos de Uso" updated="24 de setembro de 2026">
       <p>
         Estes termos valem para o uso do site da TANGÈ e para as compras feitas nele. Ao criar uma conta ou fazer um pedido,
-        você concorda com eles. Razão social: {MISSING} · CNPJ: {COMPANY.cnpj}.
+        você concorda com eles. Razão social: {COMPANY.legalName} · CNPJ: {COMPANY.cnpj}.
       </p>
 
       <h2>Conta</h2>

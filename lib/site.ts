@@ -12,7 +12,9 @@ export function absoluteUrl(path = "/") {
 
 // Dados da empresa (rodapé, termos, privacidade e perguntas frequentes).
 export const COMPANY = {
+  legalName: "TANGE",
   cnpj: "68.054.344/0001-17",
+  city: "Rio de Janeiro, RJ",
   phone: "(21) 98467-9373",
   /** Abre a conversa no WhatsApp (app no celular, WhatsApp Web no computador), com uma mensagem pronta. */
   whatsappHref: `https://wa.me/5521984679373?text=${encodeURIComponent("Olá! Vim pelo site da TANGÈ.")}`,

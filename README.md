@@ -1,6 +1,6 @@
 # TANGÈ: loja online
 
-Loja da TANGÈ, anéis em prata 925 feitos de duas partes que se encaixam.
+Loja da TANGÈ, anéis em prata 950 feitos de duas partes que se encaixam.
 Feita com Next.js (App Router), TypeScript e Tailwind CSS. É exportada como site estático e publicada no GitHub Pages.
 
 ## Rodar no computador

@@ -3,7 +3,7 @@ export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://yasminbrev
 
 export const SITE_NAME = "TANGÈ";
 export const SITE_DESCRIPTION =
-  "Anéis em prata 925 maciça, feitos sob encomenda no Brasil. Toda peça é feita de duas partes que se encaixam: para dois ou para um.";
+  "Anéis em prata 950 maciça, feitos sob encomenda no Brasil. Toda peça é feita de duas partes que se encaixam: para dois ou para um.";
 
 /** Endereço completo de uma página (ex.: absoluteUrl("/aro/")). */
 export function absoluteUrl(path = "/") {

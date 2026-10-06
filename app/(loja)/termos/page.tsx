@@ -30,7 +30,7 @@ export default function TermosPage() {
 
       <h2>Produtos e preços</h2>
       <ul>
-        <li>As peças são de prata 925 maciça, feitas sob encomenda, e ficam prontas em até 10 dias úteis.</li>
+        <li>As peças são de prata 950 maciça, feitas sob encomenda, e ficam prontas em até 10 dias úteis.</li>
         <li>Os preços são os mostrados no site no momento da compra. Parcelamento em até {STORE.maxInstallmentsInterestFree}x sem juros.</li>
         <li>{STORE.pixDiscountPercent}% de desconto pagando no Pix.</li>
         <li>Gravação interna de até 12 caracteres incluída no preço.</li>

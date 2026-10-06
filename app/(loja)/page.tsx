@@ -82,7 +82,7 @@ export default function Home() {
       <section className="bg-creme-base" aria-labelledby="hero-titulo">
         <Container className="grid items-center gap-10 py-12 lg:min-h-[806px] lg:grid-cols-2 lg:py-0">
           <div>
-            <p className="rotulo text-[10px] text-tinta/75">Prata 925 · Feita sob encomenda</p>
+            <p className="rotulo text-[10px] text-tinta/75">Prata 950 · Feita sob encomenda</p>
             <h1 id="hero-titulo" className="display mt-6 text-[52px] lg:text-[112px]">
               <span className="block">
                 Duas peças

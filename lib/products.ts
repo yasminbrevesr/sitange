@@ -63,7 +63,7 @@ export const FAMILIES: Record<Family, { label: string; tag: string; description:
 
 const shared = {
   maxInstallments: 6,
-  material: "Prata 925 maciça",
+  material: "Prata 950 maciça",
   finish: "Polido",
   productionDays: 10,
   engravingMaxChars: 12,

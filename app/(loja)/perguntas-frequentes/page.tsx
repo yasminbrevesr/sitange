@@ -9,7 +9,7 @@ import { STORE } from "@/lib/store";
 export const metadata: Metadata = {
   title: "Perguntas frequentes",
   description:
-    "Prazo de produção, entrega, troca de aro, garantia, gravação, pagamento e cuidados com a prata 925 das peças TANGÈ.",
+    "Prazo de produção, entrega, troca de aro, garantia, gravação, pagamento e cuidados com a prata 950 das peças TANGÈ.",
   alternates: { canonical: "perguntas-frequentes/" },
 };
 
@@ -109,7 +109,7 @@ const GROUPS: { title: string; items: QA[] }[] = [
       },
       {
         q: "A prata escurece?",
-        text: "Pode escurecer com o tempo. É a reação natural da prata 925 com o ar, o suor e alguns produtos. Não é defeito e sai com limpeza.",
+        text: "Pode escurecer com o tempo. É a reação natural da prata 950 com o ar, o suor e alguns produtos. Não é defeito e sai com limpeza.",
         a: null,
       },
       {

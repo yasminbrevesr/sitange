@@ -340,7 +340,7 @@ export function AuthForms() {
               className="mx-auto hidden w-full max-w-[360px] lg:block"
             />
             <ul className="rotulo flex flex-wrap gap-x-6 gap-y-2 text-[10px] text-creme-claro/85">
-              <li>Prata 925</li>
+              <li>Prata 950</li>
               <li>Gravação incluída</li>
               <li>Garantia de 1 ano</li>
             </ul>

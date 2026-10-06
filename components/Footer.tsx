@@ -40,7 +40,7 @@ export function Footer() {
           <Symbol className="h-12 w-12" />
           <p className="mt-6 text-[20px] font-medium uppercase tracking-[0.34em]">Tangè</p>
           <p className="corpo mt-4 text-creme-claro/80">
-            Anéis em prata 925 maciça, feitos sob encomenda no Brasil. Toda peça é duas.
+            Anéis em prata 950 maciça, feitos sob encomenda no Brasil. Toda peça é duas.
           </p>
         </div>
 

@@ -22,8 +22,11 @@ export default function PrivacidadePage() {
 
       <h2>Quem somos</h2>
       <p>
-        Razão social: {MISSING} · CNPJ: {COMPANY.cnpj} · Endereço: {MISSING}. Contato para assuntos de privacidade: {MISSING}{" "}
-        (e-mail do encarregado de dados).
+        Razão social: {MISSING} · CNPJ: {COMPANY.cnpj} · Endereço: {MISSING}. Contato para assuntos de privacidade:{" "}
+        <a href={COMPANY.whatsappHref} target="_blank" rel="noopener noreferrer">
+          WhatsApp {COMPANY.phone}
+        </a>
+        .
       </p>
 
       <h2>Quais dados coletamos</h2>
@@ -71,7 +74,11 @@ export default function PrivacidadePage() {
       <h2>Seus direitos</h2>
       <p>
         Você pode pedir a qualquer momento para confirmar se temos seus dados, acessar, corrigir, excluir, levar para outro
-        serviço ou retirar o consentimento de marketing. Para isso, escreva para {MISSING}.
+        serviço ou retirar o consentimento de marketing. Para isso, fale com a gente pelo{" "}
+        <a href={COMPANY.whatsappHref} target="_blank" rel="noopener noreferrer">
+          WhatsApp {COMPANY.phone}
+        </a>
+        .
       </p>
 
       <h2>Cookies e armazenamento no navegador</h2>

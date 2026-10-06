@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 // Recomendado: revisão jurídica antes de abrir para clientes.
 export default function PrivacidadePage() {
   return (
-    <LegalPage title="Política de Privacidade" updated="24 de setembro de 2026">
+    <LegalPage title="Política de Privacidade" updated="6 de outubro de 2026">
       <p>
         Esta política explica quais dados a TANGÈ coleta no site, para que usa e quais são os seus direitos, conforme a
         Lei Geral de Proteção de Dados (Lei nº 13.709/2018, LGPD).
@@ -36,37 +36,59 @@ export default function PrivacidadePage() {
           de autenticação e nunca fica visível para a TANGÈ.
         </li>
         <li>
-          <strong>Entrar com o Google:</strong> nome, e-mail e foto do perfil, fornecidos pelo Google quando você autoriza.
+          <strong>Meus dados:</strong> CPF, telefone, data de nascimento e aro, se você preencher. O CPF é pedido também na
+          hora de pagar, porque o Mercado Pago exige.
         </li>
+        <li>
+          <strong>Endereços:</strong> os endereços de entrega que você salvar na sua conta.
+        </li>
+        {/* Se o login com Google for ativado (lib/auth.ts), incluir: nome, e-mail e foto do perfil fornecidos pelo Google. */}
         <li>
           <strong>Cadastro do cupom de primeira compra:</strong> e-mail e telefone.
         </li>
         <li>
-          <strong>Sacola:</strong> as peças, aros e gravações escolhidos ficam salvos só no seu navegador, não em nossos
-          servidores.
+          <strong>Sacola:</strong> as peças, aros e gravações escolhidos ficam salvos só no seu navegador até você fazer o
+          pedido.
         </li>
         <li>
-          <strong>Pedidos e pagamento:</strong> {MISSING} (dados de entrega e de pagamento, quando o checkout estiver
-          ativo).
+          <strong>Pedidos:</strong> peças, aros, gravação, endereço de entrega, opção de frete, cupom usado, valores, forma
+          de pagamento, situação do pedido e código de rastreio.
+        </li>
+        <li>
+          <strong>Cartão de crédito:</strong> o número, a validade e o código de segurança são digitados em campos do
+          próprio Mercado Pago. A TANGÈ não recebe nem guarda esses dados.
         </li>
       </ul>
 
       <h2>Para que usamos</h2>
       <ul>
         <li>Criar e manter a sua conta e permitir que você entre no site.</li>
+        <li>Calcular o frete, receber o pagamento, produzir a peça, enviar e acompanhar a entrega.</li>
+        <li>Fazer trocas de aro, atender a garantia e responder quando você falar com a gente.</li>
         <li>Enviar o cupom de primeira compra.</li>
         <li>
           Enviar novidades e ofertas por e-mail e WhatsApp, somente se você autorizar. Você pode cancelar quando quiser.
         </li>
-        <li>{MISSING} (processar pedidos, entregas, trocas e garantia, quando o checkout estiver ativo).</li>
       </ul>
 
       <h2>Com quem compartilhamos</h2>
-      <p>
-        Não vendemos seus dados. Eles são guardados pela Supabase, empresa que fornece o banco de dados e o login do
-        site. Se você entrar com o Google, o Google também participa do login. Outros parceiros (pagamento, frete, envio de
-        e-mails): {MISSING}.
-      </p>
+      <p>Não vendemos seus dados. Compartilhamos só o necessário com as empresas que fazem o site e a loja funcionarem:</p>
+      <ul>
+        <li>
+          <strong>Supabase:</strong> guarda o banco de dados (conta, endereços e pedidos) e cuida do login.
+        </li>
+        <li>
+          <strong>Mercado Pago:</strong> processa o pagamento por PIX e cartão. Recebe seu nome, e-mail, CPF e o valor da
+          compra.
+        </li>
+        <li>
+          <strong>SuperFrete e Correios:</strong> calculam o frete (com o CEP) e fazem a entrega (com nome e endereço).
+        </li>
+        <li>
+          <strong>ViaCEP:</strong> recebe o CEP digitado para preencher rua, bairro e cidade automaticamente.
+        </li>
+        {/* Se o login com Google for ativado, incluir o Google nesta lista. */}
+      </ul>
 
       <h2>Por quanto tempo guardamos</h2>
       <p>{MISSING} (prazo de guarda de cada tipo de dado).</p>
@@ -83,9 +105,10 @@ export default function PrivacidadePage() {
 
       <h2>Cookies e armazenamento no navegador</h2>
       <p>
-        O site usa o armazenamento do navegador para manter sua sessão ativa, lembrar da sacola e não mostrar o popup de
-        cupom de novo. Não usamos cookies de publicidade. {MISSING} (atualizar se forem adicionadas ferramentas de
-        análise ou anúncios).
+        O site usa o armazenamento do navegador para manter sua sessão ativa, lembrar da sacola e do cupom e não mostrar
+        o popup de cupom de novo. Na hora de pagar, o Mercado Pago pode usar cookies próprios para prevenir fraudes. Não
+        usamos cookies de publicidade.
+        {/* Atualizar este parágrafo se forem adicionadas ferramentas de análise (ex.: Google Analytics) ou anúncios. */}
       </p>
 
       <h2>Mudanças nesta política</h2>

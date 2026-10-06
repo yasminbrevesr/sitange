@@ -14,5 +14,6 @@ export function absoluteUrl(path = "/") {
 export const COMPANY = {
   cnpj: "68.054.344/0001-17",
   phone: "(21) 98467-9373",
-  phoneHref: "tel:+5521984679373",
+  /** Abre a conversa no WhatsApp (app no celular, WhatsApp Web no computador), com uma mensagem pronta. */
+  whatsappHref: `https://wa.me/5521984679373?text=${encodeURIComponent("Olá! Vim pelo site da TANGÈ.")}`,
 };

@@ -124,10 +124,14 @@ const GROUPS: { title: string; items: QA[] }[] = [
     items: [
       {
         q: "Como falo com a TANGÈ?",
-        text: `Pelo telefone ${COMPANY.phone}.`,
+        text: `Pelo WhatsApp ${COMPANY.phone}.`,
         a: (
           <>
-            Pelo telefone <a href={COMPANY.phoneHref} className="underline underline-offset-4">{COMPANY.phone}</a>.
+            Pelo WhatsApp{" "}
+            <a href={COMPANY.whatsappHref} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4">
+              {COMPANY.phone}
+            </a>
+            .
           </>
         ),
       },

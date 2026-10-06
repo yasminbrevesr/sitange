@@ -56,7 +56,7 @@ export default function TermosPage() {
 
       <h2>Contato</h2>
       <p>
-        Telefone: <a href={COMPANY.phoneHref}>{COMPANY.phone}</a>. E-mail e horário de atendimento: {MISSING}.
+        WhatsApp: <a href={COMPANY.whatsappHref} target="_blank" rel="noopener noreferrer">{COMPANY.phone}</a>. E-mail e horário de atendimento: {MISSING}.
       </p>
 
       <p>

@@ -20,7 +20,7 @@ const columns = [
       { label: "Como funciona", href: "/#como-funciona" },
       { label: "Termos de Uso", href: "/termos" },
       { label: "Política de Privacidade", href: "/privacidade" },
-      { label: `Contato ${COMPANY.phone}`, href: COMPANY.phoneHref },
+      { label: `WhatsApp ${COMPANY.phone}`, href: COMPANY.whatsappHref },
     ],
   },
   {

@@ -1,4 +1,8 @@
-// Supabase Edge Function: cria o pedido e o PIX no Mercado Pago.
+// Supabase Edge Function: cria o pedido e cobra no Mercado Pago, por PIX ou cartão de crédito.
+// (O nome ficou "criar-pix" porque nasceu só para o PIX; o cartão usa o mesmo caminho.)
+//
+// Cartão: os dados do cartão NUNCA chegam aqui. O navegador digita nos campos seguros do Mercado Pago,
+// que devolvem só um "token" de uso único; esta função cobra com esse token.
 //
 // Segurança: o navegador manda só O QUE a pessoa quer comprar (peças, aros, endereço, frete escolhido).
 // Preço, frete, desconto e total são recalculados AQUI, nunca aceitos do navegador.
@@ -15,6 +19,18 @@ const ARO_MIN = 10;
 const ARO_MAX = 26;
 const GRAVACAO_MAX = 12;
 const PIX_VALIDADE_MIN = 30;
+const PARCELAS_MAX = 6;
+
+// Motivos de recusa do cartão (status_detail do Mercado Pago) em português simples.
+function motivoRecusa(detalhe: string): string {
+  if (detalhe.startsWith("cc_rejected_bad_filled")) return "Confira os dados do cartão e tente de novo.";
+  if (detalhe === "cc_rejected_insufficient_amount") return "O cartão não tem limite suficiente para essa compra.";
+  if (detalhe === "cc_rejected_call_for_authorize") return "O banco pediu autorização: fale com o banco e tente de novo.";
+  if (detalhe === "cc_rejected_card_disabled") return "O cartão está bloqueado ou não foi ativado. Fale com o banco.";
+  if (detalhe === "cc_rejected_duplicated_payment") return "Esse pagamento já foi feito há pouco. Confira em Meus pedidos.";
+  if (detalhe === "cc_rejected_max_attempts") return "Muitas tentativas com esse cartão. Use outro cartão ou pague com PIX.";
+  return "O pagamento foi recusado. Tente outro cartão ou pague com PIX.";
+}
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL") ?? "";
 const ANON = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
@@ -170,8 +186,18 @@ async function atender(req: Request): Promise<Response> {
     descontoCupom = Math.round((subtotal * c.percent) / 100);
   }
 
-  // 6. Total no PIX: cupom sobre as peças, depois 5% do PIX sobre o que sobrou das peças (frete fora)
-  const desconto = Math.round(((subtotal - descontoCupom) * DESCONTO_PIX_PCT) / 100);
+  // Forma de pagamento: PIX (padrão) ou cartão
+  const cartao = body.metodo === "cartao";
+  const c = (body.cartao ?? {}) as Record<string, unknown>;
+  const cartaoToken = texto(c.token, 200);
+  const cartaoBandeira = texto(c.paymentMethodId, 40);
+  const cartaoEmissor = so(c.issuerId);
+  const parcelas = Number(c.installments);
+  if (cartao && (cartaoToken.length < 10 || !/^[a-z_]+$/.test(cartaoBandeira) || !Number.isInteger(parcelas) || parcelas < 1 || parcelas > PARCELAS_MAX))
+    return falha("cartao", "Confira os dados do cartão e tente de novo.");
+
+  // 6. Total: cupom sobre as peças; no PIX, mais 5% sobre o que sobrou das peças (frete fora)
+  const desconto = cartao ? 0 : Math.round(((subtotal - descontoCupom) * DESCONTO_PIX_PCT) / 100);
   const total = subtotal - descontoCupom - desconto + frete;
 
   // 7. Dados de quem paga: nome e CPF do perfil (o CPF pode vir agora e fica salvo no perfil)
@@ -180,13 +206,19 @@ async function atender(req: Request): Promise<Response> {
   let cpf = so(perfil.cpf);
   if (!cpfValido(cpf)) {
     cpf = so(body.cpf);
-    if (!cpfValido(cpf)) return falha("cpf", "Informe um CPF válido para gerar o PIX.");
+    if (!cpfValido(cpf)) return falha("cpf", "Informe um CPF válido para pagar.");
     await db(`profiles?id=eq.${user.id}`, { method: "PATCH", body: JSON.stringify({ cpf, updated_at: new Date().toISOString() }) });
   }
   const nome = (perfil.name ?? endereco.recipient).trim().split(/\s+/);
 
   // 8. Cria o pedido
   const expira = new Date(Date.now() + PIX_VALIDADE_MIN * 60 * 1000);
+  const pagador = {
+    email: user.email,
+    first_name: nome[0] ?? "",
+    last_name: nome.slice(1).join(" "),
+    identification: { type: "CPF", number: cpf },
+  };
   const [pedido] = (await db("orders", {
     method: "POST",
     body: JSON.stringify({
@@ -201,12 +233,47 @@ async function atender(req: Request): Promise<Response> {
       shipping_service: escolhida.nome,
       shipping_days: escolhida.prazo,
       shipping_address: endereco,
-      payment_method: "pix",
-      pix_expires_at: expira.toISOString(),
+      payment_method: cartao ? "cartao" : "pix",
+      pix_expires_at: cartao ? null : expira.toISOString(),
     }),
   })) as { id: string; number: number }[];
 
-  // 9. Cria o PIX no Mercado Pago
+  // 9a. Cartão: cobra com o token e responde na hora (aprovado ou recusado)
+  if (cartao) {
+    const mpc = await fetch("https://api.mercadopago.com/v1/payments", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${MP}`, "Content-Type": "application/json", "X-Idempotency-Key": pedido.id },
+      body: JSON.stringify({
+        transaction_amount: total / 100,
+        token: cartaoToken,
+        description: `Pedido TANGÈ nº ${pedido.number}`,
+        installments: parcelas,
+        payment_method_id: cartaoBandeira,
+        ...(cartaoEmissor ? { issuer_id: Number(cartaoEmissor) } : {}),
+        binary_mode: true, // só aprovado ou recusado, sem "em análise"
+        statement_descriptor: "TANGE",
+        external_reference: pedido.id,
+        notification_url: `${SUPABASE_URL}/functions/v1/webhook-mercadopago`,
+        payer: pagador,
+      }),
+    });
+    const pc = await mpc.json().catch(() => ({}));
+    if (pc?.id) {
+      await db(`orders?id=eq.${pedido.id}`, { method: "PATCH", body: JSON.stringify({ mp_payment_id: String(pc.id), updated_at: new Date().toISOString() }) });
+    }
+    if (mpc.ok && pc.status === "approved") {
+      await db(`orders?id=eq.${pedido.id}`, {
+        method: "PATCH",
+        body: JSON.stringify({ status: "pago", paid_at: pc.date_approved ?? new Date().toISOString(), updated_at: new Date().toISOString() }),
+      });
+      return json({ pedidoId: pedido.id, numero: pedido.number, totalCents: total, status: "pago" });
+    }
+    console.error("Cartão não aprovado", mpc.status, pc?.status, pc?.status_detail, JSON.stringify(pc?.cause ?? pc?.message ?? ""));
+    await db(`orders?id=eq.${pedido.id}`, { method: "PATCH", body: JSON.stringify({ status: "cancelado", updated_at: new Date().toISOString() }) });
+    return falha("cartao_recusado", mpc.ok ? motivoRecusa(String(pc.status_detail ?? "")) : "Não deu para processar o cartão agora. Tente de novo ou pague com PIX.", 402);
+  }
+
+  // 9b. PIX: cria o QR Code no Mercado Pago
   const mp = await fetch("https://api.mercadopago.com/v1/payments", {
     method: "POST",
     headers: { Authorization: `Bearer ${MP}`, "Content-Type": "application/json", "X-Idempotency-Key": pedido.id },
@@ -217,12 +284,7 @@ async function atender(req: Request): Promise<Response> {
       external_reference: pedido.id,
       notification_url: `${SUPABASE_URL}/functions/v1/webhook-mercadopago`,
       date_of_expiration: dataMP(expira),
-      payer: {
-        email: user.email,
-        first_name: nome[0] ?? "",
-        last_name: nome.slice(1).join(" "),
-        identification: { type: "CPF", number: cpf },
-      },
+      payer: pagador,
     }),
   });
   const pg = await mp.json().catch(() => ({}));

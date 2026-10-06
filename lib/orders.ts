@@ -66,13 +66,16 @@ function client() {
   return supabase;
 }
 
-export async function createPixOrder(input: {
+type CheckoutInput = {
   items: CartItem[];
   address: DeliveryAddress;
   serviceId: string;
   cpf?: string;
   coupon?: string;
-}): Promise<PixOrder> {
+};
+
+// Chama a função de cobrança do Supabase e traduz o erro (o motivo vem no corpo da resposta).
+async function checkout<T>(input: CheckoutInput, extra: Record<string, unknown>, fallback: string): Promise<T> {
   const { data, error } = await client().functions.invoke("criar-pix", {
     body: {
       itens: input.items.map(({ productId, sizes, engraving }) => ({ productId, sizes, engraving })),
@@ -80,10 +83,11 @@ export async function createPixOrder(input: {
       freteId: input.serviceId,
       cpf: input.cpf,
       cupom: input.coupon,
+      ...extra,
     },
   });
   if (error) {
-    let msg = "Não deu para gerar o PIX agora. Tente de novo em instantes.";
+    let msg = fallback;
     let code = "pagamento";
     // A resposta da função (com o motivo) vem em error.context; lida sem depender de instanceof.
     const res = (error as { context?: Response }).context;
@@ -102,7 +106,24 @@ export async function createPixOrder(input: {
     }
     throw new OrderError(msg, code);
   }
-  return data as PixOrder;
+  return data as T;
+}
+
+export function createPixOrder(input: CheckoutInput): Promise<PixOrder> {
+  return checkout<PixOrder>(input, {}, "Não deu para gerar o PIX agora. Tente de novo em instantes.");
+}
+
+export type CardOrder = { pedidoId: string; numero: number; totalCents: number; status: "pago" };
+
+/** Cartão: só o token dos campos seguros do Mercado Pago sai do navegador, nunca o número do cartão. */
+export function createCardOrder(
+  input: CheckoutInput & { card: { token: string; paymentMethodId: string; issuerId?: string; installments: number } },
+): Promise<CardOrder> {
+  return checkout<CardOrder>(
+    input,
+    { metodo: "cartao", cartao: input.card },
+    "Não deu para processar o cartão agora. Tente de novo ou pague com PIX.",
+  );
 }
 
 export async function getOrderStatus(id: string): Promise<OrderStatus | null> {

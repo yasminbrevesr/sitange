@@ -24,7 +24,11 @@ export type Product = {
   slug: string;
   name: string;
   family: Family;
-  /** Preço do par, em centavos. */
+  /**
+   * Preço do par, em centavos. O preço que vale é o da tabela products do banco (supabase/schema.sql):
+   * o site mostra o do banco e a cobrança usa o do banco. Este número só aparece no primeiro instante,
+   * enquanto o banco responde. Ao mudar um preço no banco, atualize aqui também para o primeiro instante bater.
+   */
   priceCents: number;
   maxInstallments: number;
   totalWeightGrams: number;

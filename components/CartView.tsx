@@ -5,6 +5,7 @@ import { useState } from "react";
 import { FAMILIES, formatPrice, getProduct } from "@/lib/products";
 import { STORE } from "@/lib/store";
 import { Container } from "./Container";
+import { usePrice } from "./PricesProvider";
 import { useCart } from "./CartProvider";
 import { Payment, type PayMethod } from "./Payment";
 import { ProductImage } from "./ProductArt";
@@ -12,11 +13,12 @@ import { Shipping, type ShippingSelection } from "./Shipping";
 
 export function CartView() {
   const { items, remove } = useCart();
+  const priceOf = usePrice();
   const [method, setMethod] = useState<PayMethod>("pix");
   const lines = items
     .map((item) => ({ item, product: getProduct(item.productId) }))
     .filter((l) => l.product);
-  const subtotal = lines.reduce((sum, l) => sum + l.product!.priceCents, 0);
+  const subtotal = lines.reduce((sum, l) => sum + priceOf(l.product!), 0);
   const freeShipping = subtotal >= STORE.freeShippingMinCents;
   const pixDiscount = Math.round((subtotal * STORE.pixDiscountPercent) / 100);
   const [shipping, setShipping] = useState<ShippingSelection | null>(null);
@@ -87,7 +89,7 @@ export function CartView() {
                               {product!.name}
                             </Link>
                           </div>
-                          <span className="text-[16px] font-light">{formatPrice(product!.priceCents)}</span>
+                          <span className="text-[16px] font-light">{formatPrice(priceOf(product!))}</span>
                         </div>
                         <p className="text-[13px] text-creme-claro/80">
                           {item.sizes.length === 2 ? `Aros ${item.sizes[0]} e ${item.sizes[1]}` : `Aro ${item.sizes[0]}`}

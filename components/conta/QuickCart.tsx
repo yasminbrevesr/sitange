@@ -2,16 +2,18 @@
 
 import Link from "next/link";
 import { formatPrice, getProduct } from "@/lib/products";
+import { usePrice } from "../PricesProvider";
 import { useCart } from "../CartProvider";
 import { ProductImage } from "../ProductArt";
 
 // Sacola rápida na lateral da área logada: peças, subtotal e atalho para finalizar.
 export function QuickCart() {
   const { items, remove } = useCart();
+  const priceOf = usePrice();
   const lines = items
     .map((item) => ({ item, product: getProduct(item.productId) }))
     .filter((l) => l.product);
-  const subtotal = lines.reduce((sum, l) => sum + l.product!.priceCents, 0);
+  const subtotal = lines.reduce((sum, l) => sum + priceOf(l.product!), 0);
 
   return (
     <section aria-labelledby="sacola-rapida-titulo" className="mt-6 border border-tinta/10 bg-branco p-4">
@@ -42,7 +44,7 @@ export function QuickCart() {
                 <div className="flex min-w-0 flex-1 flex-col">
                   <div className="flex items-start justify-between gap-2">
                     <span className="text-[15px] text-verde">{product!.name}</span>
-                    <span className="text-[14px] font-light">{formatPrice(product!.priceCents)}</span>
+                    <span className="text-[14px] font-light">{formatPrice(priceOf(product!))}</span>
                   </div>
                   <span className="text-[13px] text-tinta/75">
                     {item.sizes.length === 2 ? `Aros ${item.sizes[0]} e ${item.sizes[1]}` : `Aro ${item.sizes[0]}`}

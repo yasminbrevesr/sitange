@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useId, useRef, useState, type FormEvent } from "react";
 import { FAMILIES, formatPrice, getProducts } from "@/lib/products";
+import { usePrice } from "./PricesProvider";
 
 const normalize = (t: string) =>
   t
@@ -14,6 +15,7 @@ const normalize = (t: string) =>
 // Busca de produtos no próprio navegador (o catálogo é pequeno e está em lib/products.ts).
 // Mostra as peças que batem com o texto; Enter abre a primeira.
 export function SearchBox({ onNavigate }: { onNavigate?: () => void }) {
+  const priceOf = usePrice();
   const id = useId();
   const router = useRouter();
   const wrapper = useRef<HTMLFormElement>(null);
@@ -113,7 +115,7 @@ export function SearchBox({ onNavigate }: { onNavigate?: () => void }) {
                       <span className="font-medium text-verde">{p.name}</span>
                       <span className="text-tinta/75"> · {FAMILIES[p.family].label}</span>
                     </span>
-                    <span className="text-tinta">{formatPrice(p.priceCents)}</span>
+                    <span className="text-tinta">{formatPrice(priceOf(p))}</span>
                   </Link>
                 </li>
               ))}

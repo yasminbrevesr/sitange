@@ -7,13 +7,7 @@
 //   MP_ACCESS_TOKEN  token do Mercado Pago (TEST-... para teste, APP_USR-... para produção)
 // Automáticos do Supabase: SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY
 
-// Catálogo: manter igual a lib/products.ts (preços em centavos).
-const CATALOGO: Record<string, { nome: string; precoCents: number; partes: 1 | 2 }> = {
-  curva: { nome: "Curva", precoCents: 46000, partes: 2 },
-  letra: { nome: "Letra", precoCents: 82000, partes: 2 },
-  linha: { nome: "Linha", precoCents: 24000, partes: 1 },
-  plano: { nome: "Plano", precoCents: 78000, partes: 1 },
-};
+// Catálogo e preços: lidos da tabela products do banco (único lugar dos preços).
 // Regras: manter igual a lib/store.ts.
 const FRETE_GRATIS_A_PARTIR = 45000;
 const DESCONTO_PIX_PCT = 5;
@@ -107,16 +101,22 @@ async function atender(req: Request): Promise<Response> {
     return falha("pedido", "Pedido inválido.");
   }
 
-  // 2. Peças: confere cada uma no catálogo e calcula o subtotal aqui
+  // 2. Peças: confere cada uma no catálogo do banco e calcula o subtotal aqui
+  const catalogo = new Map(
+    ((await db("products?select=id,name,price_cents,parts,active")) as { id: string; name: string; price_cents: number; parts: number; active: boolean }[]).map(
+      (p) => [p.id, p],
+    ),
+  );
   const brutos = Array.isArray(body.itens) ? body.itens.slice(0, 20) : [];
   const itens = [];
   for (const b of brutos as Record<string, unknown>[]) {
-    const p = CATALOGO[String(b.productId)];
+    const p = catalogo.get(String(b.productId));
+    if (p && !p.active) return falha("itens", `A peça ${p.name} não está disponível no momento. Tire-a da sacola para continuar.`);
     const aros = Array.isArray(b.sizes) ? b.sizes.map(Number) : [];
     const gravacao = texto(b.engraving, 100);
-    if (!p || aros.length !== p.partes || aros.some((a) => !Number.isInteger(a) || a < ARO_MIN || a > ARO_MAX) || gravacao.length > GRAVACAO_MAX)
+    if (!p || aros.length !== p.parts || aros.some((a) => !Number.isInteger(a) || a < ARO_MIN || a > ARO_MAX) || gravacao.length > GRAVACAO_MAX)
       return falha("itens", "Confira as peças da sacola.");
-    itens.push({ productId: String(b.productId), name: p.nome, priceCents: p.precoCents, sizes: aros, engraving: gravacao });
+    itens.push({ productId: p.id, name: p.name, priceCents: p.price_cents, sizes: aros, engraving: gravacao });
   }
   if (!itens.length) return falha("itens", "Sua sacola está vazia.");
   const subtotal = itens.reduce((s, i) => s + i.priceCents, 0);

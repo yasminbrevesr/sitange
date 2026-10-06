@@ -4,9 +4,11 @@ import Link from "next/link";
 import { useId, useState, type FormEvent } from "react";
 import { FAMILIES, formatPrice, type Product } from "@/lib/products";
 import { useCart } from "./CartProvider";
+import { usePrice } from "./PricesProvider";
 
 export function BuyBox({ product }: { product: Product }) {
   const { add } = useCart();
+  const price = usePrice()(product);
   const id = useId();
   const twoSizes = product.family === "para-dois";
   const sizeFields = twoSizes
@@ -21,7 +23,7 @@ export function BuyBox({ product }: { product: Product }) {
   const [error, setError] = useState("");
   const [added, setAdded] = useState(false);
 
-  const installment = formatPrice(Math.round(product.priceCents / product.maxInstallments));
+  const installment = formatPrice(Math.round(price / product.maxInstallments));
 
   function onSubmit(e: FormEvent) {
     e.preventDefault();
@@ -43,7 +45,7 @@ export function BuyBox({ product }: { product: Product }) {
       <p className="corpo mt-4 max-w-md text-tinta/80">{product.shortDescription}</p>
 
       <p className="mt-8 flex flex-wrap items-baseline gap-x-4 gap-y-1">
-        <span className="text-[40px] font-extralight leading-none">{formatPrice(product.priceCents)}</span>
+        <span className="text-[40px] font-extralight leading-none">{formatPrice(price)}</span>
         <span className="rotulo text-[10px] text-tinta/75">
           O par · Em até {product.maxInstallments}x de {installment} sem juros
         </span>
@@ -111,7 +113,7 @@ export function BuyBox({ product }: { product: Product }) {
           type="submit"
           className="rotulo min-h-14 w-full rounded-full bg-verde px-8 text-[11px] text-creme-claro hover:bg-verde-claro"
         >
-          Colocar na sacola · {formatPrice(product.priceCents)}
+          Colocar na sacola · {formatPrice(price)}
         </button>
 
         <p aria-live="polite" className="text-[14px] font-normal">

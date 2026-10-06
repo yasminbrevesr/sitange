@@ -213,13 +213,15 @@ as $$
   select exists (select 1 from public.admins where user_id = auth.uid());
 $$;
 
--- Lista de pedidos para o painel, com os dados do cliente
+-- Lista de pedidos para o painel, com os dados do cliente.
+-- PIX vencido e não pago aparece como "expirado", mesmo antes do aviso do Mercado Pago.
+drop function if exists public.admin_pedidos();
 create or replace function public.admin_pedidos()
 returns table (
   id uuid, number bigint, status text, items jsonb,
   subtotal_cents integer, shipping_cents integer, discount_cents integer, total_cents integer,
   shipping_service text, shipping_days integer, shipping_address jsonb, payment_method text,
-  tracking_code text, created_at timestamptz, paid_at timestamptz, production_at timestamptz,
+  tracking_code text, pix_expires_at timestamptz, created_at timestamptz, paid_at timestamptz, production_at timestamptz,
   shipped_at timestamptz, delivered_at timestamptz,
   customer_name text, customer_email text, customer_cpf text, customer_phone text
 )
@@ -233,10 +235,12 @@ begin
     raise exception 'acesso restrito' using errcode = '42501';
   end if;
   return query
-    select o.id, o.number, o.status, o.items,
+    select o.id, o.number,
+           case when o.status = 'aguardando_pagamento' and o.pix_expires_at < now() then 'expirado' else o.status end,
+           o.items,
            o.subtotal_cents, o.shipping_cents, o.discount_cents, o.total_cents,
            o.shipping_service, o.shipping_days, o.shipping_address, o.payment_method,
-           o.tracking_code, o.created_at, o.paid_at, o.production_at, o.shipped_at, o.delivered_at,
+           o.tracking_code, o.pix_expires_at, o.created_at, o.paid_at, o.production_at, o.shipped_at, o.delivered_at,
            p.name, p.email, p.cpf, p.phone
     from public.orders o
     left join public.profiles p on p.id = o.user_id
@@ -286,3 +290,33 @@ revoke all on function public.admin_avancar_pedido(uuid, text, text) from public
 grant execute on function public.is_admin() to authenticated;
 grant execute on function public.admin_pedidos() to authenticated;
 grant execute on function public.admin_avancar_pedido(uuid, text, text) to authenticated;
+
+-- ---------------------------------------------------------------------------
+-- Catálogo: o preço de cada peça fica SÓ aqui.
+-- O site mostra estes preços e a função criar-pix cobra por eles.
+-- Para mudar um preço: Table Editor → products → price_cents (em centavos: 46000 = R$ 460).
+-- active = false tira a peça de venda (a função recusa a compra).
+-- ---------------------------------------------------------------------------
+create table if not exists public.products (
+  id          text primary key,
+  name        text not null,
+  price_cents integer not null check (price_cents > 0),
+  parts       smallint not null check (parts in (1, 2)),  -- 2 = Para dois (dois aros), 1 = Para um
+  active      boolean not null default true,
+  updated_at  timestamptz not null default now()
+);
+
+alter table public.products enable row level security;
+
+drop policy if exists "produtos: todos podem ver" on public.products;
+create policy "produtos: todos podem ver" on public.products
+  for select to anon, authenticated using (true);
+-- Sem políticas de escrita: preços só mudam pelo painel do Supabase.
+
+-- Valores iniciais. "do nothing" para não sobrescrever preços já alterados no painel.
+insert into public.products (id, name, price_cents, parts) values
+  ('curva', 'Curva', 46000, 2),
+  ('letra', 'Letra', 82000, 2),
+  ('linha', 'Linha', 24000, 1),
+  ('plano', 'Plano', 78000, 1)
+on conflict (id) do nothing;

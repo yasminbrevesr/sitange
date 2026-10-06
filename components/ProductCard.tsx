@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { FAMILIES, formatGrams, formatPrice, type Product } from "@/lib/products";
+import { FAMILIES, formatGrams, type Product } from "@/lib/products";
 import { ProductImage } from "./ProductArt";
+import { Price } from "./PricesProvider";
 
 type Props = { product: Product; imagePanel?: "creme-claro" | "creme-base" | "branco" };
 
@@ -20,7 +21,7 @@ export function ProductCard({ product, imagePanel = "creme-claro" }: Props) {
         <p className="mt-2 text-[14px] leading-[1.6] text-tinta/75">{product.shortDescription}</p>
         <div className="mt-auto pt-6">
           <div className="flex items-baseline justify-between border-t border-tinta/15 pt-4">
-            <span className="text-[18px] font-normal">{formatPrice(product.priceCents)}</span>
+            <span className="text-[18px] font-normal"><Price id={product.id} cents={product.priceCents} /></span>
             <span className="rotulo text-[10px] text-tinta/75">{formatGrams(product.totalWeightGrams)}</span>
           </div>
         </div>

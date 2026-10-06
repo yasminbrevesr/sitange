@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Price } from "@/components/PricesProvider";
 import { Container } from "@/components/Container";
 import { Dot } from "@/components/Dot";
 import { ProductImage } from "@/components/ProductArt";
@@ -8,7 +9,6 @@ import { Unboxing } from "@/components/Unboxing";
 import {
   FAMILIES,
   formatGrams,
-  formatPrice,
   getProduct,
   getProducts,
   getProductsByFamily,
@@ -65,7 +65,7 @@ function FamilyCard({ family }: { family: Family }) {
                 href={`/pecas/${p.slug}`}
                 className="rotulo flex min-h-11 items-center rounded-full border border-tinta/25 px-5 text-[10px] hover:border-tinta"
               >
-                {p.name} · {formatPrice(p.priceCents)}
+                {p.name} · <Price id={p.id} cents={p.priceCents} />
               </Link>
             </li>
           ))}
@@ -119,7 +119,7 @@ export default function Home() {
               <br />
               {formatGrams(curva.totalWeightGrams)} · O par
               <br />
-              {formatPrice(curva.priceCents)}
+              <Price id={curva.id} cents={curva.priceCents} />
             </p>
             <Link href={`/pecas/${curva.slug}`} className="block aspect-square pt-10">
               {/* recorte fechado na peça, com o mesmo fundo creme da seção */}

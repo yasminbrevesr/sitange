@@ -27,7 +27,31 @@ export type Order = {
   payment_method: "pix" | "cartao";
   tracking_code: string | null;
   created_at: string;
+  subtotal_cents: number;
+  shipping_cents: number;
+  discount_cents: number;
+  shipping_days: number | null;
+  shipping_address: {
+    recipient: string;
+    cep: string;
+    street: string;
+    number: string;
+    complement: string;
+    district: string;
+    city: string;
+    state: string;
+  };
+  pix_qr_code: string | null;
+  pix_qr_base64: string | null;
+  pix_expires_at: string | null;
+  paid_at: string | null;
 };
+
+/** Situação para mostrar: PIX vencido aparece como expirado mesmo antes do aviso do Mercado Pago chegar. */
+export function displayStatus(o: Pick<Order, "status" | "pix_expires_at">): OrderStatus {
+  if (o.status === "aguardando_pagamento" && o.pix_expires_at && new Date(o.pix_expires_at).getTime() < Date.now()) return "expirado";
+  return o.status;
+}
 
 export class OrderError extends Error {
   constructor(message: string, public code: string) {
@@ -85,7 +109,9 @@ export async function getOrderStatus(id: string): Promise<OrderStatus | null> {
 export async function listOrders(): Promise<Order[]> {
   const { data, error } = await client()
     .from("orders")
-    .select("id,number,status,items,total_cents,shipping_service,payment_method,tracking_code,created_at")
+    .select(
+      "id,number,status,items,total_cents,subtotal_cents,shipping_cents,discount_cents,shipping_service,shipping_days,shipping_address,payment_method,tracking_code,pix_qr_code,pix_qr_base64,pix_expires_at,paid_at,created_at",
+    )
     .order("created_at", { ascending: false });
   if (error) throw error;
   return (data ?? []) as Order[];

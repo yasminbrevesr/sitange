@@ -3,6 +3,7 @@ import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/components/CartProvider";
 import { PricesProvider } from "@/components/PricesProvider";
+import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -11,10 +12,22 @@ const jakarta = Plus_Jakarta_Sans({
   display: "swap",
 });
 
+// Base dos links para Google e redes sociais. Caminhos relativos (sem "/" no começo) para manter o /sitange.
 export const metadata: Metadata = {
-  title: { default: "TANGÈ", template: "%s · TANGÈ" },
-  description:
-    "Anéis em prata 925 maciça, feitos sob encomenda no Brasil. Toda peça é feita de duas partes que se encaixam.",
+  metadataBase: new URL(`${SITE_URL}/`),
+  title: { default: "TANGÈ · Anéis em prata que se encaixam", template: "%s · TANGÈ" },
+  description: SITE_DESCRIPTION,
+  applicationName: SITE_NAME,
+  alternates: { canonical: "./" },
+  openGraph: {
+    type: "website",
+    locale: "pt_BR",
+    siteName: SITE_NAME,
+    title: "TANGÈ · Toda peça é duas",
+    description: SITE_DESCRIPTION,
+    images: [{ url: "og.jpg", width: 1200, height: 630, alt: "TANGÈ: anel Curva em prata, duas partes encaixadas" }],
+  },
+  twitter: { card: "summary_large_image", images: ["og.jpg"] },
 };
 
 export const viewport: Viewport = { themeColor: "#0C3A21" };

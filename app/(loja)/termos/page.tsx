@@ -5,7 +5,11 @@ import { MISSING } from "@/lib/products";
 import { STORE } from "@/lib/store";
 import { formatPrice } from "@/lib/products";
 
-export const metadata: Metadata = { title: "Termos de Uso" };
+export const metadata: Metadata = {
+  title: "Termos de Uso",
+  description: "Termos de uso da loja TANGÈ: pedidos, pagamento, produção sob encomenda, entrega, troca e garantia.",
+  alternates: { canonical: "termos/" },
+};
 
 // Regras da loja que já estão definidas no site; o restante fica em [COLOCAR AQUI].
 // Recomendado: revisão jurídica antes de abrir para clientes.

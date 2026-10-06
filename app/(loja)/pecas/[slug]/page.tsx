@@ -6,7 +6,8 @@ import { Container } from "@/components/Container";
 import { Gallery } from "@/components/Gallery";
 import { ProductCard } from "@/components/ProductCard";
 import { Stripe } from "@/components/Stripe";
-import { formatGrams, formatMm, getProduct, getProducts } from "@/lib/products";
+import { FAMILIES, formatGrams, formatMm, getProduct, getProducts } from "@/lib/products";
+import { absoluteUrl } from "@/lib/site";
 
 // Fundos: nav verde → compra creme-claro → faixa laranja → ficha verde → outras três branco → rodapé verde
 
@@ -19,7 +20,16 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const product = getProduct(slug);
-  return product ? { title: product.name, description: product.shortDescription } : {};
+  if (!product) return {};
+  const description = `Anel ${product.name} em ${product.material.toLowerCase()}, ${FAMILIES[product.family].label.toLowerCase()}. ${product.shortDescription} Gravação incluída.`;
+  // Imagem para WhatsApp/Instagram/Google: JPG 1200×630 (public/produtos/og/<peça>.jpg)
+  const image = product.images[0].src ? `produtos/og/${product.slug}.jpg` : null;
+  return {
+    title: `Anel ${product.name}`,
+    description,
+    alternates: { canonical: `pecas/${product.slug}/` },
+    openGraph: { title: `Anel ${product.name} · TANGÈ`, description, ...(image ? { images: [{ url: image, width: 1200, height: 630, alt: product.images[0].alt }] } : {}) },
+  };
 }
 
 export default async function ProductPage({ params }: Props) {
@@ -41,8 +51,27 @@ export default async function ProductPage({ params }: Props) {
     ["Garantia", `${product.warrantyMonths / 12} ano`],
   ];
 
+  // Dados do produto para o Google (preço inicial; o preço que vale está na tabela products do banco).
+  const productJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: `Anel ${product.name}`,
+    description: product.shortDescription,
+    brand: { "@type": "Brand", name: "TANGÈ" },
+    material: product.material,
+    ...(product.images[0].src ? { image: absoluteUrl(product.images[0].src.replace(/-encaixadas\.webp$/, "-encaixadas-branco.webp")) } : {}),
+    offers: {
+      "@type": "Offer",
+      url: absoluteUrl(`/pecas/${product.slug}/`),
+      priceCurrency: "BRL",
+      price: (product.priceCents / 100).toFixed(2),
+      availability: "https://schema.org/PreOrder",
+    },
+  };
+
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }} />
       <section className="bg-creme-claro pb-16 pt-6 md:pb-24">
         <Container>
           <nav aria-label="Você está em">

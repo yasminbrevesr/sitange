@@ -3,7 +3,11 @@ import Link from "next/link";
 import { LegalPage } from "@/components/LegalPage";
 import { MISSING } from "@/lib/products";
 
-export const metadata: Metadata = { title: "Política de Privacidade" };
+export const metadata: Metadata = {
+  title: "Política de Privacidade",
+  description: "Como a TANGÈ coleta, usa e protege seus dados pessoais, de acordo com a LGPD.",
+  alternates: { canonical: "privacidade/" },
+};
 
 // Descreve o que o site realmente coleta hoje. Os dados da empresa e prazos ficam em [COLOCAR AQUI].
 // Recomendado: revisão jurídica antes de abrir para clientes.

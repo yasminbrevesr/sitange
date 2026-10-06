@@ -15,6 +15,7 @@ const columns = [
     title: "Ajuda",
     links: [
       { label: "Guia de aro", href: "/aro" },
+      { label: "Perguntas frequentes", href: "/perguntas-frequentes" },
       { label: "Como funciona", href: "/#como-funciona" },
       { label: "Termos de Uso", href: "/termos" },
       { label: "Política de Privacidade", href: "/privacidade" },

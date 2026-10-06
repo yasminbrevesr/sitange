@@ -4,7 +4,11 @@ import { Dot } from "@/components/Dot";
 import { RingSizer, StringCalculator } from "@/components/RingSizer";
 import { MAX_SIZE, MIN_SIZE, SIZE_TABLE, formatMmValue } from "@/lib/ringSizes";
 
-export const metadata: Metadata = { title: "Guia de aro" };
+export const metadata: Metadata = {
+  title: "Guia de aro",
+  description: "Descubra seu aro em casa: medidor na tela, cálculo com barbante e tabela de medidas do aro 10 ao 26.",
+  alternates: { canonical: "aro/" },
+};
 
 const TIPS = [
   "Meça no fim do dia. De manhã e no frio o dedo fica mais fino.",

@@ -143,10 +143,12 @@ type Props = {
   tone?: Tone;
   /** Fundo da área onde a foto aparece: escolhe a versão da foto com esse mesmo fundo. */
   surface?: Surface;
+  /** Foto principal da página (aparece logo de cara): carrega primeiro, sem esperar a rolagem. */
+  priority?: boolean;
 };
 
 // Mostra a foto real quando existir; senão, a ilustração.
-export function ProductImage({ slug, image, className = "", tone, surface }: Props) {
+export function ProductImage({ slug, image, className = "", tone, surface, priority }: Props) {
   const resolvedTone: Tone = tone ?? (image.view === "verde" ? "escuro" : "claro");
   if (image.src) {
     // Com "surface", usa a versão da foto com o fundo igual ao da área (ex.: curva-encaixadas-creme-base.webp)
@@ -155,7 +157,16 @@ export function ProductImage({ slug, image, className = "", tone, surface }: Pro
     // Caminhos locais (public/) precisam do prefixo do GitHub Pages.
     const src = path.startsWith("/") ? `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}${path}` : path;
     const fit = surface ? "object-contain" : "object-cover";
-    return <img src={src} alt={image.alt} className={`h-full w-full ${fit} ${className}`} loading="lazy" />;
+    return (
+      <img
+        src={src}
+        alt={image.alt}
+        className={`h-full w-full ${fit} ${className}`}
+        loading={priority ? "eager" : "lazy"}
+        fetchPriority={priority ? "high" : "auto"}
+        decoding="async"
+      />
+    );
   }
   return (
     <svg viewBox="0 0 400 300" role="img" aria-label={image.alt} className={`h-full w-full ${className}`}>

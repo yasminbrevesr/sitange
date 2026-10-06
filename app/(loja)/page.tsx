@@ -48,7 +48,7 @@ function FamilyCard({ family }: { family: Family }) {
   const items = getProductsByFamily(family);
   const hero = items[0];
   return (
-    <article id={family} className="flex scroll-mt-20 flex-col bg-branco lg:scroll-mt-[130px]">
+    <article data-reveal id={family} className="flex scroll-mt-20 flex-col bg-branco lg:scroll-mt-[130px]">
       <div className="aspect-[16/10] bg-branco p-8">
         <ProductImage slug={hero.slug} image={hero.images[0]} surface="branco" />
       </div>
@@ -126,6 +126,7 @@ export default function Home() {
               <ProductImage
                 slug={curva.slug}
                 image={{ ...curva.images[0], src: "/produtos/curva-destaque-creme-base.webp" }}
+                priority
               />
             </Link>
           </div>
@@ -226,7 +227,7 @@ export default function Home() {
               { label: "Juntas", image: { ...plano.images[0], alt: "Anel Plano com as duas partes juntas, empilhadas" } },
               { label: "Separadas", image: { ...plano.images[1], alt: "Anel Plano com as duas partes separadas, lado a lado" } },
             ].map((panel) => (
-              <figure key={panel.label} className="bg-verde-claro p-6">
+              <figure key={panel.label} data-reveal className="bg-verde-claro p-6">
                 <figcaption className="rotulo text-[10px] text-creme-claro/85">{panel.label}</figcaption>
                 <div className="mt-4 aspect-square">
                   <ProductImage slug={plano.slug} image={panel.image} tone="escuro" surface="verde-claro" />

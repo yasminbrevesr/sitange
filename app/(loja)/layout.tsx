@@ -1,6 +1,7 @@
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { CouponPopup } from "@/components/CouponPopup";
+import { ScrollReveal } from "@/components/ScrollReveal";
 
 // Páginas da loja: menu, rodapé e popup de cupom.
 export default function LojaLayout({ children }: { children: React.ReactNode }) {
@@ -10,6 +11,7 @@ export default function LojaLayout({ children }: { children: React.ReactNode }) 
       <main id="conteudo">{children}</main>
       <Footer />
       <CouponPopup />
+      <ScrollReveal />
     </>
   );
 }

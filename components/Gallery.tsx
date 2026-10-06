@@ -26,7 +26,7 @@ export function Gallery({ product }: { product: Product }) {
         >
           {VIEW_LABEL[image.view]}
         </span>
-        <ProductImage slug={product.slug} image={image} surface={onGreen ? "verde-claro" : "branco"} />
+        <ProductImage slug={product.slug} image={image} surface={onGreen ? "verde-claro" : "branco"} priority />
       </div>
       <ul className="mt-2 grid grid-cols-4 gap-2" aria-label="Outras fotos">
         {product.images.map((img, i) => (

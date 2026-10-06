@@ -144,3 +144,20 @@ dialog:focus-visible {
   text-decoration: underline;
   text-underline-offset: 4px;
 }
+
+/* Entrada suave ao rolar (components/ScrollReveal.tsx) */
+.reveal {
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s ease;
+}
+.reveal-pending {
+  opacity: 0;
+  transform: translateY(16px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal-pending {
+    opacity: 1;
+    transform: none;
+  }
+}

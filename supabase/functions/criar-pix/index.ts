@@ -36,6 +36,7 @@ function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), { status, headers: { ...CORS, "Content-Type": "application/json" } });
 }
 function falha(codigo: string, mensagem: string, status = 400) {
+  console.warn("Recusado:", codigo, mensagem);
   return json({ erro: mensagem, codigo }, status);
 }
 
@@ -78,6 +79,15 @@ function dataMP(d: Date) {
 type Endereco = { recipient: string; cep: string; street: string; number: string; complement: string; district: string; city: string; state: string };
 
 Deno.serve(async (req) => {
+  try {
+    return await atender(req);
+  } catch (e) {
+    console.error("Erro inesperado em criar-pix", e);
+    return falha("interno", "Não deu para gerar o PIX agora. Tente de novo em instantes.", 500);
+  }
+});
+
+async function atender(req: Request): Promise<Response> {
   if (req.method === "OPTIONS") return new Response("ok", { headers: CORS });
   if (req.method !== "POST") return falha("metodo", "Método não permitido.", 405);
 
@@ -217,4 +227,4 @@ Deno.serve(async (req) => {
     qrBase64: dados.qr_code_base64 ?? null,
     expiraEm: expira.toISOString(),
   });
-});
+}

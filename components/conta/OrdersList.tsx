@@ -160,6 +160,9 @@ function OrderCard({ o }: { o: Order }) {
               <dl className="mt-2 flex flex-col gap-1 text-[14px]">
                 <div className="flex justify-between gap-4"><dt className="text-tinta/80">Peças</dt><dd>{formatPrice(o.subtotal_cents)}</dd></div>
                 <div className="flex justify-between gap-4"><dt className="text-tinta/80">Frete</dt><dd>{o.shipping_cents === 0 ? "Grátis" : formatPrice(o.shipping_cents)}</dd></div>
+                {o.coupon_cents > 0 && (
+                  <div className="flex justify-between gap-4"><dt className="text-tinta/80">Cupom {o.coupon_code}</dt><dd>− {formatPrice(o.coupon_cents)}</dd></div>
+                )}
                 {o.discount_cents > 0 && (
                   <div className="flex justify-between gap-4"><dt className="text-tinta/80">Desconto PIX</dt><dd>− {formatPrice(o.discount_cents)}</dd></div>
                 )}

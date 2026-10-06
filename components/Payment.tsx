@@ -182,12 +182,15 @@ export function Payment({
   onMethod,
   pixTotalCents,
   cardTotalCents,
+  couponCode,
   shipping,
 }: {
   method: PayMethod;
   onMethod: (m: PayMethod) => void;
   pixTotalCents: number;
   cardTotalCents: number;
+  /** Cupom aplicado na sacola (conferido de novo no servidor) */
+  couponCode: string | null;
   /** Entrega escolhida; null enquanto falta endereço ou frete */
   shipping: ShippingSelection | null;
 }) {
@@ -206,7 +209,7 @@ export function Payment({
           hint="Aprovação na hora."
           badge={`${STORE.pixDiscountPercent}% off`}
         >
-          <PixPanel amountCents={pixTotalCents} shipping={shipping} />
+          <PixPanel amountCents={pixTotalCents} shipping={shipping} couponCode={couponCode} />
         </Option>
         <Option
           checked={method === "cartao"}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState, type FormEvent } from "react";
+import { COUPON_STORAGE_KEY } from "@/lib/coupons";
 import { COUPON_CODE, saveLead } from "@/lib/leads";
 import { MISSING } from "@/lib/products";
 
@@ -100,6 +101,12 @@ export function CouponPopup() {
         consent: true,
       });
       remember("inscrito");
+      // Guarda o cupom para a sacola já vir com ele aplicado
+      try {
+        if (COUPON_CODE) localStorage.setItem(COUPON_STORAGE_KEY, COUPON_CODE);
+      } catch {
+        // sem armazenamento: a pessoa digita o cupom na sacola
+      }
       setDone(true);
     } catch {
       setError("Não deu para enviar agora. Tente de novo em instantes.");

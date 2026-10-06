@@ -185,6 +185,8 @@ create policy "pedidos: ver os proprios" on public.orders
 -- Painel da loja (/admin): etapas do pedido e quem pode administrar
 -- ---------------------------------------------------------------------------
 alter table public.orders add column if not exists tracking_code  text;
+alter table public.orders add column if not exists coupon_code    text;
+alter table public.orders add column if not exists coupon_cents   integer not null default 0;
 alter table public.orders add column if not exists production_at  timestamptz;
 alter table public.orders add column if not exists shipped_at     timestamptz;
 alter table public.orders add column if not exists delivered_at   timestamptz;
@@ -221,6 +223,7 @@ returns table (
   id uuid, number bigint, status text, items jsonb,
   subtotal_cents integer, shipping_cents integer, discount_cents integer, total_cents integer,
   shipping_service text, shipping_days integer, shipping_address jsonb, payment_method text,
+  coupon_code text, coupon_cents integer,
   tracking_code text, pix_expires_at timestamptz, created_at timestamptz, paid_at timestamptz, production_at timestamptz,
   shipped_at timestamptz, delivered_at timestamptz,
   customer_name text, customer_email text, customer_cpf text, customer_phone text
@@ -240,6 +243,7 @@ begin
            o.items,
            o.subtotal_cents, o.shipping_cents, o.discount_cents, o.total_cents,
            o.shipping_service, o.shipping_days, o.shipping_address, o.payment_method,
+           o.coupon_code, o.coupon_cents,
            o.tracking_code, o.pix_expires_at, o.created_at, o.paid_at, o.production_at, o.shipped_at, o.delivered_at,
            p.name, p.email, p.cpf, p.phone
     from public.orders o
@@ -320,3 +324,50 @@ insert into public.products (id, name, price_cents, parts) values
   ('linha', 'Linha', 24000, 1),
   ('plano', 'Plano', 78000, 1)
 on conflict (id) do nothing;
+
+-- ---------------------------------------------------------------------------
+-- Cupons de desconto
+-- percent: % sobre as peças. first_order_only: só vale se a pessoa ainda não tem pedido pago.
+-- Para criar outro cupom: Table Editor → coupons → Insert row (código em MAIÚSCULAS).
+-- Para desligar: active = false.
+-- ---------------------------------------------------------------------------
+create table if not exists public.coupons (
+  code              text primary key check (code = upper(code)),
+  percent           integer not null check (percent between 1 and 90),
+  active            boolean not null default true,
+  first_order_only  boolean not null default false,
+  expires_at        timestamptz,
+  created_at        timestamptz not null default now()
+);
+alter table public.coupons enable row level security;
+-- Sem políticas: a lista de cupons não fica visível pelo site; só a função abaixo confere um código.
+
+insert into public.coupons (code, percent, first_order_only) values ('BREVESCOMPRA10', 10, true)
+on conflict (code) do nothing;
+
+-- Confere um cupom digitado na sacola. Devolve o código e a %, ou um erro com o motivo.
+create or replace function public.validar_cupom(p_code text)
+returns table (code text, percent integer)
+language plpgsql
+stable
+security definer
+set search_path = ''
+as $$
+declare
+  c public.coupons;
+begin
+  select * into c from public.coupons where public.coupons.code = upper(trim(p_code));
+  if c.code is null or not c.active or (c.expires_at is not null and c.expires_at < now()) then
+    raise exception 'cupom_invalido';
+  end if;
+  if c.first_order_only and auth.uid() is not null and exists (
+    select 1 from public.orders o
+    where o.user_id = auth.uid() and o.status in ('pago', 'em_producao', 'enviado', 'entregue')
+  ) then
+    raise exception 'cupom_primeira_compra';
+  end if;
+  return query select c.code, c.percent;
+end;
+$$;
+
+grant execute on function public.validar_cupom(text) to anon, authenticated;

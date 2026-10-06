@@ -141,6 +141,7 @@ function OrderCard({ o, onChanged }: { o: AdminOrder; onChanged: () => void }) {
           </dl>
           <p className="mt-3 text-[13px] text-tinta/75">
             Peças {formatPrice(o.subtotal_cents)}
+            {o.coupon_cents > 0 && ` · cupom ${o.coupon_code} − ${formatPrice(o.coupon_cents)}`}
             {o.discount_cents > 0 && ` · desconto ${o.payment_method === "pix" ? "PIX " : ""}− ${formatPrice(o.discount_cents)}`}
           </p>
         </section>

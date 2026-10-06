@@ -148,11 +148,33 @@ async function atender(req: Request): Promise<Response> {
   const maisBarata = cot.reduce((m, o) => (o.preco < m.preco ? o : m), cot[0]);
   const frete = subtotal >= FRETE_GRATIS_A_PARTIR && escolhida.id === maisBarata.id ? 0 : escolhida.preco;
 
-  // 5. Total no PIX (desconto só sobre as peças)
-  const desconto = Math.round((subtotal * DESCONTO_PIX_PCT) / 100);
-  const total = subtotal - desconto + frete;
+  // 5. Cupom (opcional): confere no banco e calcula o desconto sobre as peças
+  let cupom: string | null = null;
+  let descontoCupom = 0;
+  const codigo = texto(body.cupom, 40).toUpperCase();
+  if (codigo) {
+    const [c] = (await db(`coupons?code=eq.${encodeURIComponent(codigo)}&select=code,percent,active,first_order_only,expires_at`)) as {
+      code: string;
+      percent: number;
+      active: boolean;
+      first_order_only: boolean;
+      expires_at: string | null;
+    }[];
+    if (!c || !c.active || (c.expires_at && new Date(c.expires_at).getTime() < Date.now()))
+      return falha("cupom", "Esse cupom não é válido. Tire o cupom ou confira o código.");
+    if (c.first_order_only) {
+      const pagos = (await db(`orders?user_id=eq.${user.id}&status=in.(pago,em_producao,enviado,entregue)&select=id&limit=1`)) as unknown[];
+      if (pagos.length) return falha("cupom", "Esse cupom vale só na primeira compra. Tire o cupom para continuar.");
+    }
+    cupom = c.code;
+    descontoCupom = Math.round((subtotal * c.percent) / 100);
+  }
 
-  // 6. Dados de quem paga: nome e CPF do perfil (o CPF pode vir agora e fica salvo no perfil)
+  // 6. Total no PIX: cupom sobre as peças, depois 5% do PIX sobre o que sobrou das peças (frete fora)
+  const desconto = Math.round(((subtotal - descontoCupom) * DESCONTO_PIX_PCT) / 100);
+  const total = subtotal - descontoCupom - desconto + frete;
+
+  // 7. Dados de quem paga: nome e CPF do perfil (o CPF pode vir agora e fica salvo no perfil)
   const perfis = (await db(`profiles?id=eq.${user.id}&select=name,cpf`)) as { name: string | null; cpf: string | null }[];
   const perfil = perfis[0] ?? { name: null, cpf: null };
   let cpf = so(perfil.cpf);
@@ -163,7 +185,7 @@ async function atender(req: Request): Promise<Response> {
   }
   const nome = (perfil.name ?? endereco.recipient).trim().split(/\s+/);
 
-  // 7. Cria o pedido
+  // 8. Cria o pedido
   const expira = new Date(Date.now() + PIX_VALIDADE_MIN * 60 * 1000);
   const [pedido] = (await db("orders", {
     method: "POST",
@@ -173,6 +195,8 @@ async function atender(req: Request): Promise<Response> {
       subtotal_cents: subtotal,
       shipping_cents: frete,
       discount_cents: desconto,
+      coupon_code: cupom,
+      coupon_cents: descontoCupom,
       total_cents: total,
       shipping_service: escolhida.nome,
       shipping_days: escolhida.prazo,
@@ -182,7 +206,7 @@ async function atender(req: Request): Promise<Response> {
     }),
   })) as { id: string; number: number }[];
 
-  // 8. Cria o PIX no Mercado Pago
+  // 9. Cria o PIX no Mercado Pago
   const mp = await fetch("https://api.mercadopago.com/v1/payments", {
     method: "POST",
     headers: { Authorization: `Bearer ${MP}`, "Content-Type": "application/json", "X-Idempotency-Key": pedido.id },

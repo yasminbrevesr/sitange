@@ -4,7 +4,9 @@ import Link from "next/link";
 import { useState } from "react";
 import { FAMILIES, formatPrice, getProduct } from "@/lib/products";
 import { STORE } from "@/lib/store";
+import type { Coupon } from "@/lib/coupons";
 import { Container } from "./Container";
+import { CouponField } from "./CouponField";
 import { usePrice } from "./PricesProvider";
 import { useCart } from "./CartProvider";
 import { Payment, type PayMethod } from "./Payment";
@@ -20,11 +22,14 @@ export function CartView() {
     .filter((l) => l.product);
   const subtotal = lines.reduce((sum, l) => sum + priceOf(l.product!), 0);
   const freeShipping = subtotal >= STORE.freeShippingMinCents;
-  const pixDiscount = Math.round((subtotal * STORE.pixDiscountPercent) / 100);
+  const [coupon, setCoupon] = useState<Coupon | null>(null);
+  // Cupom sobre as peças; depois, 5% do PIX sobre o que sobrou das peças (o frete fica fora).
+  const couponCents = coupon ? Math.round((subtotal * coupon.percent) / 100) : 0;
+  const pixDiscount = Math.round(((subtotal - couponCents) * STORE.pixDiscountPercent) / 100);
   const [shipping, setShipping] = useState<ShippingSelection | null>(null);
   const shipCents = shipping?.priceCents ?? 0;
   const productionDays = Math.max(0, ...lines.map((l) => l.product!.productionDays));
-  const total = (method === "pix" ? subtotal - pixDiscount : subtotal) + shipCents;
+  const total = subtotal - couponCents - (method === "pix" ? pixDiscount : 0) + shipCents;
 
   return (
     <section className="bg-branco py-12 md:py-20" aria-labelledby="sacola-titulo">
@@ -58,8 +63,9 @@ export function CartView() {
               <Payment
                 method={method}
                 onMethod={setMethod}
-                pixTotalCents={subtotal - pixDiscount + shipCents}
-                cardTotalCents={subtotal + shipCents}
+                pixTotalCents={subtotal - couponCents - pixDiscount + shipCents}
+                couponCode={coupon?.code ?? null}
+                cardTotalCents={subtotal - couponCents + shipCents}
                 shipping={shipping}
               />
             </div>
@@ -108,6 +114,10 @@ export function CartView() {
                   ))}
                 </ul>
 
+                <div className="mt-5">
+                  <CouponField coupon={coupon} onChange={setCoupon} />
+                </div>
+
                 <dl className="mt-5 flex flex-col gap-2.5 text-[15px]">
                   <div className="flex justify-between">
                     <dt className="text-creme-claro/85">Subtotal</dt>
@@ -125,6 +135,12 @@ export function CartView() {
                       )}
                     </dd>
                   </div>
+                  {coupon && (
+                    <div className="flex justify-between gap-4">
+                      <dt className="text-creme-claro/85">Cupom {coupon.code} ({coupon.percent}%)</dt>
+                      <dd>− {formatPrice(couponCents)}</dd>
+                    </div>
+                  )}
                   {method === "pix" && (
                     <div className="flex justify-between">
                       <dt className="text-creme-claro/85">Desconto PIX ({STORE.pixDiscountPercent}%)</dt>

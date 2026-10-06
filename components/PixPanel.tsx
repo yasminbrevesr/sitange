@@ -15,7 +15,15 @@ const button =
   "rotulo min-h-14 w-full rounded-full bg-laranja px-8 text-[11px] text-tinta hover:bg-verde hover:text-creme-claro disabled:opacity-80";
 
 // PIX na sacola: gera o QR Code pelo servidor, mostra o copia e cola e acompanha o pagamento.
-export function PixPanel({ amountCents, shipping }: { amountCents: number; shipping: ShippingSelection | null }) {
+export function PixPanel({
+  amountCents,
+  shipping,
+  couponCode,
+}: {
+  amountCents: number;
+  shipping: ShippingSelection | null;
+  couponCode: string | null;
+}) {
   const id = useId();
   const session = useSession();
   const router = useRouter();
@@ -64,6 +72,7 @@ export function PixPanel({ amountCents, shipping }: { amountCents: number; shipp
         address: shipping.address,
         serviceId: shipping.serviceId,
         cpf: needCpf ? onlyDigits(cpf) : undefined,
+        coupon: couponCode ?? undefined,
       });
       setStatus("aguardando_pagamento");
       setPix(order);

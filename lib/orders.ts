@@ -30,6 +30,8 @@ export type Order = {
   subtotal_cents: number;
   shipping_cents: number;
   discount_cents: number;
+  coupon_code: string | null;
+  coupon_cents: number;
   shipping_days: number | null;
   shipping_address: {
     recipient: string;
@@ -69,6 +71,7 @@ export async function createPixOrder(input: {
   address: DeliveryAddress;
   serviceId: string;
   cpf?: string;
+  coupon?: string;
 }): Promise<PixOrder> {
   const { data, error } = await client().functions.invoke("criar-pix", {
     body: {
@@ -76,6 +79,7 @@ export async function createPixOrder(input: {
       endereco: input.address,
       freteId: input.serviceId,
       cpf: input.cpf,
+      cupom: input.coupon,
     },
   });
   if (error) {
@@ -110,7 +114,7 @@ export async function listOrders(): Promise<Order[]> {
   const { data, error } = await client()
     .from("orders")
     .select(
-      "id,number,status,items,total_cents,subtotal_cents,shipping_cents,discount_cents,shipping_service,shipping_days,shipping_address,payment_method,tracking_code,pix_qr_code,pix_qr_base64,pix_expires_at,paid_at,created_at",
+      "id,number,status,items,total_cents,subtotal_cents,shipping_cents,discount_cents,coupon_code,coupon_cents,shipping_service,shipping_days,shipping_address,payment_method,tracking_code,pix_qr_code,pix_qr_base64,pix_expires_at,paid_at,created_at",
     )
     .order("created_at", { ascending: false });
   if (error) throw error;

@@ -13,6 +13,8 @@ export type AdminOrder = {
   subtotal_cents: number;
   shipping_cents: number;
   discount_cents: number;
+  coupon_code: string | null;
+  coupon_cents: number;
   total_cents: number;
   shipping_service: string;
   shipping_days: number | null;

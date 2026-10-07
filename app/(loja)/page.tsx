@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { HeroIntro } from "@/components/HeroIntro";
 import { Price } from "@/components/PricesProvider";
 import { Container } from "@/components/Container";
 import { Dot } from "@/components/Dot";
@@ -8,7 +9,6 @@ import { Stripe } from "@/components/Stripe";
 import { Unboxing } from "@/components/Unboxing";
 import {
   FAMILIES,
-  formatGrams,
   getProduct,
   getProducts,
   getProductsByFamily,
@@ -78,60 +78,8 @@ function FamilyCard({ family }: { family: Family }) {
 export default function Home() {
   return (
     <>
-      {/* 2. HERO */}
-      <section className="bg-creme-base" aria-labelledby="hero-titulo">
-        <Container className="grid items-center gap-10 py-12 lg:min-h-[806px] lg:grid-cols-2 lg:py-0">
-          <div>
-            <p className="rotulo text-[10px] text-tinta/75">Prata 950 · Feita sob encomenda</p>
-            <h1 id="hero-titulo" className="display mt-6 text-[52px] lg:text-[112px]">
-              <span className="block">
-                Duas peças
-                <Dot />
-              </span>
-              <span className="block">
-                Um ponto
-                <Dot />
-              </span>
-            </h1>
-            <p className="corpo mt-8 max-w-md text-tinta/80">
-              Nenhuma peça nossa é uma só. Todas são feitas de duas partes que se encostam, e o que muda é
-              quem fica com cada uma.
-            </p>
-            <div className="mt-10 flex flex-wrap items-center gap-6">
-              <Link
-                href="#as-pecas"
-                className="rotulo flex min-h-12 items-center rounded-full bg-verde px-8 text-[11px] text-creme-claro hover:bg-verde-claro"
-              >
-                Ver as quatro peças
-              </Link>
-              <Link
-                href="#como-funciona"
-                className="rotulo flex min-h-11 items-center text-[11px] underline underline-offset-8"
-              >
-                Como funciona
-              </Link>
-            </div>
-          </div>
-
-          <div className="relative">
-            <p className="rotulo absolute right-0 top-0 z-10 text-right text-[10px] text-tinta/75">
-              {curva.name}
-              <br />
-              {formatGrams(curva.totalWeightGrams)} · O par
-              <br />
-              <Price id={curva.id} cents={curva.priceCents} />
-            </p>
-            <Link href={`/pecas/${curva.slug}`} className="block aspect-square pt-10">
-              {/* recorte fechado na peça, com o mesmo fundo creme da seção */}
-              <ProductImage
-                slug={curva.slug}
-                image={{ ...curva.images[0], src: "/produtos/curva-destaque-creme-base.webp" }}
-                priority
-              />
-            </Link>
-          </div>
-        </Container>
-      </section>
+      {/* 2. ABERTURA (tela cheia) */}
+      <HeroIntro />
 
       {/* 3. FAIXA */}
       <Stripe />

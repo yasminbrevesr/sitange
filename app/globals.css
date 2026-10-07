@@ -161,3 +161,21 @@ dialog:focus-visible {
     transform: none;
   }
 }
+
+/* Abertura da home: zoom bem lento na foto de fundo (components/HeroIntro.tsx) */
+@keyframes abertura-zoom {
+  from {
+    transform: scale(1.02);
+  }
+  to {
+    transform: scale(1.14);
+  }
+}
+.abertura-zoom {
+  animation: abertura-zoom 22s ease-in-out infinite alternate;
+}
+@media (prefers-reduced-motion: reduce) {
+  .abertura-zoom {
+    animation: none;
+  }
+}

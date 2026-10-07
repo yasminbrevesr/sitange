@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import { Symbol } from "./Symbol";
 import { SearchBox } from "./SearchBox";
 import { useCart } from "./CartProvider";
@@ -55,8 +56,23 @@ export function Nav() {
   const count = items.length;
   const session = useSession();
 
+  // Na home, o menu fica transparente por cima da abertura em tela cheia e fica verde ao rolar.
+  const pathname = usePathname();
+  const isHome = pathname === "/";
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    if (!isHome) return;
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [isHome]);
+  const transparent = isHome && !scrolled && !open;
+
   return (
-    <header className="sticky top-0 z-50 bg-verde text-creme-claro">
+    <header
+      className={`sticky top-0 z-50 text-creme-claro transition-colors duration-300 ${transparent ? "bg-transparent" : "bg-verde"}`}
+    >
       <nav aria-label="Principal" className="mx-auto max-w-[1440px] px-4 md:px-10">
         <div className="grid h-16 grid-cols-[1fr_auto_1fr] items-center gap-4 lg:h-20">
           {/* esquerda: busca (desktop) ou botão de menu (celular) */}

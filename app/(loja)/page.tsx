@@ -223,17 +223,20 @@ export default function Home() {
             </Link>
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
-            {[
-              { label: "Juntas", image: { ...plano.images[0], alt: "Anel Plano com as duas partes juntas, empilhadas" } },
-              { label: "Separadas", image: { ...plano.images[1], alt: "Anel Plano com as duas partes separadas, lado a lado" } },
-            ].map((panel) => (
-              <figure key={panel.label} data-reveal className="bg-verde-claro p-6">
-                <figcaption className="rotulo text-[10px] text-creme-claro/85">{panel.label}</figcaption>
-                <div className="mt-4 aspect-square">
-                  <ProductImage slug={plano.slug} image={panel.image} tone="escuro" surface="verde-claro" />
-                </div>
-              </figure>
-            ))}
+            <figure data-reveal className="bg-verde-claro p-6">
+              <div className="aspect-square">
+                <ProductImage
+                  slug={plano.slug}
+                  image={{ ...plano.images[0], alt: "Anel Plano com as duas partes juntas, empilhadas" }}
+                  tone="escuro"
+                  surface="verde-claro"
+                />
+              </div>
+            </figure>
+            {/* foto de ambiente: ocupa o quadro inteiro */}
+            <figure data-reveal className="aspect-square overflow-hidden bg-verde-claro sm:aspect-auto">
+              <ProductImage slug={plano.slug} image={plano.images.find((i) => i.full) ?? plano.images[1]} />
+            </figure>
           </div>
         </Container>
       </section>

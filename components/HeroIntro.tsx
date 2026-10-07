@@ -40,7 +40,7 @@ export function HeroIntro() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_46%_30%_at_50%_50%,rgba(18,18,18,0.42),transparent_75%)]" />
       </div>
 
-      <div className="relative z-10 flex flex-col items-center px-6 text-center [text-shadow:0_1px_14px_rgba(18,18,18,0.55)]">
+      <div className="relative z-10 flex flex-col items-center px-6 pb-[76px] text-center [text-shadow:0_1px_14px_rgba(18,18,18,0.55)]">
         <h1
           id="hero-titulo"
           className="text-[20px] font-medium uppercase leading-[1.7] tracking-[0.38em] [text-shadow:0_2px_18px_rgba(18,18,18,0.7),0_0_2px_rgba(18,18,18,0.5)] md:text-[30px]"
@@ -54,13 +54,15 @@ export function HeroIntro() {
             <Dot />
           </span>
         </h1>
-        <Link
-          href="#as-pecas"
-          className="rotulo mt-8 inline-flex min-h-11 items-center bg-creme-claro px-7 text-[10px] text-verde hover:bg-laranja hover:text-tinta"
-        >
-          Ver as peças
-        </Link>
       </div>
+
+      {/* botão embaixo, abaixo do anel, para não cobrir a peça */}
+      <Link
+        href="#as-pecas"
+        className="rotulo absolute bottom-[12svh] left-1/2 z-10 inline-flex min-h-11 -translate-x-1/2 items-center whitespace-nowrap bg-creme-claro px-7 text-[10px] text-verde hover:bg-laranja hover:text-tinta"
+      >
+        Ver as peças
+      </Link>
     </section>
   );
 }

@@ -9,6 +9,7 @@ const VIEW_LABEL: Record<string, string> = {
   separadas: "Separadas",
   parte: "Uma parte",
   verde: "Encaixadas",
+  caixa: "Na caixinha",
 };
 
 export function Gallery({ product }: { product: Product }) {
@@ -18,7 +19,7 @@ export function Gallery({ product }: { product: Product }) {
 
   return (
     <div className="w-full lg:max-w-[700px]">
-      <div className={`relative aspect-square p-8 md:p-14 ${onGreen ? "bg-verde-claro" : "bg-branco"}`}>
+      <div className={`relative aspect-square ${image.full ? "overflow-hidden bg-creme-base" : `p-8 md:p-14 ${onGreen ? "bg-verde-claro" : "bg-branco"}`}`}>
         <span
           className={`rotulo absolute left-4 top-4 z-10 px-2 py-1 text-[10px] ${
             onGreen ? "bg-verde text-creme-claro" : "bg-creme-claro text-laranja-tinta"
@@ -26,7 +27,7 @@ export function Gallery({ product }: { product: Product }) {
         >
           {VIEW_LABEL[image.view]}
         </span>
-        <ProductImage slug={product.slug} image={image} surface={onGreen ? "verde-claro" : "branco"} priority />
+        <ProductImage slug={product.slug} image={image} surface={image.full ? undefined : onGreen ? "verde-claro" : "branco"} priority />
       </div>
       <ul className="mt-2 grid grid-cols-4 gap-2" aria-label="Outras fotos">
         {product.images.map((img, i) => (
@@ -36,14 +37,14 @@ export function Gallery({ product }: { product: Product }) {
               onClick={() => setActive(i)}
               aria-label={`Ver foto: ${img.alt}`}
               aria-pressed={i === active}
-              className={`block aspect-square w-full p-2 ${img.view === "verde" ? "bg-verde-claro" : "bg-branco"} ${
+              className={`block aspect-square w-full overflow-hidden ${img.full ? "bg-creme-base" : `p-2 ${img.view === "verde" ? "bg-verde-claro" : "bg-branco"}`} ${
                 i === active ? "outline outline-2 -outline-offset-2 outline-tinta" : "hover:outline hover:outline-1 hover:-outline-offset-1 hover:outline-tinta/40"
               }`}
             >
               <ProductImage
                 slug={product.slug}
                 image={{ ...img, alt: "" }}
-                surface={img.view === "verde" ? "verde-claro" : "branco"}
+                surface={img.full ? undefined : img.view === "verde" ? "verde-claro" : "branco"}
               />
             </button>
           </li>

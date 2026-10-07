@@ -4,13 +4,15 @@
 
 export type Family = "para-dois" | "para-um";
 
-export type ImageView = "encaixadas" | "separadas" | "parte" | "verde";
+export type ImageView = "encaixadas" | "separadas" | "parte" | "verde" | "caixa";
 
 export type ProductImage = {
   view: ImageView;
   /** Caminho da foto real. Enquanto for null, o site mostra a ilustração da peça. */
   src: string | null;
   alt: string;
+  /** Foto de ambiente (ex.: na caixinha): ocupa o quadro inteiro, sem margem nem troca de fundo. */
+  full?: boolean;
 };
 
 export type ProductPart = {
@@ -151,10 +153,18 @@ export const products: Product[] = [
       { label: "Parte 2", weightGrams: null, diameterMm: null },
     ],
     shortDescription: "A face reta no topo. É a peça que aparece de longe no vídeo.",
-    images: images("Plano", "para-um", {
-      src: "/produtos/plano-encaixadas.webp",
-      alt: "Anel Plano em prata polida: duas partes encaixadas formando uma face reta no topo",
-    }),
+    images: [
+      ...images("Plano", "para-um", {
+        src: "/produtos/plano-encaixadas.webp",
+        alt: "Anel Plano em prata polida: duas partes encaixadas formando uma face reta no topo",
+      }).slice(0, 3),
+      {
+        view: "caixa",
+        src: "/produtos/plano-caixinha.webp",
+        alt: "Anel Plano em prata, com as duas partes encaixadas, dentro da caixinha de veludo verde",
+        full: true,
+      },
+    ],
   },
 ];
 
